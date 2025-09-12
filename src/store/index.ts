@@ -851,6 +851,10 @@ export const useAppStore = create<AppState>()(
             set({ currentUser: null });
           }
         });
+      },
+
+      setCurrentUser: (user) => set({ currentUser: user }),
+
       activatePremiumWithCode: (code) => {
         const state = get();
         if (!state.currentUser) {

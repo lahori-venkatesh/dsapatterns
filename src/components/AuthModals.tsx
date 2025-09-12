@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Phone, Lock, LogIn, UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, User, Mail, Lock, LogIn, UserPlus, AlertCircle, CheckCircle2, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAppStore } from '../store';
+import { GoogleButton } from 'react-google-button';
 
 export const AuthModals: React.FC = () => {
   const { 
@@ -10,28 +11,59 @@ export const AuthModals: React.FC = () => {
     closeRegistrationModal,
     openLoginModal,
     openRegistrationModal,
-    register, 
-    login,
-    authError 
+    signInWithGoogle,
+    signInWithEmail,
+    signUpWithEmail,
+    resetPassword
   } = useAppStore();
 
   // Login form state
-  const [loginUsername, setLoginUsername] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginMessage, setLoginMessage] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   // Registration form state
   const [regUsername, setRegUsername] = useState('');
   const [regEmail, setRegEmail] = useState('');
-  const [regPhone, setRegPhone] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regConfirmPassword, setRegConfirmPassword] = useState('');
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
   const [regLoading, setRegLoading] = useState(false);
   const [regMessage, setRegMessage] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
-  const handleLogin = async () => {
-    if (!loginUsername.trim() || !loginPassword.trim()) {
+  // Google Sign In
+  const handleGoogleSignIn = async () => {
+    setLoginLoading(true);
+    setLoginMessage('');
+    
+    try {
+      const result = await signInWithGoogle();
+      if (result.success) {
+        setLoginMessage('Successfully signed in with Google!');
+        setTimeout(() => {
+          closeLoginModal();
+          resetLoginForm();
+        }, 1500);
+      } else {
+        setLoginMessage(result.error || 'Failed to sign in with Google');
+      }
+    } catch (error) {
+      setLoginMessage('An unexpected error occurred');
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  // Email/Password Login
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!loginEmail.trim() || !loginPassword.trim()) {
       setLoginMessage('Please fill in all fields');
       return;
     }
@@ -39,24 +71,28 @@ export const AuthModals: React.FC = () => {
     setLoginLoading(true);
     setLoginMessage('');
 
-    // Simulate API delay
-    setTimeout(() => {
-      const result = login(loginUsername, loginPassword);
-      setLoginMessage(result.message);
-      setLoginLoading(false);
-
+    try {
+      const result = await signInWithEmail(loginEmail, loginPassword);
       if (result.success) {
+        setLoginMessage('Login successful!');
         setTimeout(() => {
           closeLoginModal();
-          setLoginUsername('');
-          setLoginPassword('');
-          setLoginMessage('');
+          resetLoginForm();
         }, 1500);
+      } else {
+        setLoginMessage(result.error || 'Login failed');
       }
-    }, 1000);
+    } catch (error) {
+      setLoginMessage('An unexpected error occurred');
+    } finally {
+      setLoginLoading(false);
+    }
   };
 
-  const handleRegister = async () => {
+  // Email/Password Registration
+  const handleEmailRegistration = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (!regUsername.trim() || !regEmail.trim() || !regPassword.trim()) {
       setRegMessage('Please fill in all required fields');
       return;
@@ -67,39 +103,93 @@ export const AuthModals: React.FC = () => {
       return;
     }
 
+    if (regPassword.length < 6) {
+      setRegMessage('Password must be at least 6 characters');
+      return;
+    }
+
+    if (!acceptTerms) {
+      setRegMessage('Please accept the terms and conditions');
+      return;
+    }
+
     setRegLoading(true);
     setRegMessage('');
 
-    // Simulate API delay
-    setTimeout(() => {
-      const result = register(regUsername, regEmail, regPhone, regPassword);
-      setRegMessage(result.message);
-      setRegLoading(false);
-
+    try {
+      const result = await signUpWithEmail(regEmail, regPassword, regUsername);
       if (result.success) {
+        setRegMessage(result.message || 'Account created successfully!');
         setTimeout(() => {
           closeRegistrationModal();
           openLoginModal();
-          // Clear form
-          setRegUsername('');
-          setRegEmail('');
-          setRegPhone('');
-          setRegPassword('');
-          setRegConfirmPassword('');
-          setRegMessage('');
-        }, 1500);
+          resetRegistrationForm();
+        }, 2000);
+      } else {
+        setRegMessage(result.error || 'Registration failed');
       }
-    }, 1000);
+    } catch (error) {
+      setRegMessage('An unexpected error occurred');
+    } finally {
+      setRegLoading(false);
+    }
+  };
+
+  // Password Reset
+  const handlePasswordReset = async () => {
+    if (!loginEmail.trim()) {
+      setLoginMessage('Please enter your email address first');
+      return;
+    }
+
+    setLoginLoading(true);
+    setLoginMessage('');
+
+    try {
+      const result = await resetPassword(loginEmail);
+      if (result.success) {
+        setLoginMessage(result.message || 'Password reset email sent!');
+        setShowForgotPassword(false);
+      } else {
+        setLoginMessage(result.error || 'Failed to send reset email');
+      }
+    } catch (error) {
+      setLoginMessage('An unexpected error occurred');
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  // Reset forms
+  const resetLoginForm = () => {
+    setLoginEmail('');
+    setLoginPassword('');
+    setShowLoginPassword(false);
+    setLoginMessage('');
+    setShowForgotPassword(false);
+  };
+
+  const resetRegistrationForm = () => {
+    setRegUsername('');
+    setRegEmail('');
+    setRegPassword('');
+    setRegConfirmPassword('');
+    setShowRegPassword(false);
+    setShowRegConfirmPassword(false);
+    setRegMessage('');
+    setAcceptTerms(false);
   };
 
   const switchToRegister = () => {
     closeLoginModal();
     openRegistrationModal();
+    resetLoginForm();
   };
 
   const switchToLogin = () => {
     closeRegistrationModal();
     openLoginModal();
+    resetRegistrationForm();
   };
 
   // Login Modal
@@ -110,7 +200,7 @@ export const AuthModals: React.FC = () => {
           {/* Header */}
           <div className="relative bg-gradient-to-r from-blue-500/20 to-purple-500/20 p-6 border-b border-blue-500/30">
             <button
-              onClick={closeLoginModal}
+              onClick={() => { closeLoginModal(); resetLoginForm(); }}
               className="absolute top-4 right-4 p-2 hover:bg-gray-700 rounded-lg transition-colors"
             >
               <X className="w-5 h-5 text-gray-400 hover:text-white" />
@@ -121,68 +211,140 @@ export const AuthModals: React.FC = () => {
                 <LogIn className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">Welcome Back</h2>
-              <p className="text-blue-200">Login to access your account</p>
+              <p className="text-blue-200">Sign in to access your account</p>
             </div>
           </div>
 
-          {/* Form */}
-          <div className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Username or Email
-              </label>
+          {/* Content */}
+          <div className="p-6 space-y-6">
+            {/* Google Sign In */}
+            <div className="space-y-4">
+              <GoogleButton
+                onClick={handleGoogleSignIn}
+                disabled={loginLoading}
+                style={{ 
+                  width: '100%', 
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  height: '48px'
+                }}
+              />
+              
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  value={loginUsername}
-                  onChange={(e) => setLoginUsername(e.target.value)}
-                  placeholder="Enter username or email"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200"
-                />
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-600"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-gray-800 text-gray-400">or continue with email</span>
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="password"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="Enter password"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200"
-                  onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                />
+            {/* Email/Password Form */}
+            <form onSubmit={handleEmailLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="email"
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200"
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            {loginMessage && (
-              <div className={`flex items-center space-x-2 p-3 rounded-lg ${
-                loginMessage.includes('successful') 
-                  ? 'bg-green-500/20 border border-green-500/30 text-green-300'
-                  : 'bg-red-500/20 border border-red-500/30 text-red-300'
-              }`}>
-                {loginMessage.includes('successful') ? (
-                  <CheckCircle2 className="w-4 h-4" />
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type={showLoginPassword ? "text" : "password"}
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    className="w-full pl-10 pr-12 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Forgot Password */}
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(!showForgotPassword)}
+                  className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  Forgot password?
+                </button>
+              </div>
+
+              {/* Forgot Password Section */}
+              {showForgotPassword && (
+                <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                  <p className="text-sm text-blue-200 mb-3">
+                    Enter your email above and click the button below to receive a password reset link.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handlePasswordReset}
+                    disabled={loginLoading}
+                    className="w-full py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {loginLoading ? 'Sending...' : 'Send Reset Email'}
+                  </button>
+                </div>
+              )}
+
+              {/* Messages */}
+              {loginMessage && (
+                <div className={`flex items-center space-x-2 p-3 rounded-lg ${
+                  loginMessage.includes('successful') || loginMessage.includes('sent')
+                    ? 'bg-green-500/20 border border-green-500/30 text-green-300'
+                    : 'bg-red-500/20 border border-red-500/30 text-red-300'
+                }`}>
+                  {loginMessage.includes('successful') || loginMessage.includes('sent') ? (
+                    <CheckCircle2 className="w-4 h-4" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4" />
+                  )}
+                  <span className="text-sm">{loginMessage}</span>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loginLoading || !loginEmail.trim() || !loginPassword.trim()}
+                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              >
+                {loginLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Signing in...</span>
+                  </>
                 ) : (
-                  <AlertCircle className="w-4 h-4" />
+                  <span>Sign In</span>
                 )}
-                <span className="text-sm">{loginMessage}</span>
-              </div>
-            )}
+              </button>
+            </form>
 
-            <button
-              onClick={handleLogin}
-              disabled={loginLoading || !loginUsername.trim() || !loginPassword.trim()}
-              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-            >
-              {loginLoading ? 'Logging in...' : 'Login'}
-            </button>
-
+            {/* Switch to Register */}
             <div className="text-center">
               <p className="text-gray-400 text-sm">
                 Don't have an account?{' '}
@@ -208,7 +370,7 @@ export const AuthModals: React.FC = () => {
           {/* Header */}
           <div className="relative bg-gradient-to-r from-emerald-500/20 to-blue-500/20 p-6 border-b border-emerald-500/30">
             <button
-              onClick={closeRegistrationModal}
+              onClick={() => { closeRegistrationModal(); resetRegistrationForm(); }}
               className="absolute top-4 right-4 p-2 hover:bg-gray-700 rounded-lg transition-colors"
             >
               <X className="w-5 h-5 text-gray-400 hover:text-white" />
@@ -223,112 +385,170 @@ export const AuthModals: React.FC = () => {
             </div>
           </div>
 
-          {/* Form */}
-          <div className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Username *
-              </label>
+          {/* Content */}
+          <div className="p-6 space-y-6">
+            {/* Google Sign Up */}
+            <div className="space-y-4">
+              <GoogleButton
+                onClick={handleGoogleSignIn}
+                disabled={regLoading}
+                style={{ 
+                  width: '100%', 
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  height: '48px'
+                }}
+              />
+              
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  value={regUsername}
-                  onChange={(e) => setRegUsername(e.target.value)}
-                  placeholder="Choose a username"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
-                />
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-600"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-gray-800 text-gray-400">or create account with email</span>
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email *
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="email"
-                  value={regEmail}
-                  onChange={(e) => setRegEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
-                />
+            {/* Registration Form */}
+            <form onSubmit={handleEmailRegistration} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Username *
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    value={regUsername}
+                    onChange={(e) => setRegUsername(e.target.value)}
+                    placeholder="Choose a username"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Phone (Optional)
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="tel"
-                  value={regPhone}
-                  onChange={(e) => setRegPhone(e.target.value)}
-                  placeholder="Enter phone number"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
-                />
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Email Address *
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="email"
+                    value={regEmail}
+                    onChange={(e) => setRegEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password *
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="password"
-                  value={regPassword}
-                  onChange={(e) => setRegPassword(e.target.value)}
-                  placeholder="Create password (min 6 chars)"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
-                />
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Password *
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type={showRegPassword ? "text" : "password"}
+                    value={regPassword}
+                    onChange={(e) => setRegPassword(e.target.value)}
+                    placeholder="Create password (min 6 chars)"
+                    className="w-full pl-10 pr-12 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowRegPassword(!showRegPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    {showRegPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Confirm Password *
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="password"
-                  value={regConfirmPassword}
-                  onChange={(e) => setRegConfirmPassword(e.target.value)}
-                  placeholder="Confirm your password"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
-                  onKeyPress={(e) => e.key === 'Enter' && handleRegister()}
-                />
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Confirm Password *
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type={showRegConfirmPassword ? "text" : "password"}
+                    value={regConfirmPassword}
+                    onChange={(e) => setRegConfirmPassword(e.target.value)}
+                    placeholder="Confirm your password"
+                    className="w-full pl-10 pr-12 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    {showRegConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {regMessage && (
-              <div className={`flex items-center space-x-2 p-3 rounded-lg ${
-                regMessage.includes('successfully') 
-                  ? 'bg-green-500/20 border border-green-500/30 text-green-300'
-                  : 'bg-red-500/20 border border-red-500/30 text-red-300'
-              }`}>
-                {regMessage.includes('successfully') ? (
-                  <CheckCircle2 className="w-4 h-4" />
+              {/* Terms and Conditions */}
+              <div className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  id="acceptTerms"
+                  checked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                  className="mt-1 w-4 h-4 text-emerald-600 bg-gray-700 border-gray-600 rounded focus:ring-emerald-500 focus:ring-2"
+                />
+                <label htmlFor="acceptTerms" className="text-sm text-gray-300">
+                  I agree to the{' '}
+                  <a href="#" className="text-emerald-400 hover:text-emerald-300 underline">
+                    Terms of Service
+                  </a>{' '}
+                  and{' '}
+                  <a href="#" className="text-emerald-400 hover:text-emerald-300 underline">
+                    Privacy Policy
+                  </a>
+                </label>
+              </div>
+
+              {/* Messages */}
+              {regMessage && (
+                <div className={`flex items-center space-x-2 p-3 rounded-lg ${
+                  regMessage.includes('successfully') || regMessage.includes('created')
+                    ? 'bg-green-500/20 border border-green-500/30 text-green-300'
+                    : 'bg-red-500/20 border border-red-500/30 text-red-300'
+                }`}>
+                  {regMessage.includes('successfully') || regMessage.includes('created') ? (
+                    <CheckCircle2 className="w-4 h-4" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4" />
+                  )}
+                  <span className="text-sm">{regMessage}</span>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={regLoading || !regUsername.trim() || !regEmail.trim() || !regPassword.trim() || !acceptTerms}
+                className="w-full py-3 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              >
+                {regLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Creating Account...</span>
+                  </>
                 ) : (
-                  <AlertCircle className="w-4 h-4" />
+                  <span>Create Account</span>
                 )}
-                <span className="text-sm">{regMessage}</span>
-              </div>
-            )}
+              </button>
+            </form>
 
-            <button
-              onClick={handleRegister}
-              disabled={regLoading || !regUsername.trim() || !regEmail.trim() || !regPassword.trim()}
-              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-            >
-              {regLoading ? 'Creating Account...' : 'Create Account'}
-            </button>
-
+            {/* Switch to Login */}
             <div className="text-center">
               <p className="text-gray-400 text-sm">
                 Already have an account?{' '}
@@ -336,7 +556,7 @@ export const AuthModals: React.FC = () => {
                   onClick={switchToLogin}
                   className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
                 >
-                  Login
+                  Sign In
                 </button>
               </p>
             </div>

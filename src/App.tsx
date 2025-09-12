@@ -20,6 +20,7 @@ function App() {
     selectedLevel, 
     setSelectedLevel, 
     initializeCategories,
+    initializeAuth,
     expandedCategories,
     openNoteEditor,
     isPaid,
@@ -35,6 +36,18 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.add('dark');
   }, []);
+
+  // Initialize Firebase Auth
+  useEffect(() => {
+    initializeAuth();
+    
+    // Cleanup on unmount
+    return () => {
+      if ((window as any).authUnsubscribe) {
+        (window as any).authUnsubscribe();
+      }
+    };
+  }, [initializeAuth]);
 
   // Initialize categories on first load
   useEffect(() => {

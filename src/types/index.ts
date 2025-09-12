@@ -62,13 +62,15 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  phone?: string;
-  password: string;
+  photoURL?: string;
   isPremium: boolean;
   createdAt: Date;
-  lastLoginAt: Date;
-  deviceFingerprint: string;
-  assignedVerificationCode: string | null;
+  lastLoginAt?: Date;
+  deviceFingerprints: string[];
+  loginAttempts: number;
+  isEmailVerified: boolean;
+  authProvider: 'email' | 'google';
+  premiumActivatedAt?: Date;
 }
 
 export interface LoginSession {
@@ -86,23 +88,6 @@ export interface PermanentUser {
   activationDate: number;
   lastAccess: number;
   originalFingerprint: string;
-}
-
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  phone?: string;
-  password: string; // In production, this should be hashed
-  isPremium: boolean;
-  createdAt: Date;
-  premiumActivatedAt?: Date;
-  assignedVerificationCode?: string;
-  codeExpiresAt?: Date;
-  lastLoginAt?: Date;
-  deviceFingerprints: string[];
-  loginAttempts: number;
-  lockedUntil?: Date;
 }
 
 export interface LoginSession {

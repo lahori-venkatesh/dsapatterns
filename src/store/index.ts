@@ -2,6 +2,17 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Category, Note, Problem, Theme, UserProgress, Level } from '../types';
 import { mockCategories } from '../data/mockData';
+import { 
+  signInWithGoogle as firebaseSignInWithGoogle,
+  signInWithEmail as firebaseSignInWithEmail,
+  signUpWithEmailAndPassword as firebaseSignUpWithEmail,
+  signOutUser as firebaseSignOut,
+  resetPassword as firebaseResetPassword,
+  onAuthStateChange,
+  getUserDocument,
+  updateUserPremiumStatus
+} from '../utils/auth';
+import { User as FirebaseUser } from 'firebase/auth';
 
 interface AppState {
   // Theme
@@ -73,9 +84,13 @@ interface AppState {
   closeLoginModal: () => void;
   openRegistrationModal: () => void;
   closeRegistrationModal: () => void;
-  login: (username: string, password: string) => { success: boolean; message: string };
-  register: (username: string, email: string, phone: string, password: string) => { success: boolean; message: string };
+  signInWithGoogle: () => Promise<{ success: boolean; error?: string; user?: any }>;
+  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; error?: string; user?: any }>;
+  signUpWithEmail: (email: string, password: string, username: string) => Promise<{ success: boolean; error?: string; message?: string; user?: any }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: string; message?: string }>;
   logout: () => void;
+  initializeAuth: () => void;
+  setCurrentUser: (user: User | null) => void;
   activatePremiumWithCode: (code: string) => { success: boolean; message: string };
 }
 
@@ -777,87 +792,65 @@ export const useAppStore = create<AppState>()(
       openRegistrationModal: () => set({ isRegistrationModalOpen: true, authError: null }),
       closeRegistrationModal: () => set({ isRegistrationModalOpen: false, authError: null }),
 
-      login: (username, password) => {
-        const state = get();
-        const user = Object.values(state.users).find(u => 
-          (u.username === username || u.email === username) && u.password === password
-        );
-
-        if (!user) {
-          return { success: false, message: 'Invalid username or password' };
+      // Firebase Authentication Methods
+      signInWithGoogle: async () => {
+        try {
+          return await firebaseSignInWithGoogle();
+        } catch (error: any) {
+          return { success: false, error: error.message };
         }
-
-        // Create session
-        const sessionId = Date.now().toString();
-        const session: LoginSession = {
-          id: sessionId,
-          userId: user.id,
-          createdAt: new Date(),
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-          deviceFingerprint: state.generateUserFingerprint(),
-          isActive: true
-        };
-
-        set({
-          currentUser: user,
-          sessions: { ...state.sessions, [sessionId]: session }
-        });
-
-        return { success: true, message: 'Login successful!' };
       },
 
-      register: (username, email, phone, password) => {
-        const state = get();
-        
-        // Check if username or email already exists
-        const existingUser = Object.values(state.users).find(u => 
-          u.username === username || u.email === email
-        );
-
-        if (existingUser) {
-          return { success: false, message: 'Username or email already exists' };
+      signInWithEmail: async (email, password) => {
+        try {
+          return await firebaseSignInWithEmail(email, password);
+        } catch (error: any) {
+          return { success: false, error: error.message };
         }
+      },
 
-        if (password.length < 6) {
-          return { success: false, message: 'Password must be at least 6 characters' };
+      signUpWithEmail: async (email, password, username) => {
+        try {
+          return await firebaseSignUpWithEmail(email, password, username);
+        } catch (error: any) {
+          return { success: false, error: error.message };
         }
+      },
 
-        // Create new user
-        const userId = `user_${Date.now()}`;
-        const newUser: User = {
-          id: userId,
-          username,
-          email,
-          phone,
-          password, // In real app, this should be hashed
-          isPremium: false,
-          createdAt: new Date(),
-          lastLoginAt: new Date(),
-          deviceFingerprint: state.generateUserFingerprint(),
-          assignedVerificationCode: null
-        };
-
-        set({
-          users: { ...state.users, [userId]: newUser }
-        });
-
-        return { success: true, message: 'Account created successfully! Please login.' };
+      resetPassword: async (email) => {
+        try {
+          return await firebaseResetPassword(email);
+        } catch (error: any) {
+          return { success: false, error: error.message };
+        }
       },
 
       logout: () => {
-        const state = get();
-        // Deactivate current session
-        const updatedSessions = { ...state.sessions };
-        Object.keys(updatedSessions).forEach(sessionId => {
-          if (updatedSessions[sessionId].userId === state.currentUser?.id) {
-            updatedSessions[sessionId].isActive = false;
+        firebaseSignOut();
+        set({ currentUser: null });
+      },
+
+      // Initialize Firebase Auth State Listener
+      initializeAuth: () => {
+        const unsubscribe = onAuthStateChange(async (firebaseUser: FirebaseUser | null) => {
+          if (firebaseUser) {
+            // User is signed in, get user document from Firestore
+            const userDoc = await getUserDocument(firebaseUser.uid);
+            if (userDoc) {
+              set({ currentUser: userDoc });
+            }
+          } else {
+            // User is signed out
+            set({ currentUser: null });
           }
         });
+        
+        // Store unsubscribe function for cleanup
+        (window as any).authUnsubscribe = unsubscribe;
+      },
 
-        set({
-          currentUser: null,
-          sessions: updatedSessions
-        });
+      setCurrentUser: (user) => {
+        set({ currentUser: user });
       },
 
       activatePremiumWithCode: (code) => {
@@ -891,13 +884,13 @@ export const useAppStore = create<AppState>()(
           return { success: false, message: 'Your account is already premium!' };
         }
 
-        // Activate premium
-        const updatedUser = { ...state.currentUser, isPremium: true };
-        const updatedUsers = { ...state.users, [updatedUser.id]: updatedUser };
+        // Activate premium in Firestore
+        updateUserPremiumStatus(state.currentUser.id, true);
 
+        // Update local state
+        const updatedUser = { ...state.currentUser, isPremium: true };
         set({
-          currentUser: updatedUser,
-          users: updatedUsers
+          currentUser: updatedUser
         });
 
         return { success: true, message: 'Premium activated successfully! Welcome to Premium!' };
@@ -908,9 +901,6 @@ export const useAppStore = create<AppState>()(
       partialize: (state) => ({
         // Don't persist categories to avoid stale data
         isPaid: state.isPaid,
-        currentUser: state.currentUser,
-        users: state.users,
-        sessions: state.sessions,
         permanentUserId: state.permanentUserId,
         permanentUsers: state.permanentUsers,
         activationDate: state.activationDate,
@@ -922,17 +912,11 @@ export const useAppStore = create<AppState>()(
       merge: (persistedState, currentState) => ({
         ...currentState,
         ...persistedState,
-        currentUser: (persistedState as any)?.currentUser || null,
-        users: (persistedState as any)?.users || {},
-        sessions: (persistedState as any)?.sessions || {},
         expandedCategories: new Set(
           Array.isArray((persistedState as any)?.expandedCategories)
             ? (persistedState as any).expandedCategories
             : []
         ),
-        // Restore user data
-        users: (persistedState as any)?.users || {},
-        sessions: (persistedState as any)?.sessions || {},
         verificationCodes: (persistedState as any)?.verificationCodes || currentState.verificationCodes,
       }),
     }

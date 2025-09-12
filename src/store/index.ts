@@ -3,16 +3,13 @@ import { persist } from 'zustand/middleware';
 import { Category, Note, Problem, Theme, UserProgress, Level } from '../types';
 import { mockCategories } from '../data/mockData';
 import { 
-  signInWithGoogle as firebaseSignInWithGoogle,
-  signInWithEmail as firebaseSignInWithEmail,
-  signUpWithEmailAndPassword as firebaseSignUpWithEmail,
-  signOutUser as firebaseSignOut,
-  resetPassword as firebaseResetPassword,
-  onAuthStateChange,
-  getUserDocument,
-  updateUserPremiumStatus
-} from '../utils/auth';
-import { User as FirebaseUser } from 'firebase/auth';
+  signInWithGoogle as supabaseSignInWithGoogle,
+  signInWithEmail as supabaseSignInWithEmail,
+  signUpWithEmail as supabaseSignUpWithEmail,
+  signOut as supabaseSignOut,
+  resetPassword as supabaseResetPassword,
+  onAuthStateChange
+} from '../config/supabase';
 
 interface AppState {
   // Theme
@@ -832,7 +829,7 @@ export const useAppStore = create<AppState>()(
 
       // Initialize Supabase Auth State Listener
       initializeAuth: () => {
-        const { data: { subscription } } = onAuthStateChange(async (event, session) => {
+        onAuthStateChange(async (event, session) => {
           if (session?.user) {
             // User is signed in
             const user: User = {
@@ -854,19 +851,6 @@ export const useAppStore = create<AppState>()(
             set({ currentUser: null });
           }
         });
-        
-        // Store unsubscribe function for cleanup
-        (window as any).authUnsubscribe = () => {
-          if (subscription) {
-            subscription.unsubscribe();
-          }
-        };
-      },
-
-      setCurrentUser: (user) => {
-        set({ currentUser: user });
-      },
-
       activatePremiumWithCode: (code) => {
         const state = get();
         if (!state.currentUser) {

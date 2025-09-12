@@ -10,6 +10,7 @@ import { PaymentModal } from './components/PaymentModal';
 import { LevelSelector } from './components/LevelSelector';
 import { AuthModals } from './components/AuthModals';
 import { PremiumActivationModal } from './components/PremiumActivationModal';
+import { AuthCallback } from './components/AuthCallback';
 import { useCategories } from './hooks/useCategories';
 import { usePerformance } from './hooks/usePerformance';
 import { useAppStore } from './store';
@@ -31,6 +32,14 @@ function App() {
   const { toggleCategory, toggleProblemComplete, setSelectedPattern } = usePerformance();
   const [showPaymentModal, setShowPaymentModal] = React.useState(false);
   const [showPremiumActivationModal, setShowPremiumActivationModal] = React.useState(false);
+
+  // Check if this is the auth callback route
+  const isAuthCallback = window.location.pathname === '/auth/callback';
+
+  // If this is the auth callback, show the callback component
+  if (isAuthCallback) {
+    return <AuthCallback />;
+  }
 
   // Apply theme to document
   useEffect(() => {

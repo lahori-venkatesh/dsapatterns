@@ -11,13 +11,18 @@ export const AuthCallback: React.FC = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Get the session from the URL hash
+        // Handle the auth callback - this processes URL fragments and codes
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('Auth callback error:', error);
           setStatus('error');
           setMessage('Authentication failed. Please try again.');
+          
+          // Redirect to home after error
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 3000);
           return;
         }
 
@@ -48,13 +53,65 @@ export const AuthCallback: React.FC = () => {
             window.location.href = '/';
           }, 2000);
         } else {
+          // Try to handle the callback if no session yet
+          const urlParams = new URLSearchParams(window.location.search);
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          
+          if (urlParams.get('code') || hashParams.get('access_token')) {
+            // Let Supabase handle the callback
+            setMessage('Processing authentication...');
+            
+            // Wait a bit and try again
+            setTimeout(async () => {
+              const { data: sessionData } = await supabase.auth.getSession();
+              if (sessionData.session?.user) {
+                const user = {
+                  id: sessionData.session.user.id,
+                  username: sessionData.session.user.user_metadata?.username || 
+                           sessionData.session.user.user_metadata?.full_name || 
+                           sessionData.session.user.email?.split('@')[0] || 'User',
+                  email: sessionData.session.user.email || '',
+                  photoURL: sessionData.session.user.user_metadata?.avatar_url || '',
+                  isPremium: false,
+                  createdAt: new Date(sessionData.session.user.created_at),
+                  lastLoginAt: new Date(),
+                  deviceFingerprints: [],
+                  loginAttempts: 0,
+                  isEmailVerified: sessionData.session.user.email_confirmed_at ? true : false,
+                  authProvider: sessionData.session.user.app_metadata?.provider || 'google'
+                };
+                
+                setCurrentUser(user);
+                setStatus('success');
+                setMessage('Authentication successful! Redirecting...');
+                
+                setTimeout(() => {
+                  window.location.href = '/';
+                }, 2000);
+              } else {
+                setStatus('error');
+                setMessage('Authentication failed. Please try again.');
+                setTimeout(() => {
+                  window.location.href = '/';
+                }, 3000);
+              }
+            }, 2000);
+            return;
+          }
+          
           setStatus('error');
           setMessage('No user session found. Please try signing in again.');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 3000);
         }
       } catch (error) {
         console.error('Auth callback error:', error);
         setStatus('error');
         setMessage('An unexpected error occurred. Please try again.');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 3000);
       }
     };
 

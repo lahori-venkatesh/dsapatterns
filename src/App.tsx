@@ -33,8 +33,18 @@ function App() {
   const [showPaymentModal, setShowPaymentModal] = React.useState(false);
   const [showPremiumActivationModal, setShowPremiumActivationModal] = React.useState(false);
 
-  // Check if this is the auth callback route
-  const isAuthCallback = window.location.pathname === '/auth/callback';
+  // Check if this is the auth callback route - handle both pathname and hash
+  const isAuthCallback = React.useMemo(() => {
+    const pathname = window.location.pathname;
+    const hash = window.location.hash;
+    const search = window.location.search;
+    
+    // Check for auth callback in various formats
+    return pathname === '/auth/callback' || 
+           pathname.includes('/auth/callback') ||
+           hash.includes('access_token') ||
+           search.includes('code=');
+  }, []);
 
   // If this is the auth callback, show the callback component
   if (isAuthCallback) {

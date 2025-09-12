@@ -894,7 +894,7 @@ export const useAppStore = create<AppState>()(
 
         return { success: true, message: 'Premium activated successfully! Welcome to Premium!' };
       },
-    }),
+    })
     {
       name: 'dsa-platform-storage-v3', // Changed name to clear old cache
       partialize: (state) => ({

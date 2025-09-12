@@ -70,7 +70,7 @@ export interface User {
   loginAttempts: number;
   isEmailVerified: boolean;
   authProvider: 'email' | 'google';
-  premiumActivatedAt?: Date;
+  premiumActivatedAt?: Date | null;
 }
 
 export interface LoginSession {

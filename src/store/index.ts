@@ -795,7 +795,7 @@ export const useAppStore = create<AppState>()(
       // Firebase Authentication Methods
       signInWithGoogle: async () => {
         try {
-          return await firebaseSignInWithGoogle();
+          return await supabaseSignInWithGoogle();
         } catch (error: any) {
           return { success: false, error: error.message };
         }
@@ -803,7 +803,7 @@ export const useAppStore = create<AppState>()(
 
       signInWithEmail: async (email, password) => {
         try {
-          return await firebaseSignInWithEmail(email, password);
+          return await supabaseSignInWithEmail(email, password);
         } catch (error: any) {
           return { success: false, error: error.message };
         }
@@ -811,7 +811,7 @@ export const useAppStore = create<AppState>()(
 
       signUpWithEmail: async (email, password, username) => {
         try {
-          return await firebaseSignUpWithEmail(email, password, username);
+          return await supabaseSignUpWithEmail(email, password, username);
         } catch (error: any) {
           return { success: false, error: error.message };
         }
@@ -819,25 +819,121 @@ export const useAppStore = create<AppState>()(
 
       resetPassword: async (email) => {
         try {
-          return await firebaseResetPassword(email);
+          return await supabaseResetPassword(email);
         } catch (error: any) {
           return { success: false, error: error.message };
         }
       },
 
       logout: () => {
-        firebaseSignOut();
+        supabaseSignOut();
         set({ currentUser: null });
       },
 
-      // Initialize Firebase Auth State Listener
+      // Initialize Supabase Auth State Listener
       initializeAuth: () => {
-        const unsubscribe = onAuthStateChange(async (firebaseUser: FirebaseUser | null) => {
-          if (firebaseUser) {
-            // User is signed in, get user document from Firestore
-            const userDoc = await getUserDocument(firebaseUser.uid);
-            if (userDoc) {
-              set({ currentUser: userDoc });
+        const { data: { subscription } } = onAuthStateChange(async (event, session) => {
+          if (session?.user) {
+            // User is signed in
+            const user: User = {
+              id: session.user.id,
+              username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+              email: session.user.email || '',
+              photoURL: session.user.user_metadata?.avatar_url || '',
+              isPremium: false, // Will be updated from database
+              createdAt: new Date(session.user.created_at),
+              lastLoginAt: new Date(),
+              deviceFingerprints: [],
+              loginAttempts: 0,
+              isEmailVerified: session.user.email_confirmed_at ? true : false,
+              authProvider: session.user.app_metadata?.provider || 'email'
+            };
+            set({ currentUser: user });
+          } else {
+            // User is signed out
+            set({ currentUser: null });
+          }
+        });
+        
+        // Store unsubscribe function for cleanup
+        (window as any).authUnsubscribe = () => {
+          if (subscription) {
+            subscription.unsubscribe();
+          }
+        };
+      },
+
+      setCurrentUser: (user) => {
+        set({ currentUser: user });
+      },
+
+      activatePremiumWithCode: (code) => {
+        const state = get();
+        if (!state.currentUser) {
+          return { success: false, message: 'Please login first' };
+        }
+
+        const upperCode = code.toUpperCase().trim();
+        
+        // Simple verification - check if code exists in our predefined list
+        const validCodes = [
+          'DSA2024001', 'DSA2024002', 'DSA2024003', 'DSA2024004', 'DSA2024005',
+          'DSA2024006', 'DSA2024007', 'DSA2024008', 'DSA2024009', 'DSA2024010',
+          'DSA2024011', 'DSA2024012', 'DSA2024013', 'DSA2024014', 'DSA2024015',
+          'DSA2024016', 'DSA2024017', 'DSA2024018', 'DSA2024019', 'DSA2024020',
+          'DSA2024021', 'DSA2024022', 'DSA2024023', 'DSA2024024', 'DSA2024025',
+          'DSA2024026', 'DSA2024027', 'DSA2024028', 'DSA2024029', 'DSA2024030',
+          'DSA2024031', 'DSA2024032', 'DSA2024033', 'DSA2024034', 'DSA2024035',
+          'DSA2024036', 'DSA2024037', 'DSA2024038', 'DSA2024039', 'DSA2024040',
+          'DSA2024041', 'DSA2024042', 'DSA2024043', 'DSA2024044', 'DSA2024045',
+          'DSA2024046', 'DSA2024047', 'DSA2024048', 'DSA2024049', 'DSA2024050'
+        ];
+        
+        if (!validCodes.includes(upperCode)) {
+          return { success: false, message: 'Invalid verification code. Please check and try again.' };
+        }
+        
+        // Check if code has already been used by this user
+        if (state.currentUser.isPremium) {
+          return { success: false, message: 'Your account is already premium!' };
+        }
+
+        // Update local state
+        const updatedUser = { ...state.currentUser, isPremium: true };
+        set({
+          currentUser: updatedUser
+        });
+
+        return { success: true, message: 'Premium activated successfully! Welcome to Premium!' };
+      },
+    }),
+    {
+      name: 'dsa-platform-storage-v3', // Changed name to clear old cache
+      partialize: (state) => ({
+        // Don't persist categories to avoid stale data
+        isPaid: state.isPaid,
+        permanentUserId: state.permanentUserId,
+        permanentUsers: state.permanentUsers,
+        activationDate: state.activationDate,
+        lastAccessDate: state.lastAccessDate,
+        notes: state.notes,
+        usedCodes: state.usedCodes,
+        expandedCategories: Array.from(state.expandedCategories),
+        currentUser: state.currentUser,
+      }),
+      merge: (persistedState, currentState) => ({
+        ...currentState,
+        ...persistedState,
+        expandedCategories: new Set(
+          Array.isArray((persistedState as any)?.expandedCategories)
+            ? (persistedState as any).expandedCategories
+            : []
+        ),
+        verificationCodes: (persistedState as any)?.verificationCodes || currentState.verificationCodes,
+      }),
+    }
+  )
+);
             }
           } else {
             // User is signed out

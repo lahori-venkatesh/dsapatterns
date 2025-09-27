@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { supabase } from '../config/supabase';
-import { Category, Note, Problem, Theme, UserProgress, Level } from '../types';
+import { Category, Note, Problem, Theme, UserProgress, Level, User, LoginSession } from '../types';
 import { mockCategories } from '../data/mockData';
 import { 
   signInWithGoogle as supabaseSignInWithGoogle,
@@ -29,8 +29,25 @@ interface AppState {
   isPaid: boolean;
   userFingerprint: string | null;
   sessionId: string | null;
+  permanentUserId: string | null;
+  activationDate: Date | null;
+  lastAccessDate: Date | null;
+  verificationCodes: { [code: string]: { deviceFingerprint: string | null; used: boolean; createdAt: number; expiresAt: number; adminGenerated?: boolean; usedAt?: number; permanentUserId?: string } };
+  usedCodes: string[];
+  verificationAttempts: { [fingerprint: string]: { count: number; lastAttempt: number } };
+  maxAttemptsPerDevice: number;
+  attemptResetTime: number;
+  permanentUsers: { [userId: string]: { codes: string[]; devices: string[]; activationDate: number; lastAccess: number; originalFingerprint?: string } };
   setPaymentStatus: (status: boolean) => void;
   verifyPaymentCode: (code: string) => { success: boolean; message: string };
+  generateUserFingerprint: () => string;
+  generateSessionId: () => string;
+  generatePermanentUserId: () => string;
+  checkPermanentAccess: () => boolean;
+  recoverUserAccess: (verificationCode: string) => { success: boolean; message: string };
+  verifyUserSession: () => boolean;
+  generateVerificationCode: (deviceFingerprint?: string) => string;
+  clearUserSession: () => void;
 
   // Data
   categories: Category[];
@@ -126,8 +143,6 @@ export const useAppStore = create<AppState>()(
       
       // Enhanced verification system with device binding
       verificationCodes: {
-        // Format: { code: { deviceFingerprint: string, used: boolean, createdAt: number, expiresAt: number } }
-        // Pre-generated codes for admin distribution
         'DSA2024001': { deviceFingerprint: null, used: false, createdAt: Date.now(), expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000), adminGenerated: true },
         'DSA2024002': { deviceFingerprint: null, used: false, createdAt: Date.now(), expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000), adminGenerated: true },
         'DSA2024003': { deviceFingerprint: null, used: false, createdAt: Date.now(), expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000), adminGenerated: true },
@@ -179,15 +194,11 @@ export const useAppStore = create<AppState>()(
         'DSA2024049': { deviceFingerprint: null, used: false, createdAt: Date.now(), expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000), adminGenerated: true },
         'DSA2024050': { deviceFingerprint: null, used: false, createdAt: Date.now(), expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000), adminGenerated: true },
       },
-      usedCodes: [], // Keep for backward compatibility
-      
-      // Track verification attempts to prevent brute force
+      usedCodes: [],
       verificationAttempts: {},
       maxAttemptsPerDevice: 3,
-      attemptResetTime: 24 * 60 * 60 * 1000, // 24 hours
-      
-      // Permanent user tracking
-      permanentUsers: {}, // { userId: { codes: [], devices: [], activationDate: number, lastAccess: number } }
+      attemptResetTime: 24 * 60 * 60 * 1000,
+      permanentUsers: {},
 
       // Generate unique user fingerprint
       generateUserFingerprint: () => {
@@ -207,12 +218,11 @@ export const useAppStore = create<AppState>()(
           navigator.deviceMemory || 'unknown'
         ].join('|');
         
-        // Simple hash function
         let hash = 0;
         for (let i = 0; i < fingerprint.length; i++) {
           const char = fingerprint.charCodeAt(i);
           hash = ((hash << 5) - hash) + char;
-          hash = hash & hash; // Convert to 32-bit integer
+          hash = hash & hash;
         }
         
         return Math.abs(hash).toString(36);
@@ -233,10 +243,8 @@ export const useAppStore = create<AppState>()(
         const state = get();
         const currentFingerprint = state.generateUserFingerprint();
         
-        // Check if current device has permanent access
         for (const [userId, userData] of Object.entries(state.permanentUsers)) {
           if (userData.devices && userData.devices.includes(currentFingerprint)) {
-            // Update last access
             set((state) => ({
               permanentUsers: {
                 ...state.permanentUsers,
@@ -251,7 +259,6 @@ export const useAppStore = create<AppState>()(
               lastAccessDate: new Date()
             }));
             
-            // Store in localStorage for quick access
             localStorage.setItem('dsa_permanent_user_id', userId);
             localStorage.setItem('dsa_user_fp', currentFingerprint);
             localStorage.setItem('dsa_last_access', Date.now().toString());
@@ -269,10 +276,8 @@ export const useAppStore = create<AppState>()(
         const upperCode = verificationCode.toUpperCase().trim();
         const currentFingerprint = state.generateUserFingerprint();
         
-        // Find user by verification code
         for (const [userId, userData] of Object.entries(state.permanentUsers)) {
           if (userData.codes && userData.codes.includes(upperCode)) {
-            // Add current device to user's allowed devices
             const updatedDevices = [...(userData.devices || [])];
             if (!updatedDevices.includes(currentFingerprint)) {
               updatedDevices.push(currentFingerprint);
@@ -293,7 +298,6 @@ export const useAppStore = create<AppState>()(
               lastAccessDate: new Date()
             }));
             
-            // Store in localStorage
             localStorage.setItem('dsa_permanent_user_id', userId);
             localStorage.setItem('dsa_user_fp', currentFingerprint);
             localStorage.setItem('dsa_last_access', Date.now().toString());
@@ -305,58 +309,38 @@ export const useAppStore = create<AppState>()(
         return { success: false, message: 'Invalid recovery code. Please check your original verification code.' };
       },
 
-      // Verify user session
+      // Enhanced session verification with code binding check
       verifyUserSession: () => {
         const state = get();
-        if (!state.isPaid) return true; // Allow free users
-        
-        // First check permanent access
-        if (state.checkPermanentAccess()) {
-          return true;
-        }
+        if (!state.isPaid) return true;
         
         const currentFingerprint = state.generateUserFingerprint();
         const storedFingerprint = localStorage.getItem('dsa_user_fp');
         const storedSession = localStorage.getItem('dsa_session_id');
         const sessionTimestamp = localStorage.getItem('dsa_session_ts');
-        const permanentUserId = localStorage.getItem('dsa_permanent_user_id');
+        const storedVerificationCode = localStorage.getItem('dsa_verification_code');
         
-        // Check if user has permanent access but lost session
-        if (permanentUserId && state.permanentUsers[permanentUserId]) {
-          const userData = state.permanentUsers[permanentUserId];
-          if (userData.devices && userData.devices.includes(currentFingerprint)) {
-            // Restore access
-            set({
-              isPaid: true,
-              permanentUserId: permanentUserId,
-              userFingerprint: currentFingerprint,
-              lastAccessDate: new Date()
-            });
-            return true;
-          }
-        }
-        
-        // Check if session is older than 24 hours
         if (sessionTimestamp) {
           const sessionAge = Date.now() - parseInt(sessionTimestamp);
-          if (sessionAge > 24 * 60 * 60 * 1000) { // 24 hours
-            // Session expired, require re-verification
-            set({ isPaid: false, userFingerprint: null, sessionId: null });
-            localStorage.removeItem('dsa_user_fp');
-            localStorage.removeItem('dsa_session_id');
-            localStorage.removeItem('dsa_session_ts');
-            return false;
+          if (sessionAge > 30 * 24 * 60 * 60 * 1000) {
+            if (!state.checkPermanentAccess()) {
+              state.clearUserSession();
+              return false;
+            }
           }
         }
         
-        // Check fingerprint match
         if (storedFingerprint && storedFingerprint !== currentFingerprint) {
-          // Different device/browser detected
-          set({ isPaid: false, userFingerprint: null, sessionId: null });
-          localStorage.removeItem('dsa_user_fp');
-          localStorage.removeItem('dsa_session_id');
-          localStorage.removeItem('dsa_session_ts');
+          state.clearUserSession();
           return false;
+        }
+        
+        if (storedVerificationCode) {
+          const codeData = state.verificationCodes[storedVerificationCode];
+          if (!codeData || !codeData.used || (codeData.deviceFingerprint && codeData.deviceFingerprint !== currentFingerprint)) {
+            state.clearUserSession();
+            return false;
+          }
         }
         
         return true;
@@ -364,8 +348,6 @@ export const useAppStore = create<AppState>()(
 
       // Initialize categories on first load
       initializeCategories: () => {
-        const state = get();
-        // Always initialize categories, but check access when needed
         set({ categories: mockCategories });
       },
 
@@ -376,7 +358,6 @@ export const useAppStore = create<AppState>()(
           const fingerprint = state.generateUserFingerprint();
           const sessionId = state.generateSessionId();
           
-          // Store fingerprint and session
           localStorage.setItem('dsa_user_fp', fingerprint);
           localStorage.setItem('dsa_session_id', sessionId);
           localStorage.setItem('dsa_session_ts', Date.now().toString());
@@ -387,7 +368,6 @@ export const useAppStore = create<AppState>()(
             sessionId: sessionId 
           });
         } else {
-          // Clear all session data
           localStorage.removeItem('dsa_user_fp');
           localStorage.removeItem('dsa_session_id');
           localStorage.removeItem('dsa_session_ts');
@@ -405,15 +385,12 @@ export const useAppStore = create<AppState>()(
         const currentFingerprint = state.generateUserFingerprint();
         const now = Date.now();
         
-        // Check verification attempts for this device
         const deviceAttempts = state.verificationAttempts[currentFingerprint] || { count: 0, lastAttempt: 0 };
         
-        // Reset attempts if 24 hours have passed
         if (now - deviceAttempts.lastAttempt > state.attemptResetTime) {
           deviceAttempts.count = 0;
         }
         
-        // Check if device has exceeded max attempts
         if (deviceAttempts.count >= state.maxAttemptsPerDevice) {
           const timeLeft = Math.ceil((state.attemptResetTime - (now - deviceAttempts.lastAttempt)) / (60 * 60 * 1000));
           return { 
@@ -422,11 +399,9 @@ export const useAppStore = create<AppState>()(
           };
         }
         
-        // Check if code exists and is valid
         const codeData = state.verificationCodes[upperCode];
         
         if (!codeData) {
-          // Increment failed attempts
           set((state) => ({
             verificationAttempts: {
               ...state.verificationAttempts,
@@ -439,23 +414,17 @@ export const useAppStore = create<AppState>()(
           return { success: false, message: 'Invalid verification code. Please check and try again.' };
         }
         
-        // Check if code has expired
         if (now > codeData.expiresAt) {
           return { success: false, message: 'This verification code has expired. Please contact support for a new code.' };
         }
         
-        // Check if code has already been used
         if (codeData.used) {
           return { success: false, message: 'This verification code has already been used by another user. Each code can only be used once.' };
         }
         
-        // For admin-generated codes, bind to first user's device
         if (codeData.adminGenerated && !codeData.deviceFingerprint) {
-          // First time use - bind to this device
           codeData.deviceFingerprint = currentFingerprint;
         } else if (codeData.deviceFingerprint && codeData.deviceFingerprint !== currentFingerprint) {
-          // Code is bound to a different device
-          // Increment failed attempts for suspicious activity
           set((state) => ({
             verificationAttempts: {
               ...state.verificationAttempts,
@@ -471,15 +440,13 @@ export const useAppStore = create<AppState>()(
           };
         }
         
-        // Code is valid - activate premium and mark as used
         const sessionId = state.generateSessionId();
         const permanentUserId = state.generatePermanentUserId();
         
-        // Store user fingerprint and session
         localStorage.setItem('dsa_user_fp', currentFingerprint);
         localStorage.setItem('dsa_session_id', sessionId);
         localStorage.setItem('dsa_session_ts', now.toString());
-        localStorage.setItem('dsa_verification_code', upperCode); // Store for verification
+        localStorage.setItem('dsa_verification_code', upperCode);
         localStorage.setItem('dsa_permanent_user_id', permanentUserId);
         localStorage.setItem('dsa_activation_date', now.toString());
         localStorage.setItem('dsa_last_access', now.toString());
@@ -513,7 +480,6 @@ export const useAppStore = create<AppState>()(
               adminGenerated: codeData.adminGenerated || false
             }
           },
-          // Reset verification attempts on successful verification
           verificationAttempts: {
             ...state.verificationAttempts,
             [currentFingerprint]: { count: 0, lastAttempt: now }
@@ -523,18 +489,16 @@ export const useAppStore = create<AppState>()(
         return { success: true, message: 'Payment verified successfully! Welcome to Premium!' };
       },
       
-      // Admin function to generate verification codes (for your backend/manual process)
       generateVerificationCode: (deviceFingerprint?: string) => {
-        // Find next available code number
         const state = get();
-        let codeNumber = 51; // Start from 051 for new codes
+        let codeNumber = 51;
         while (state.verificationCodes[`DSA2024${codeNumber.toString().padStart(3, '0')}`]) {
           codeNumber++;
         }
         
         const code = `DSA2024${codeNumber.toString().padStart(3, '0')}`;
         const now = Date.now();
-        const expiresAt = now + (30 * 24 * 60 * 60 * 1000); // 30 days expiry
+        const expiresAt = now + (30 * 24 * 60 * 60 * 1000);
         
         set((state) => ({
           verificationCodes: {
@@ -552,60 +516,11 @@ export const useAppStore = create<AppState>()(
         return code;
       },
       
-      // Enhanced session verification with code binding check
-      verifyUserSession: () => {
-        const state = get();
-        if (!state.isPaid) return true; // Allow free users
-        
-        const currentFingerprint = state.generateUserFingerprint();
-        const storedFingerprint = localStorage.getItem('dsa_user_fp');
-        const storedSession = localStorage.getItem('dsa_session_id');
-        const sessionTimestamp = localStorage.getItem('dsa_session_ts');
-        const storedVerificationCode = localStorage.getItem('dsa_verification_code');
-        
-        // Check if session is older than 24 hours
-        if (sessionTimestamp) {
-          const sessionAge = Date.now() - parseInt(sessionTimestamp);
-          if (sessionAge > 30 * 24 * 60 * 60 * 1000) { // 30 days instead of 24 hours for permanent users
-            // Check if user has permanent access
-            if (!state.checkPermanentAccess()) {
-              state.clearUserSession();
-              return false;
-            }
-          }
-        }
-        
-        // Check fingerprint match
-        if (storedFingerprint && storedFingerprint !== currentFingerprint) {
-          // Different device/browser detected
-          state.clearUserSession();
-          return false;
-        }
-        
-        // Verify that the stored verification code is still valid and bound to this device
-        if (storedVerificationCode) {
-          const codeData = state.verificationCodes[storedVerificationCode];
-          if (!codeData || !codeData.used || (codeData.deviceFingerprint && codeData.deviceFingerprint !== currentFingerprint)) {
-            // Verification code is invalid or bound to different device
-            state.clearUserSession();
-            return false;
-          }
-        }
-        
-        return true;
-      },
-      
-      // Helper function to clear user session
       clearUserSession: () => {
         localStorage.removeItem('dsa_session_id');
         localStorage.removeItem('dsa_session_ts');
-        // Don't remove permanent data - keep for recovery
-        // localStorage.removeItem('dsa_user_fp');
-        // localStorage.removeItem('dsa_verification_code');
-        // localStorage.removeItem('dsa_permanent_user_id');
         set({ 
           sessionId: null 
-          // Keep permanent data for recovery
         });
       },
 
@@ -779,7 +694,7 @@ export const useAppStore = create<AppState>()(
         return {
           totalProblems,
           completedProblems,
-          streakDays: 1, // Simplified for MVP
+          streakDays: 1,
           lastActiveDate: new Date(),
         };
       },
@@ -790,7 +705,6 @@ export const useAppStore = create<AppState>()(
       openRegistrationModal: () => set({ isRegistrationModalOpen: true, authError: null }),
       closeRegistrationModal: () => set({ isRegistrationModalOpen: false, authError: null }),
 
-      // Firebase Authentication Methods
       signInWithGoogle: async () => {
         try {
           return await supabaseSignInWithGoogle();
@@ -828,20 +742,18 @@ export const useAppStore = create<AppState>()(
         set({ currentUser: null });
       },
 
-      // Initialize Supabase Auth State Listener
       initializeAuth: () => {
         console.log('Initializing auth state listener...');
         const { data: { subscription } } = onAuthStateChange(async (event, session) => {
           console.log('Auth state changed:', event, session);
           if (session?.user) {
-            // User is signed in
             console.log('User signed in:', session.user);
             const user: User = {
               id: session.user.id,
               username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
               email: session.user.email || '',
               photoURL: session.user.user_metadata?.avatar_url || '',
-              isPremium: false, // Will be updated from database
+              isPremium: false,
               createdAt: new Date(session.user.created_at),
               lastLoginAt: new Date(),
               deviceFingerprints: [],
@@ -851,27 +763,23 @@ export const useAppStore = create<AppState>()(
             };
             set({ currentUser: user });
             
-            // Close any open auth modals
             set({ 
               isLoginModalOpen: false, 
               isRegistrationModalOpen: false,
               authError: null 
             });
           } else {
-            // User is signed out
             console.log('User signed out');
             set({ currentUser: null });
           }
         });
         
-        // Store the subscription for cleanup
         (window as any).authUnsubscribe = () => {
           if (subscription) {
             subscription.unsubscribe();
           }
         };
         
-        // Also check for existing session on initialization
         const checkExistingSession = async () => {
           try {
             console.log('Checking for existing session...');
@@ -900,7 +808,6 @@ export const useAppStore = create<AppState>()(
           }
         };
         
-        // Check for existing session after a short delay
         setTimeout(checkExistingSession, 1000);
       },
 
@@ -914,7 +821,6 @@ export const useAppStore = create<AppState>()(
 
         const upperCode = code.toUpperCase().trim();
         
-        // Simple verification - check if code exists in our predefined list
         const validCodes = [
           'DSA2024001', 'DSA2024002', 'DSA2024003', 'DSA2024004', 'DSA2024005',
           'DSA2024006', 'DSA2024007', 'DSA2024008', 'DSA2024009', 'DSA2024010',
@@ -932,12 +838,10 @@ export const useAppStore = create<AppState>()(
           return { success: false, message: 'Invalid verification code. Please check and try again.' };
         }
         
-        // Check if code has already been used by this user
         if (state.currentUser.isPremium) {
           return { success: false, message: 'Your account is already premium!' };
         }
 
-        // Update local state
         const updatedUser = { ...state.currentUser, isPremium: true };
         set({
           currentUser: updatedUser
@@ -947,9 +851,8 @@ export const useAppStore = create<AppState>()(
       },
     }),
     {
-      name: 'dsa-platform-storage-v3', // Changed name to clear old cache
+      name: 'dsa-platform-storage-v3',
       partialize: (state) => ({
-        // Don't persist categories to avoid stale data
         isPaid: state.isPaid,
         permanentUserId: state.permanentUserId,
         permanentUsers: state.permanentUsers,

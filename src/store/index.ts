@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { supabase } from '../config/supabase';
 import { Category, Note, Problem, Theme, UserProgress, Level } from '../types';
 import { mockCategories } from '../data/mockData';
 import { 
@@ -829,9 +830,12 @@ export const useAppStore = create<AppState>()(
 
       // Initialize Supabase Auth State Listener
       initializeAuth: () => {
-        onAuthStateChange(async (event, session) => {
+        console.log('Initializing auth state listener...');
+        const { data: { subscription } } = onAuthStateChange(async (event, session) => {
+          console.log('Auth state changed:', event, session);
           if (session?.user) {
             // User is signed in
+            console.log('User signed in:', session.user);
             const user: User = {
               id: session.user.id,
               username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
@@ -846,11 +850,58 @@ export const useAppStore = create<AppState>()(
               authProvider: session.user.app_metadata?.provider || 'email'
             };
             set({ currentUser: user });
+            
+            // Close any open auth modals
+            set({ 
+              isLoginModalOpen: false, 
+              isRegistrationModalOpen: false,
+              authError: null 
+            });
           } else {
             // User is signed out
+            console.log('User signed out');
             set({ currentUser: null });
           }
         });
+        
+        // Store the subscription for cleanup
+        (window as any).authUnsubscribe = () => {
+          if (subscription) {
+            subscription.unsubscribe();
+          }
+        };
+        
+        // Also check for existing session on initialization
+        const checkExistingSession = async () => {
+          try {
+            console.log('Checking for existing session...');
+            const { data: { session }, error } = await supabase.auth.getSession();
+            console.log('Existing session check:', { session, error });
+            
+            if (session?.user && !get().currentUser) {
+              console.log('Found existing session, setting user...');
+              const user: User = {
+                id: session.user.id,
+                username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+                email: session.user.email || '',
+                photoURL: session.user.user_metadata?.avatar_url || '',
+                isPremium: false,
+                createdAt: new Date(session.user.created_at),
+                lastLoginAt: new Date(),
+                deviceFingerprints: [],
+                loginAttempts: 0,
+                isEmailVerified: session.user.email_confirmed_at ? true : false,
+                authProvider: session.user.app_metadata?.provider || 'email'
+              };
+              set({ currentUser: user });
+            }
+          } catch (error) {
+            console.error('Error checking existing session:', error);
+          }
+        };
+        
+        // Check for existing session after a short delay
+        setTimeout(checkExistingSession, 1000);
       },
 
       setCurrentUser: (user) => set({ currentUser: user }),

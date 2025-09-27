@@ -1,9 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://xduoukrkzawbqcdidnaj.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+console.log('Supabase Config:', {
+  url: supabaseUrl ? 'Set' : 'Missing',
+  key: supabaseAnonKey ? 'Set' : 'Missing'
+});
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables');
+  console.error('VITE_SUPABASE_URL:', supabaseUrl);
+  console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Present' : 'Missing');
+}
+
+export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
@@ -12,68 +23,155 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
+// Test Supabase connection
+supabase.auth.getSession().then(({ data, error }) => {
+  console.log('Initial session check:', { data, error });
+  if (data.session) {
+    console.log('Active session found:', data.session.user?.email);
+  }
+});
+
 // Auth event listeners
 export const onAuthStateChange = (callback: (event: string, session: any) => void) => {
-  return supabase.auth.onAuthStateChange(callback);
+  return supabase.auth.onAuthStateChange((event, session) => {
+    console.log('Auth state change:', event, session);
+    if (session?.user) {
+      console.log('Session user details:', {
+        id: session.user.id,
+        email: session.user.email,
+        provider: session.user.app_metadata?.provider
+      });
+    }
+    callback(event, session);
+  });
 };
 
 // Google Sign In
 export const signInWithGoogle = async () => {
   try {
+    console.log('Starting Google OAuth...');
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Supabase is not configured. Please check your environment variables.');
+    }
+
+    // Check if Google provider is enabled
+    console.log('Checking Google OAuth configuration...');
+    
+    // Get the current origin for redirect
+    const currentOrigin = window.location.origin;
+    console.log('Current origin for redirect:', currentOrigin);
+    
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: currentOrigin,
         queryParams: {
           access_type: 'offline',
-          prompt: 'consent',
+          prompt: 'select_account',
         },
+        skipBrowserRedirect: false,
+        scopes: 'email profile',
+        // Ensure we use the correct redirect URL
+        redirectTo: `${currentOrigin}/auth/callback`
       }
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Google OAuth error:', error);
+      
+      // Handle specific Google OAuth errors
+      if (error.message?.includes('Provider not found')) {
+        throw new Error('Google sign-in is not configured. Please contact support or use email/password login.');
+      } else if (error.message?.includes('Invalid redirect URL')) {
+        throw new Error('Google sign-in configuration error. Please contact support.');
+      } else {
+        throw new Error(`Google sign-in failed: ${error.message}`);
+      }
+    }
+    
+    console.log('Google OAuth initiated:', data);
+    
+    // The redirect should happen automatically
+    // If we reach here without redirect, there might be an issue
+    if (!data.url) {
+      throw new Error('Google sign-in failed to initialize. Please try again.');
+    }
+    
     return { success: true, data };
   } catch (error: any) {
     console.error('Google sign in error:', error);
-    return { success: false, error: error.message };
+    return { 
+      success: false, 
+      error: error.message || 'Failed to sign in with Google. Please try email/password login.'
+    };
   }
 };
 
 // Email/Password Sign Up
 export const signUpWithEmail = async (email: string, password: string, username: string) => {
   try {
+    console.log('Starting email signup for:', email);
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Authentication service is not configured. Please contact support.');
+    }
+
+    // Basic validation
+    if (!email || !password || !username) {
+      throw new Error('All fields are required');
+    }
+
+    if (password.length < 6) {
+      throw new Error('Password must be at least 6 characters long');
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('Please enter a valid email address');
+    }
+    
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: email.trim(),
+      password: password,
       options: {
         data: {
-          username,
-          full_name: username,
+          username: username.trim(),
+          full_name: username.trim(),
         }
       }
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Signup error:', error);
+      throw error;
+    }
 
+    console.log('Signup successful:', data);
+    
     return { 
       success: true, 
       data,
-      message: 'Account created successfully! Please check your email for verification.'
+      user: data.user,
+      message: data.user && !data.user.email_confirmed_at 
+        ? 'Account created! Please check your email to verify your account.'
+        : 'Account created successfully!'
     };
   } catch (error: any) {
-    console.error('Email sign up error:', error);
+    console.error('Email signup error:', error);
+    
     let errorMessage = 'Failed to create account';
     
-    switch (error.message) {
-      case 'User already registered':
-        errorMessage = 'Email is already registered';
-        break;
-      case 'Password should be at least 6 characters':
-        errorMessage = 'Password should be at least 6 characters';
-        break;
-      case 'Invalid email':
-        errorMessage = 'Invalid email address';
-        break;
+    if (error.message?.includes('User already registered')) {
+      errorMessage = 'An account with this email already exists. Please try signing in instead.';
+    } else if (error.message?.includes('Password should be at least')) {
+      errorMessage = 'Password must be at least 6 characters long';
+    } else if (error.message?.includes('Invalid email')) {
+      errorMessage = 'Please enter a valid email address';
+    } else if (error.message?.includes('not configured')) {
+      errorMessage = 'Authentication service is not configured. Please contact support.';
+    } else if (error.message) {
+      errorMessage = error.message;
     }
     
     return { success: false, error: errorMessage };
@@ -83,27 +181,49 @@ export const signUpWithEmail = async (email: string, password: string, username:
 // Email/Password Sign In
 export const signInWithEmail = async (email: string, password: string) => {
   try {
+    console.log('Starting email signin for:', email);
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Authentication service is not configured. Please contact support.');
+    }
+
+    // Basic validation
+    if (!email || !password) {
+      throw new Error('Email and password are required');
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('Please enter a valid email address');
+    }
+    
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+      email: email.trim(),
+      password: password,
     });
 
-    if (error) throw error;
-    return { success: true, data };
+    if (error) {
+      console.error('Signin error:', error);
+      throw error;
+    }
+
+    console.log('Signin successful:', data);
+    return { success: true, data, user: data.user };
   } catch (error: any) {
-    console.error('Email sign in error:', error);
+    console.error('Email signin error:', error);
+    
     let errorMessage = 'Failed to sign in';
     
-    switch (error.message) {
-      case 'Invalid login credentials':
-        errorMessage = 'Invalid email or password';
-        break;
-      case 'Email not confirmed':
-        errorMessage = 'Please verify your email before signing in';
-        break;
-      case 'Too many requests':
-        errorMessage = 'Too many failed attempts. Please try again later';
-        break;
+    if (error.message?.includes('Invalid login credentials')) {
+      errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+    } else if (error.message?.includes('Email not confirmed')) {
+      errorMessage = 'Please verify your email address before signing in. Check your inbox for a verification link.';
+    } else if (error.message?.includes('Too many requests')) {
+      errorMessage = 'Too many failed attempts. Please wait a few minutes before trying again.';
+    } else if (error.message?.includes('not configured')) {
+      errorMessage = 'Authentication service is not configured. Please contact support.';
+    } else if (error.message) {
+      errorMessage = error.message;
     }
     
     return { success: false, error: errorMessage };
@@ -113,8 +233,10 @@ export const signInWithEmail = async (email: string, password: string) => {
 // Sign Out
 export const signOut = async () => {
   try {
+    console.log('Signing out...');
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+    console.log('Signout successful');
     return { success: true };
   } catch (error: any) {
     console.error('Sign out error:', error);
@@ -125,21 +247,36 @@ export const signOut = async () => {
 // Password Reset
 export const resetPassword = async (email: string) => {
   try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    console.log('Sending password reset for:', email);
+    
+    if (!email) {
+      throw new Error('Email address is required');
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('Please enter a valid email address');
+    }
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: `${window.location.origin}/auth/reset-password`,
     });
 
     if (error) throw error;
+    
+    console.log('Password reset email sent');
     return { 
       success: true, 
-      message: 'Password reset email sent! Check your inbox.' 
+      message: 'Password reset email sent! Please check your inbox and follow the instructions.' 
     };
   } catch (error: any) {
     console.error('Password reset error:', error);
-    let errorMessage = 'Failed to send reset email';
     
-    if (error.message.includes('not found')) {
-      errorMessage = 'No account found with this email';
+    let errorMessage = 'Failed to send password reset email';
+    if (error.message?.includes('not found')) {
+      errorMessage = 'No account found with this email address';
+    } else if (error.message) {
+      errorMessage = error.message;
     }
     
     return { success: false, error: errorMessage };
@@ -151,6 +288,7 @@ export const getCurrentUser = async () => {
   try {
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error) throw error;
+    console.log('Current user:', user);
     return user;
   } catch (error) {
     console.error('Get current user error:', error);

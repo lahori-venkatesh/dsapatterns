@@ -296,10 +296,7 @@ export const useAppStore = create<AppState>()(
         // Check fingerprint match
         if (storedFingerprint && storedFingerprint !== currentFingerprint) {
           // Different device/browser detected
-          set({ isPaid: false, userFingerprint: null, sessionId: null });
-          localStorage.removeItem('dsa_user_fp');
-          localStorage.removeItem('dsa_session_id');
-          localStorage.removeItem('dsa_session_ts');
+          get().clearUserSession();
           return false;
         }
         
@@ -528,9 +525,6 @@ export const useAppStore = create<AppState>()(
         
         // Verify that the stored verification code is still valid and bound to this device
         if (storedVerificationCode) {
-          const codeData = state.verificationCodes[storedVerificationCode];
-          if (!codeData || !codeData.used || (codeData.deviceFingerprint && codeData.deviceFingerprint !== currentFingerprint)) {
-            // Verification code is invalid or bound to different device
             get().clearUserSession();
             return false;
           }
@@ -539,10 +533,7 @@ export const useAppStore = create<AppState>()(
         return true;
       },
       
-      // Helper function to clear user session
-      clearUserSession: () => {
-        localStorage.removeItem('dsa_session_id');
-        localStorage.removeItem('dsa_session_ts');
+          get().clearUserSession();
         // Don't remove permanent data - keep for recovery
         // localStorage.removeItem('dsa_user_fp');
         // localStorage.removeItem('dsa_verification_code');

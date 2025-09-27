@@ -34,8 +34,6 @@ export const usePerformance = () => {
 
   return {
     toggleProblemComplete,
-    setSelectedPattern,
-    setSelectedPattern,
     toggleCategory,
     setSelectedPattern,
     handleSearch,

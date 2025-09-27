@@ -45,9 +45,42 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 15,
             tags: ['Array', 'Two Pointers'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'move-zeroes',
+            title: 'Move Zeroes',
+            difficulty: 'Easy' as const,
+            pattern: 'Two Pointers',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/move-zeroes/',
+            estimatedTime: 20,
+            tags: ['Array', 'Two Pointers'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'squares-sorted-array',
+            title: 'Squares of a Sorted Array',
+            difficulty: 'Easy' as const,
+            pattern: 'Two Pointers',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/squares-of-a-sorted-array/',
+            estimatedTime: 20,
+            tags: ['Array', 'Two Pointers', 'Sorting'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'reverse-string',
+            title: 'Reverse String',
+            difficulty: 'Easy' as const,
+            pattern: 'Two Pointers',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/reverse-string/',
+            estimatedTime: 10,
+            tags: ['Two Pointers', 'String'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 3,
+        totalProblems: 6,
         completedProblems: 0
       },
       {
@@ -76,13 +109,88 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 15,
             tags: ['Array', 'Sliding Window'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'contains-duplicate-ii',
+            title: 'Contains Duplicate II',
+            difficulty: 'Easy' as const,
+            pattern: 'Sliding Window',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/contains-duplicate-ii/',
+            estimatedTime: 20,
+            tags: ['Array', 'Hash Table', 'Sliding Window'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'longest-substring-without-repeating-characters',
+            title: 'Longest Substring Without Repeating Characters',
+            difficulty: 'Medium' as const,
+            pattern: 'Sliding Window',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/longest-substring-without-repeating-characters/',
+            estimatedTime: 30,
+            tags: ['Hash Table', 'String', 'Sliding Window'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'minimum-size-subarray-sum',
+            title: 'Minimum Size Subarray Sum',
+            difficulty: 'Medium' as const,
+            pattern: 'Sliding Window',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/minimum-size-subarray-sum/',
+            estimatedTime: 25,
+            tags: ['Array', 'Binary Search', 'Sliding Window', 'Prefix Sum'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 2,
+        totalProblems: 5,
+        completedProblems: 0
+      },
+      {
+        id: 'beginner-prefix-sum',
+        name: 'Prefix Sum',
+        description: 'Master prefix sum technique for range queries',
+        problems: [
+          {
+            id: 'running-sum-1d-array',
+            title: 'Running Sum of 1d Array',
+            difficulty: 'Easy' as const,
+            pattern: 'Prefix Sum',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/running-sum-of-1d-array/',
+            estimatedTime: 10,
+            tags: ['Array', 'Prefix Sum'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'find-pivot-index',
+            title: 'Find Pivot Index',
+            difficulty: 'Easy' as const,
+            pattern: 'Prefix Sum',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/find-pivot-index/',
+            estimatedTime: 15,
+            tags: ['Array', 'Prefix Sum'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'subarray-sum-equals-k',
+            title: 'Subarray Sum Equals K',
+            difficulty: 'Medium' as const,
+            pattern: 'Prefix Sum',
+            category: 'Arrays & Strings',
+            leetcodeUrl: 'https://leetcode.com/problems/subarray-sum-equals-k/',
+            estimatedTime: 25,
+            tags: ['Array', 'Hash Table', 'Prefix Sum'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          }
+        ],
+        totalProblems: 3,
         completedProblems: 0
       }
     ],
-    totalProblems: 5,
+    totalProblems: 14,
     completedProblems: 0
   },
   {
@@ -128,13 +236,68 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 10,
             tags: ['Linked List'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'middle-of-linked-list',
+            title: 'Middle of the Linked List',
+            difficulty: 'Easy' as const,
+            pattern: 'Linked List Basics',
+            category: 'Linked Lists',
+            leetcodeUrl: 'https://leetcode.com/problems/middle-of-the-linked-list/',
+            estimatedTime: 15,
+            tags: ['Linked List', 'Two Pointers'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'palindrome-linked-list',
+            title: 'Palindrome Linked List',
+            difficulty: 'Easy' as const,
+            pattern: 'Linked List Basics',
+            category: 'Linked Lists',
+            leetcodeUrl: 'https://leetcode.com/problems/palindrome-linked-list/',
+            estimatedTime: 25,
+            tags: ['Linked List', 'Two Pointers', 'Stack', 'Recursion'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'remove-linked-list-elements',
+            title: 'Remove Linked List Elements',
+            difficulty: 'Easy' as const,
+            pattern: 'Linked List Basics',
+            category: 'Linked Lists',
+            leetcodeUrl: 'https://leetcode.com/problems/remove-linked-list-elements/',
+            estimatedTime: 20,
+            tags: ['Linked List', 'Recursion'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'intersection-two-linked-lists',
+            title: 'Intersection of Two Linked Lists',
+            difficulty: 'Easy' as const,
+            pattern: 'Linked List Basics',
+            category: 'Linked Lists',
+            leetcodeUrl: 'https://leetcode.com/problems/intersection-of-two-linked-lists/',
+            estimatedTime: 25,
+            tags: ['Hash Table', 'Linked List', 'Two Pointers'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'add-two-numbers',
+            title: 'Add Two Numbers',
+            difficulty: 'Medium' as const,
+            pattern: 'Linked List Basics',
+            category: 'Linked Lists',
+            leetcodeUrl: 'https://leetcode.com/problems/add-two-numbers/',
+            estimatedTime: 30,
+            tags: ['Linked List', 'Math', 'Recursion'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 3,
+        totalProblems: 8,
         completedProblems: 0
       }
     ],
-    totalProblems: 3,
+    totalProblems: 8,
     completedProblems: 0
   },
   {
@@ -169,13 +332,57 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 25,
             tags: ['Stack', 'Design', 'Queue'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'implement-stack-using-queues',
+            title: 'Implement Stack using Queues',
+            difficulty: 'Easy' as const,
+            pattern: 'Stack Basics',
+            category: 'Stacks & Queues',
+            leetcodeUrl: 'https://leetcode.com/problems/implement-stack-using-queues/',
+            estimatedTime: 25,
+            tags: ['Stack', 'Design', 'Queue'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'min-stack',
+            title: 'Min Stack',
+            difficulty: 'Medium' as const,
+            pattern: 'Stack Basics',
+            category: 'Stacks & Queues',
+            leetcodeUrl: 'https://leetcode.com/problems/min-stack/',
+            estimatedTime: 30,
+            tags: ['Stack', 'Design'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'evaluate-reverse-polish-notation',
+            title: 'Evaluate Reverse Polish Notation',
+            difficulty: 'Medium' as const,
+            pattern: 'Stack Basics',
+            category: 'Stacks & Queues',
+            leetcodeUrl: 'https://leetcode.com/problems/evaluate-reverse-polish-notation/',
+            estimatedTime: 25,
+            tags: ['Array', 'Math', 'Stack'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'baseball-game',
+            title: 'Baseball Game',
+            difficulty: 'Easy' as const,
+            pattern: 'Stack Basics',
+            category: 'Stacks & Queues',
+            leetcodeUrl: 'https://leetcode.com/problems/baseball-game/',
+            estimatedTime: 15,
+            tags: ['Array', 'Stack', 'Simulation'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 2,
+        totalProblems: 6,
         completedProblems: 0
       }
     ],
-    totalProblems: 2,
+    totalProblems: 6,
     completedProblems: 0
   },
   {
@@ -212,6 +419,83 @@ export const beginnerCategories: Category[] = [
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           },
           {
+            id: 'preorder-traversal',
+            title: 'Binary Tree Preorder Traversal',
+            difficulty: 'Easy' as const,
+            pattern: 'Tree Traversal',
+            category: 'Binary Trees',
+            leetcodeUrl: 'https://leetcode.com/problems/binary-tree-preorder-traversal/',
+            estimatedTime: 20,
+            tags: ['Stack', 'Tree', 'Depth-First Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'postorder-traversal',
+            title: 'Binary Tree Postorder Traversal',
+            difficulty: 'Easy' as const,
+            pattern: 'Tree Traversal',
+            category: 'Binary Trees',
+            leetcodeUrl: 'https://leetcode.com/problems/binary-tree-postorder-traversal/',
+            estimatedTime: 25,
+            tags: ['Stack', 'Tree', 'Depth-First Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'symmetric-tree',
+            title: 'Symmetric Tree',
+            difficulty: 'Easy' as const,
+            pattern: 'Tree Traversal',
+            category: 'Binary Trees',
+            leetcodeUrl: 'https://leetcode.com/problems/symmetric-tree/',
+            estimatedTime: 20,
+            tags: ['Tree', 'Depth-First Search', 'Breadth-First Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'invert-binary-tree',
+            title: 'Invert Binary Tree',
+            difficulty: 'Easy' as const,
+            pattern: 'Tree Traversal',
+            category: 'Binary Trees',
+            leetcodeUrl: 'https://leetcode.com/problems/invert-binary-tree/',
+            estimatedTime: 15,
+            tags: ['Tree', 'Depth-First Search', 'Breadth-First Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'path-sum',
+            title: 'Path Sum',
+            difficulty: 'Easy' as const,
+            pattern: 'Tree Traversal',
+            category: 'Binary Trees',
+            leetcodeUrl: 'https://leetcode.com/problems/path-sum/',
+            estimatedTime: 20,
+            tags: ['Tree', 'Depth-First Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'diameter-of-binary-tree',
+            title: 'Diameter of Binary Tree',
+            difficulty: 'Easy' as const,
+            pattern: 'Tree Traversal',
+            category: 'Binary Trees',
+            leetcodeUrl: 'https://leetcode.com/problems/diameter-of-binary-tree/',
+            estimatedTime: 25,
+            tags: ['Tree', 'Depth-First Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'binary-tree-level-order-traversal',
+            title: 'Binary Tree Level Order Traversal',
+            difficulty: 'Medium' as const,
+            pattern: 'Tree Traversal',
+            category: 'Binary Trees',
+            leetcodeUrl: 'https://leetcode.com/problems/binary-tree-level-order-traversal/',
+            estimatedTime: 25,
+            tags: ['Tree', 'Breadth-First Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
             id: 'same-tree',
             title: 'Same Tree',
             difficulty: 'Easy' as const,
@@ -223,11 +507,11 @@ export const beginnerCategories: Category[] = [
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 3,
+        totalProblems: 10,
         completedProblems: 0
       }
     ],
-    totalProblems: 3,
+    totalProblems: 10,
     completedProblems: 0
   },
   {
@@ -262,13 +546,68 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 15,
             tags: ['Hash Table', 'String', 'Sorting'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'single-number',
+            title: 'Single Number',
+            difficulty: 'Easy' as const,
+            pattern: 'Hash Map Operations',
+            category: 'Hash Tables',
+            leetcodeUrl: 'https://leetcode.com/problems/single-number/',
+            estimatedTime: 15,
+            tags: ['Array', 'Bit Manipulation'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'intersection-of-two-arrays',
+            title: 'Intersection of Two Arrays',
+            difficulty: 'Easy' as const,
+            pattern: 'Hash Map Operations',
+            category: 'Hash Tables',
+            leetcodeUrl: 'https://leetcode.com/problems/intersection-of-two-arrays/',
+            estimatedTime: 20,
+            tags: ['Array', 'Hash Table', 'Two Pointers', 'Binary Search', 'Sorting'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'first-unique-character',
+            title: 'First Unique Character in a String',
+            difficulty: 'Easy' as const,
+            pattern: 'Hash Map Operations',
+            category: 'Hash Tables',
+            leetcodeUrl: 'https://leetcode.com/problems/first-unique-character-in-a-string/',
+            estimatedTime: 20,
+            tags: ['Hash Table', 'String', 'Queue', 'Counting'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'majority-element',
+            title: 'Majority Element',
+            difficulty: 'Easy' as const,
+            pattern: 'Hash Map Operations',
+            category: 'Hash Tables',
+            leetcodeUrl: 'https://leetcode.com/problems/majority-element/',
+            estimatedTime: 20,
+            tags: ['Array', 'Hash Table', 'Divide and Conquer', 'Sorting', 'Counting'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'group-anagrams',
+            title: 'Group Anagrams',
+            difficulty: 'Medium' as const,
+            pattern: 'Hash Map Operations',
+            category: 'Hash Tables',
+            leetcodeUrl: 'https://leetcode.com/problems/group-anagrams/',
+            estimatedTime: 30,
+            tags: ['Array', 'Hash Table', 'String', 'Sorting'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 2,
+        totalProblems: 7,
         completedProblems: 0
       }
     ],
-    totalProblems: 2,
+    totalProblems: 7,
     completedProblems: 0
   },
   {
@@ -303,13 +642,88 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 15,
             tags: ['Array', 'Binary Search'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'first-bad-version',
+            title: 'First Bad Version',
+            difficulty: 'Easy' as const,
+            pattern: 'Binary Search Basics',
+            category: 'Sorting & Searching',
+            leetcodeUrl: 'https://leetcode.com/problems/first-bad-version/',
+            estimatedTime: 20,
+            tags: ['Binary Search', 'Interactive'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'sqrt-x',
+            title: 'Sqrt(x)',
+            difficulty: 'Easy' as const,
+            pattern: 'Binary Search Basics',
+            category: 'Sorting & Searching',
+            leetcodeUrl: 'https://leetcode.com/problems/sqrtx/',
+            estimatedTime: 25,
+            tags: ['Math', 'Binary Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'find-first-last-position',
+            title: 'Find First and Last Position of Element in Sorted Array',
+            difficulty: 'Medium' as const,
+            pattern: 'Binary Search Basics',
+            category: 'Sorting & Searching',
+            leetcodeUrl: 'https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/',
+            estimatedTime: 30,
+            tags: ['Array', 'Binary Search'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 2,
+        totalProblems: 5,
+        completedProblems: 0
+      },
+      {
+        id: 'beginner-sorting-algorithms',
+        name: 'Sorting Algorithms',
+        description: 'Basic sorting techniques and applications',
+        problems: [
+          {
+            id: 'merge-sorted-array',
+            title: 'Merge Sorted Array',
+            difficulty: 'Easy' as const,
+            pattern: 'Sorting Algorithms',
+            category: 'Sorting & Searching',
+            leetcodeUrl: 'https://leetcode.com/problems/merge-sorted-array/',
+            estimatedTime: 20,
+            tags: ['Array', 'Two Pointers', 'Sorting'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'sort-colors',
+            title: 'Sort Colors',
+            difficulty: 'Medium' as const,
+            pattern: 'Sorting Algorithms',
+            category: 'Sorting & Searching',
+            leetcodeUrl: 'https://leetcode.com/problems/sort-colors/',
+            estimatedTime: 25,
+            tags: ['Array', 'Two Pointers', 'Sorting'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'relative-sort-array',
+            title: 'Relative Sort Array',
+            difficulty: 'Easy' as const,
+            pattern: 'Sorting Algorithms',
+            category: 'Sorting & Searching',
+            leetcodeUrl: 'https://leetcode.com/problems/relative-sort-array/',
+            estimatedTime: 20,
+            tags: ['Array', 'Hash Table', 'Counting Sort', 'Sorting'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          }
+        ],
+        totalProblems: 3,
         completedProblems: 0
       }
     ],
-    totalProblems: 2,
+    totalProblems: 8,
     completedProblems: 0
   },
   {
@@ -344,13 +758,57 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 10,
             tags: ['Math', 'Bit Manipulation', 'Recursion'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'power-of-three',
+            title: 'Power of Three',
+            difficulty: 'Easy' as const,
+            pattern: 'Basic Recursion',
+            category: 'Recursion',
+            leetcodeUrl: 'https://leetcode.com/problems/power-of-three/',
+            estimatedTime: 15,
+            tags: ['Math', 'Recursion'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'power-of-four',
+            title: 'Power of Four',
+            difficulty: 'Easy' as const,
+            pattern: 'Basic Recursion',
+            category: 'Recursion',
+            leetcodeUrl: 'https://leetcode.com/problems/power-of-four/',
+            estimatedTime: 15,
+            tags: ['Math', 'Bit Manipulation', 'Recursion'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'climbing-stairs',
+            title: 'Climbing Stairs',
+            difficulty: 'Easy' as const,
+            pattern: 'Basic Recursion',
+            category: 'Recursion',
+            leetcodeUrl: 'https://leetcode.com/problems/climbing-stairs/',
+            estimatedTime: 20,
+            tags: ['Math', 'Dynamic Programming', 'Memoization'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'generate-parentheses',
+            title: 'Generate Parentheses',
+            difficulty: 'Medium' as const,
+            pattern: 'Basic Recursion',
+            category: 'Recursion',
+            leetcodeUrl: 'https://leetcode.com/problems/generate-parentheses/',
+            estimatedTime: 30,
+            tags: ['String', 'Dynamic Programming', 'Backtracking'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 2,
+        totalProblems: 6,
         completedProblems: 0
       }
     ],
-    totalProblems: 2,
+    totalProblems: 6,
     completedProblems: 0
   },
   {
@@ -385,13 +843,68 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 20,
             tags: ['Hash Table', 'Math', 'String'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'reverse-integer',
+            title: 'Reverse Integer',
+            difficulty: 'Medium' as const,
+            pattern: 'Mathematical Problems',
+            category: 'Math & Logic',
+            leetcodeUrl: 'https://leetcode.com/problems/reverse-integer/',
+            estimatedTime: 20,
+            tags: ['Math'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'plus-one',
+            title: 'Plus One',
+            difficulty: 'Easy' as const,
+            pattern: 'Mathematical Problems',
+            category: 'Math & Logic',
+            leetcodeUrl: 'https://leetcode.com/problems/plus-one/',
+            estimatedTime: 15,
+            tags: ['Array', 'Math'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'add-binary',
+            title: 'Add Binary',
+            difficulty: 'Easy' as const,
+            pattern: 'Mathematical Problems',
+            category: 'Math & Logic',
+            leetcodeUrl: 'https://leetcode.com/problems/add-binary/',
+            estimatedTime: 25,
+            tags: ['Math', 'String', 'Bit Manipulation', 'Simulation'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'happy-number',
+            title: 'Happy Number',
+            difficulty: 'Easy' as const,
+            pattern: 'Mathematical Problems',
+            category: 'Math & Logic',
+            leetcodeUrl: 'https://leetcode.com/problems/happy-number/',
+            estimatedTime: 20,
+            tags: ['Hash Table', 'Math', 'Two Pointers'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'ugly-number',
+            title: 'Ugly Number',
+            difficulty: 'Easy' as const,
+            pattern: 'Mathematical Problems',
+            category: 'Math & Logic',
+            leetcodeUrl: 'https://leetcode.com/problems/ugly-number/',
+            estimatedTime: 15,
+            tags: ['Math'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 2,
+        totalProblems: 7,
         completedProblems: 0
       }
     ],
-    totalProblems: 2,
+    totalProblems: 7,
     completedProblems: 0
   },
   {
@@ -426,13 +939,46 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 15,
             tags: ['Array', 'Two Pointers', 'Greedy', 'Sorting'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'lemonade-change',
+            title: 'Lemonade Change',
+            difficulty: 'Easy' as const,
+            pattern: 'Greedy Approach',
+            category: 'Greedy Algorithms',
+            leetcodeUrl: 'https://leetcode.com/problems/lemonade-change/',
+            estimatedTime: 20,
+            tags: ['Array', 'Greedy'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'best-time-to-buy-and-sell-stock-ii',
+            title: 'Best Time to Buy and Sell Stock II',
+            difficulty: 'Medium' as const,
+            pattern: 'Greedy Approach',
+            category: 'Greedy Algorithms',
+            leetcodeUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/',
+            estimatedTime: 25,
+            tags: ['Array', 'Dynamic Programming', 'Greedy'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'can-place-flowers',
+            title: 'Can Place Flowers',
+            difficulty: 'Easy' as const,
+            pattern: 'Greedy Approach',
+            category: 'Greedy Algorithms',
+            leetcodeUrl: 'https://leetcode.com/problems/can-place-flowers/',
+            estimatedTime: 20,
+            tags: ['Array', 'Greedy'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 2,
+        totalProblems: 5,
         completedProblems: 0
       }
     ],
-    totalProblems: 2,
+    totalProblems: 5,
     completedProblems: 0
   },
   {
@@ -467,13 +1013,57 @@ export const beginnerCategories: Category[] = [
             estimatedTime: 25,
             tags: ['Array', 'Dynamic Programming'],
             userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'house-robber',
+            title: 'House Robber',
+            difficulty: 'Medium' as const,
+            pattern: 'DP Fundamentals',
+            category: 'Dynamic Programming',
+            leetcodeUrl: 'https://leetcode.com/problems/house-robber/',
+            estimatedTime: 25,
+            tags: ['Array', 'Dynamic Programming'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'maximum-product-subarray',
+            title: 'Maximum Product Subarray',
+            difficulty: 'Medium' as const,
+            pattern: 'DP Fundamentals',
+            category: 'Dynamic Programming',
+            leetcodeUrl: 'https://leetcode.com/problems/maximum-product-subarray/',
+            estimatedTime: 30,
+            tags: ['Array', 'Dynamic Programming'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'counting-bits',
+            title: 'Counting Bits',
+            difficulty: 'Easy' as const,
+            pattern: 'DP Fundamentals',
+            category: 'Dynamic Programming',
+            leetcodeUrl: 'https://leetcode.com/problems/counting-bits/',
+            estimatedTime: 20,
+            tags: ['Dynamic Programming', 'Bit Manipulation'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          },
+          {
+            id: 'is-subsequence',
+            title: 'Is Subsequence',
+            difficulty: 'Easy' as const,
+            pattern: 'DP Fundamentals',
+            category: 'Dynamic Programming',
+            leetcodeUrl: 'https://leetcode.com/problems/is-subsequence/',
+            estimatedTime: 15,
+            tags: ['Two Pointers', 'String', 'Dynamic Programming'],
+            userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
           }
         ],
-        totalProblems: 2,
+        totalProblems: 6,
         completedProblems: 0
       }
     ],
-    totalProblems: 2,
+    totalProblems: 6,
     completedProblems: 0
   }
 ];

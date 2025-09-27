@@ -137,6 +137,14 @@ export const CategoryCard: React.FC<CategoryCardProps> = memo(({
           </div>
           
           <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
+            {/* Pro Badge for Non-Free Categories */}
+            {!isFreeCategory && (
+              <div className="flex items-center space-x-1 bg-amber-500/20 border border-amber-500/30 px-2 py-1 rounded-full">
+                <Lock className="w-3 h-3 text-amber-400" />
+                <span className="text-xs text-amber-300 font-medium">Pro</span>
+              </div>
+            )}
+            
             {/* Progress Bar */}
             <div className="w-16 md:w-24 bg-gray-700 rounded-full h-2 overflow-hidden">
               <div 
@@ -154,22 +162,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = memo(({
           </div>
         </div>
       </button>
-
-    {/* Premium Upgrade Button for Non-Free Categories */}
-    {!hasAccess && (
-      <div className="px-4 md:px-6 pb-4">
-        <button
-          onClick={handleUpgradeClick}
-          className="w-full flex items-center justify-center space-x-2 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl"
-        >
-          <Crown className="w-4 h-4" />
-          <span>Upgrade to Premium - ₹299</span>
-        </button>
-        <p className="text-center text-amber-300 text-xs mt-2">
-          One-time payment • Lifetime access to all categories
-        </p>
-      </div>
-    )}
 
       {/* Patterns List */}
       {isExpanded && (

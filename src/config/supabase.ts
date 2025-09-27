@@ -1,38 +1,81 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Safely get environment variables with fallbacks
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 console.log('Supabase Config:', {
   url: supabaseUrl ? 'Set' : 'Missing',
   key: supabaseAnonKey ? 'Set' : 'Missing'
 });
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables');
-  console.error('VITE_SUPABASE_URL:', supabaseUrl);
-  console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Present' : 'Missing');
+// Create a safe Supabase client even without credentials
+let supabase: any = null;
+
+try {
+  if (supabaseUrl && supabaseAnonKey) {
+    supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce'
+      }
+    });
+    
+    // Test Supabase connection
+    supabase.auth.getSession().then(({ data, error }) => {
+      console.log('Initial session check:', { data, error });
+      if (data.session) {
+        console.log('Active session found:', data.session.user?.email);
+      }
+    }).catch((error: any) => {
+      console.error('Session check failed:', error);
+    });
+  } else {
+    console.warn('Supabase credentials not found. Authentication features will be disabled.');
+    // Create a mock client for development
+    supabase = {
+      auth: {
+        getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+        signInWithOAuth: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+        signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+        signUp: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+        signOut: () => Promise.resolve({ error: null }),
+        resetPasswordForEmail: () => Promise.resolve({ error: new Error('Supabase not configured') }),
+        getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+        updateUser: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
+      }
+    };
+  }
+} catch (error) {
+  console.error('Failed to initialize Supabase:', error);
+  // Fallback mock client
+  supabase = {
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      signInWithOAuth: () => Promise.resolve({ data: null, error: new Error('Supabase initialization failed') }),
+      signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Supabase initialization failed') }),
+      signUp: () => Promise.resolve({ data: null, error: new Error('Supabase initialization failed') }),
+      signOut: () => Promise.resolve({ error: null }),
+      resetPasswordForEmail: () => Promise.resolve({ error: new Error('Supabase initialization failed') }),
+      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+      updateUser: () => Promise.resolve({ data: null, error: new Error('Supabase initialization failed') })
+    }
+  };
 }
 
-export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-    flowType: 'pkce'
-  }
-});
-
-// Test Supabase connection
-supabase.auth.getSession().then(({ data, error }) => {
-  console.log('Initial session check:', { data, error });
-  if (data.session) {
-    console.log('Active session found:', data.session.user?.email);
-  }
-});
+export { supabase };
 
 // Auth event listeners
 export const onAuthStateChange = (callback: (event: string, session: any) => void) => {
+  if (!supabase || !supabase.auth) {
+    console.warn('Supabase not available for auth state changes');
+    return { data: { subscription: { unsubscribe: () => {} } } };
+  }
+  
   return supabase.auth.onAuthStateChange((event, session) => {
     console.log('Auth state change:', event, session);
     if (session?.user) {
@@ -49,11 +92,12 @@ export const onAuthStateChange = (callback: (event: string, session: any) => voi
 // Google Sign In
 export const signInWithGoogle = async () => {
   try {
+    if (!supabase || !supabase.auth) {
+      throw new Error('Authentication service is not available. Please check your configuration.');
+    }
+    
     console.log('Starting Google OAuth...');
     
-    if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error('Supabase is not configured. Please check your environment variables.');
-    }
 
     // Check if Google provider is enabled
     console.log('Checking Google OAuth configuration...');
@@ -113,11 +157,12 @@ export const signInWithGoogle = async () => {
 // Email/Password Sign Up
 export const signUpWithEmail = async (email: string, password: string, username: string) => {
   try {
+    if (!supabase || !supabase.auth) {
+      throw new Error('Authentication service is not available. Please check your configuration.');
+    }
+    
     console.log('Starting email signup for:', email);
     
-    if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error('Authentication service is not configured. Please contact support.');
-    }
 
     // Basic validation
     if (!email || !password || !username) {
@@ -183,11 +228,12 @@ export const signUpWithEmail = async (email: string, password: string, username:
 // Email/Password Sign In
 export const signInWithEmail = async (email: string, password: string) => {
   try {
+    if (!supabase || !supabase.auth) {
+      throw new Error('Authentication service is not available. Please check your configuration.');
+    }
+    
     console.log('Starting email signin for:', email);
     
-    if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error('Authentication service is not configured. Please contact support.');
-    }
 
     // Basic validation
     if (!email || !password) {
@@ -235,6 +281,11 @@ export const signInWithEmail = async (email: string, password: string) => {
 // Sign Out
 export const signOut = async () => {
   try {
+    if (!supabase || !supabase.auth) {
+      console.warn('Supabase not available for sign out');
+      return { success: true };
+    }
+    
     console.log('Signing out...');
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
@@ -249,6 +300,10 @@ export const signOut = async () => {
 // Password Reset
 export const resetPassword = async (email: string) => {
   try {
+    if (!supabase || !supabase.auth) {
+      throw new Error('Authentication service is not available. Please check your configuration.');
+    }
+    
     console.log('Sending password reset for:', email);
     
     if (!email) {
@@ -288,6 +343,11 @@ export const resetPassword = async (email: string) => {
 // Get current user
 export const getCurrentUser = async () => {
   try {
+    if (!supabase || !supabase.auth) {
+      console.warn('Supabase not available for getting current user');
+      return null;
+    }
+    
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error) throw error;
     console.log('Current user:', user);
@@ -301,6 +361,10 @@ export const getCurrentUser = async () => {
 // Update user profile
 export const updateUserProfile = async (updates: any) => {
   try {
+    if (!supabase || !supabase.auth) {
+      throw new Error('Authentication service is not available. Please check your configuration.');
+    }
+    
     const { data, error } = await supabase.auth.updateUser({
       data: updates
     });

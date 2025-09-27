@@ -35,38 +35,29 @@ function App() {
   const [showPaymentModal, setShowPaymentModal] = React.useState(false);
   const [showPremiumActivationModal, setShowPremiumActivationModal] = React.useState(false);
 
-  // Check if this is the auth callback route - handle both pathname and hash
+  // Check if this is the auth callback route
   const isAuthCallback = React.useMemo(() => {
-    const hash = window.location.hash;
-    const search = window.location.search;
     const pathname = window.location.pathname;
+    const search = window.location.search;
+    const hash = window.location.hash;
     
-    // Check for auth callback tokens in URL
-    const hasAuthTokens = hash.includes('access_token') ||
-           search.includes('code=') ||
-           hash.includes('refresh_token') ||
-           search.includes('access_token') ||
-           hash.includes('type=recovery') ||
-           search.includes('token_hash=') ||
-           hash.includes('token_hash=') ||
-           hash.includes('type=signup') ||
-           search.includes('type=recovery') ||
-           hash.includes('provider_token') ||
-           search.includes('provider_token') ||
-           pathname === '/auth/callback' ||
-           pathname.includes('/auth/callback') ||
-           // Specifically check for Supabase auth codes
-           /[?&]code=[a-f0-9-]{36}/.test(search);
-           
-    console.log('Auth callback check:', {
-      hash,
-      search,
+    console.log('Checking auth callback:', {
       pathname,
-      hasAuthTokens,
+      search,
+      hash,
       fullUrl: window.location.href
     });
     
-    return hasAuthTokens;
+    // Check for auth callback route or tokens
+    const isCallbackRoute = pathname === '/auth/callback' || pathname.includes('/auth/callback');
+    const hasAuthCode = search.includes('code=') && /[?&]code=[a-f0-9-]{36}/.test(search);
+    const hasAccessToken = hash.includes('access_token') || search.includes('access_token');
+    const hasAuthTokens = hasAuthCode || hasAccessToken || hash.includes('refresh_token');
+    
+    const result = isCallbackRoute || hasAuthTokens;
+    console.log('Auth callback result:', { isCallbackRoute, hasAuthCode, hasAccessToken, hasAuthTokens, result });
+    
+    return result;
   }, []);
 
   // If this is the auth callback, show the callback component

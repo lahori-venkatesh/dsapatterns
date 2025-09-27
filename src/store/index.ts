@@ -302,42 +302,18 @@ export const useAppStore = create<AppState>()(
           }
         }
         
-        return { success: false, message: 'Invalid verification code for recovery.' };
+        return { success: false, message: 'Invalid verification code or code not found.' };
       },
       
-      // Verify user session
-      verifyUserSession: () => {
-        const state = get();
-        if (!state.isPaid) return true; // Allow free users
-        
-        const currentFingerprint = state.generateUserFingerprint();
-        const storedFingerprint = localStorage.getItem('dsa_user_fp');
-        const storedSession = localStorage.getItem('dsa_session_id');
-        const sessionTimestamp = localStorage.getItem('dsa_session_ts');
-        
-        // Check if session exists
-        if (!storedSession || !sessionTimestamp) {
-          // Check if user has permanent access
-          if (!state.checkPermanentAccess()) {
-            set({ isPaid: false, userFingerprint: null, sessionId: null });
-            localStorage.removeItem('dsa_user_fp');
-            localStorage.removeItem('dsa_session_id');
-            localStorage.removeItem('dsa_session_ts');
-            return false;
-          }
-        }
-        
-        // Check fingerprint match
-        if (storedFingerprint && storedFingerprint !== currentFingerprint) {
-          // Different device/browser detected
-          set({ isPaid: false, userFingerprint: null, sessionId: null });
-          localStorage.removeItem('dsa_user_fp');
-          localStorage.removeItem('dsa_session_id');
-          localStorage.removeItem('dsa_session_ts');
-          return false;
-        }
-        
-        return true;
+      // Clear user session
+      clearUserSession: () => {
+        localStorage.removeItem('dsa_session_id');
+        localStorage.removeItem('dsa_session_ts');
+        set({ isPaid: false, userFingerprint: null, sessionId: null });
+        localStorage.removeItem('dsa_user_fp');
+        localStorage.removeItem('dsa_session_id');
+        localStorage.removeItem('dsa_session_ts');
+        return false;
       },
 
       // Initialize categories on first load
@@ -563,8 +539,7 @@ export const useAppStore = create<AppState>()(
         // Verify that the stored verification code is still valid and bound to this device
         if (storedVerificationCode) {
           const codeData = state.verificationCodes[storedVerificationCode];
-          if (!codeData || !codeData.used || (codeData.deviceFingerprint && codeData.deviceFingerprint !== currentFingerprint)) {
-            // Verification code is invalid or bound to different device
+          if (!codeData || !codeData.used || codeData.deviceFingerprint !== currentFingerprint) {
             get().clearUserSession();
             return false;
           }
@@ -573,10 +548,8 @@ export const useAppStore = create<AppState>()(
         return true;
       },
       
-      // Helper function to clear user session
       clearUserSession: () => {
-        localStorage.removeItem('dsa_session_id');
-        localStorage.removeItem('dsa_session_ts');
+        get().clearUserSession();
         // Don't remove permanent data - keep for recovery
         // localStorage.removeItem('dsa_user_fp');
         // localStorage.removeItem('dsa_verification_code');

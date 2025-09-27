@@ -15,55 +15,13 @@ export const AuthCallback: React.FC = () => {
         console.log('Current URL:', window.location.href);
         console.log('URL Hash:', window.location.hash);
         console.log('URL Search:', window.location.search);
+        console.log('URL Pathname:', window.location.pathname);
         
         setMessage('Processing authentication...');
         
-        // Check if we have auth tokens in the URL
-        const hash = window.location.hash;
-        const search = window.location.search;
-        
-        // Check for various auth token patterns
-        const hasAccessToken = hash.includes('access_token') || search.includes('access_token');
-        const hasAuthCode = search.includes('code=') || /[?&]code=[a-f0-9-]{36}/.test(search);
-        const hasProviderToken = hash.includes('provider_token') || search.includes('provider_token');
-        
-        if (!hasAccessToken && !hasAuthCode && !hasProviderToken) {
-          console.log('No auth tokens found in URL');
-          setStatus('error');
-          setMessage('Authentication failed - no tokens found. Please try again.');
-          setTimeout(() => {
-            window.location.replace('/');
-          }, 3000);
-          return;
-        }
-        
-        console.log('Auth tokens detected:', { hasAccessToken, hasAuthCode, hasProviderToken });
-        
-        // For auth code flow, we need to exchange the code for a session
-        if (hasAuthCode && !hasAccessToken) {
-          console.log('Processing auth code exchange...');
-          setMessage('Exchanging authorization code...');
-          
-          // Let Supabase handle the code exchange automatically
-          const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-          console.log('Initial session check:', { sessionData, sessionError });
-          
-          if (!sessionData.session) {
-            // Wait a bit more for the session to be established
-            console.log('No session yet, waiting for auth code processing...');
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            
-            const { data: retrySessionData, error: retryError } = await supabase.auth.getSession();
-            console.log('Retry session check:', { retrySessionData, retryError });
-            
-            if (!retrySessionData.session) {
-              throw new Error('Failed to establish session after auth code exchange');
-            }
-          }
-        } else {
-          // Give Supabase time to process other token types
-          await new Promise(resolve => setTimeout(resolve, 1500));
-        }
+        // Wait for Supabase to process the auth callback
+        setMessage('Establishing session...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
         // Get the current session
         const { data, error } = await supabase.auth.getSession();
@@ -75,7 +33,7 @@ export const AuthCallback: React.FC = () => {
           setMessage(`Authentication failed: ${error.message}. Please try again.`);
           
           setTimeout(() => {
-            window.location.href = '/';
+            window.location.replace('/');
           }, 3000);
           return;
         }
@@ -109,23 +67,57 @@ export const AuthCallback: React.FC = () => {
           
           setTimeout(() => {
             // Clear URL and redirect to home
-            window.history.replaceState({}, document.title, '/');
             window.location.replace('/');
           }, 1500);
         } else {
           console.log('No session found');
-          setStatus('error');
-          setMessage('No user session found. Please try signing in again.');
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 3000);
+          // Try one more time after a longer wait
+          console.log('No session found, trying again...');
+          setMessage('Still processing... please wait');
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          
+          const { data: retryData, error: retryError } = await supabase.auth.getSession();
+          console.log('Retry session check:', { retryData, retryError });
+          
+          if (retryData.session?.user) {
+            const user = {
+              id: retryData.session.user.id,
+              username: retryData.session.user.user_metadata?.username || 
+                       retryData.session.user.user_metadata?.full_name || 
+                       retryData.session.user.user_metadata?.name ||
+                       retryData.session.user.email?.split('@')[0] || 'User',
+              email: retryData.session.user.email || '',
+              photoURL: retryData.session.user.user_metadata?.avatar_url || '',
+              isPremium: false,
+              createdAt: new Date(retryData.session.user.created_at),
+              lastLoginAt: new Date(),
+              deviceFingerprints: [],
+              loginAttempts: 0,
+              isEmailVerified: retryData.session.user.email_confirmed_at ? true : false,
+              authProvider: retryData.session.user.app_metadata?.provider || 'email'
+            };
+
+            setCurrentUser(user);
+            setStatus('success');
+            setMessage('Authentication successful! Redirecting...');
+            
+            setTimeout(() => {
+              window.location.replace('/');
+            }, 1500);
+          } else {
+            setStatus('error');
+            setMessage('Authentication session could not be established. Please try signing in again.');
+            setTimeout(() => {
+              window.location.replace('/');
+            }, 3000);
+          }
         }
       } catch (error) {
         console.error('Auth callback error:', error);
         setStatus('error');
-        setMessage(`An unexpected error occurred: ${error}. Please try again.`);
+        setMessage(`An unexpected error occurred: ${error}. Redirecting to home...`);
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.replace('/');
         }, 3000);
       }
     };

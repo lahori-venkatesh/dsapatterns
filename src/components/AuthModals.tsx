@@ -41,15 +41,19 @@ export const AuthModals: React.FC = () => {
     setLoginMessage('');
     
     try {
+      console.log('Starting Google sign in...');
       const result = await signInWithGoogle();
+      console.log('Google sign in result:', result);
       if (result.success) {
         setLoginMessage('Redirecting to Google...');
         // Google OAuth will redirect, so we don't close the modal here
+        // The page will redirect to Google's OAuth page
       } else {
-        setLoginMessage(result.error || 'Failed to sign in with Google');
+        setLoginMessage(result.error || 'Google sign-in failed. Please try email/password login instead.');
       }
     } catch (error) {
-      setLoginMessage('An unexpected error occurred');
+      console.error('Google sign in error:', error);
+      setLoginMessage('Google sign-in is not available. Please use email/password login.');
     } finally {
       setLoginLoading(false);
     }
@@ -68,18 +72,21 @@ export const AuthModals: React.FC = () => {
     setLoginMessage('');
 
     try {
+      console.log('Starting email login for:', loginEmail);
       const result = await signInWithEmail(loginEmail, loginPassword);
+      console.log('Email login result:', result);
       if (result.success) {
-        setLoginMessage('Login successful!');
+        setLoginMessage('Login successful! Welcome back!');
         setTimeout(() => {
           closeLoginModal();
           resetLoginForm();
         }, 1500);
       } else {
-        setLoginMessage(result.error || 'Login failed');
+        setLoginMessage(result.error || 'Login failed. Please check your credentials.');
       }
     } catch (error) {
-      setLoginMessage('An unexpected error occurred');
+      console.error('Email login error:', error);
+      setLoginMessage('An unexpected error occurred. Please refresh the page and try again.');
     } finally {
       setLoginLoading(false);
     }
@@ -99,11 +106,6 @@ export const AuthModals: React.FC = () => {
       return;
     }
 
-    if (regPassword.length < 6) {
-      setRegMessage('Password must be at least 6 characters');
-      return;
-    }
-
     if (!acceptTerms) {
       setRegMessage('Please accept the terms and conditions');
       return;
@@ -113,19 +115,22 @@ export const AuthModals: React.FC = () => {
     setRegMessage('');
 
     try {
+      console.log('Starting email registration for:', regEmail);
       const result = await signUpWithEmail(regEmail, regPassword, regUsername);
+      console.log('Email registration result:', result);
       if (result.success) {
-        setRegMessage(result.message || 'Account created successfully!');
+        setRegMessage(result.message || 'Account created successfully! You can now sign in.');
         setTimeout(() => {
           closeRegistrationModal();
           openLoginModal();
           resetRegistrationForm();
-        }, 2000);
+        }, 3000);
       } else {
-        setRegMessage(result.error || 'Registration failed');
+        setRegMessage(result.error || 'Registration failed. Please try again.');
       }
     } catch (error) {
-      setRegMessage('An unexpected error occurred');
+      console.error('Email registration error:', error);
+      setRegMessage('An unexpected error occurred. Please refresh the page and try again.');
     } finally {
       setRegLoading(false);
     }

@@ -11,15 +11,69 @@ export const AuthCallback: React.FC = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Handle the auth callback - this processes URL fragments and codes
+        console.log('Handling auth callback...');
+        console.log('Current URL:', window.location.href);
+        console.log('URL Hash:', window.location.hash);
+        console.log('URL Search:', window.location.search);
+        
+        setMessage('Processing authentication...');
+        
+        // Check if we have auth tokens in the URL
+        const hash = window.location.hash;
+        const search = window.location.search;
+        
+        // Check for various auth token patterns
+        const hasAccessToken = hash.includes('access_token') || search.includes('access_token');
+        const hasAuthCode = search.includes('code=') || /[?&]code=[a-f0-9-]{36}/.test(search);
+        const hasProviderToken = hash.includes('provider_token') || search.includes('provider_token');
+        
+        if (!hasAccessToken && !hasAuthCode && !hasProviderToken) {
+          console.log('No auth tokens found in URL');
+          setStatus('error');
+          setMessage('Authentication failed - no tokens found. Please try again.');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 3000);
+          return;
+        }
+        
+        console.log('Auth tokens detected:', { hasAccessToken, hasAuthCode, hasProviderToken });
+        
+        // For auth code flow, we need to exchange the code for a session
+        if (hasAuthCode && !hasAccessToken) {
+          console.log('Processing auth code exchange...');
+          setMessage('Exchanging authorization code...');
+          
+          // Let Supabase handle the code exchange automatically
+          const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+          console.log('Initial session check:', { sessionData, sessionError });
+          
+          if (!sessionData.session) {
+            // Wait a bit more for the session to be established
+            console.log('No session yet, waiting for auth code processing...');
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            const { data: retrySessionData, error: retryError } = await supabase.auth.getSession();
+            console.log('Retry session check:', { retrySessionData, retryError });
+            
+            if (!retrySessionData.session) {
+              throw new Error('Failed to establish session after auth code exchange');
+            }
+          }
+        } else {
+          // Give Supabase time to process other token types
+          await new Promise(resolve => setTimeout(resolve, 1500));
+        }
+        
+        // Get the current session
         const { data, error } = await supabase.auth.getSession();
+        console.log('Session check result:', { data, error });
         
         if (error) {
           console.error('Auth callback error:', error);
           setStatus('error');
-          setMessage('Authentication failed. Please try again.');
+          setMessage(`Authentication failed: ${error.message}. Please try again.`);
           
-          // Redirect to home after error
           setTimeout(() => {
             window.location.href = '/';
           }, 3000);
@@ -27,11 +81,13 @@ export const AuthCallback: React.FC = () => {
         }
 
         if (data.session?.user) {
-          // User is authenticated
+          console.log('User authenticated:', data.session.user);
+          
           const user = {
             id: data.session.user.id,
             username: data.session.user.user_metadata?.username || 
                      data.session.user.user_metadata?.full_name || 
+                     data.session.user.user_metadata?.name ||
                      data.session.user.email?.split('@')[0] || 'User',
             email: data.session.user.email || '',
             photoURL: data.session.user.user_metadata?.avatar_url || '',
@@ -41,64 +97,21 @@ export const AuthCallback: React.FC = () => {
             deviceFingerprints: [],
             loginAttempts: 0,
             isEmailVerified: data.session.user.email_confirmed_at ? true : false,
-            authProvider: data.session.user.app_metadata?.provider || 'google'
+            authProvider: data.session.user.app_metadata?.provider || 'email'
           };
 
           setCurrentUser(user);
           setStatus('success');
           setMessage('Authentication successful! Redirecting...');
           
-          // Redirect to main app after 2 seconds
+          // Clear the URL parameters before redirecting
+          window.history.replaceState({}, document.title, window.location.pathname);
+          
           setTimeout(() => {
-            window.location.href = '/';
-          }, 2000);
+            window.location.reload();
+          }, 1500);
         } else {
-          // Try to handle the callback if no session yet
-          const urlParams = new URLSearchParams(window.location.search);
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          
-          if (urlParams.get('code') || hashParams.get('access_token')) {
-            // Let Supabase handle the callback
-            setMessage('Processing authentication...');
-            
-            // Wait a bit and try again
-            setTimeout(async () => {
-              const { data: sessionData } = await supabase.auth.getSession();
-              if (sessionData.session?.user) {
-                const user = {
-                  id: sessionData.session.user.id,
-                  username: sessionData.session.user.user_metadata?.username || 
-                           sessionData.session.user.user_metadata?.full_name || 
-                           sessionData.session.user.email?.split('@')[0] || 'User',
-                  email: sessionData.session.user.email || '',
-                  photoURL: sessionData.session.user.user_metadata?.avatar_url || '',
-                  isPremium: false,
-                  createdAt: new Date(sessionData.session.user.created_at),
-                  lastLoginAt: new Date(),
-                  deviceFingerprints: [],
-                  loginAttempts: 0,
-                  isEmailVerified: sessionData.session.user.email_confirmed_at ? true : false,
-                  authProvider: sessionData.session.user.app_metadata?.provider || 'google'
-                };
-                
-                setCurrentUser(user);
-                setStatus('success');
-                setMessage('Authentication successful! Redirecting...');
-                
-                setTimeout(() => {
-                  window.location.href = '/';
-                }, 2000);
-              } else {
-                setStatus('error');
-                setMessage('Authentication failed. Please try again.');
-                setTimeout(() => {
-                  window.location.href = '/';
-                }, 3000);
-              }
-            }, 2000);
-            return;
-          }
-          
+          console.log('No session found');
           setStatus('error');
           setMessage('No user session found. Please try signing in again.');
           setTimeout(() => {
@@ -108,7 +121,7 @@ export const AuthCallback: React.FC = () => {
       } catch (error) {
         console.error('Auth callback error:', error);
         setStatus('error');
-        setMessage('An unexpected error occurred. Please try again.');
+        setMessage(`An unexpected error occurred: ${error}. Please try again.`);
         setTimeout(() => {
           window.location.href = '/';
         }, 3000);

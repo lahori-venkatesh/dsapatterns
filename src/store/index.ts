@@ -311,40 +311,9 @@ export const useAppStore = create<AppState>()(
         localStorage.removeItem('dsa_session_ts');
         set({ isPaid: false, userFingerprint: null, sessionId: null });
         localStorage.removeItem('dsa_user_fp');
-        localStorage.removeItem('dsa_permanent_user_id');
-        localStorage.removeItem('dsa_last_access');
-      }
-    }),
-    {
-      name: 'dsa-app-store',
-      partialize: (state) => ({
-        theme: state.theme,
-        notes: state.notes,
-        expandedCategories: Array.from(state.expandedCategories),
-        selectedLevel: state.selectedLevel,
-        isPaid: state.isPaid,
-        userFingerprint: state.userFingerprint,
-        sessionId: state.sessionId,
-        permanentUserId: state.permanentUserId,
-        activationDate: state.activationDate,
-        lastAccessDate: state.lastAccessDate,
-        verificationCodes: state.verificationCodes,
-        usedCodes: state.usedCodes,
-        verificationAttempts: state.verificationAttempts,
-        permanentUsers: state.permanentUsers
-      }),
-      onRehydrateStorage: () => (state) => {
-        if (state) {
-          state.expandedCategories = new Set(state.expandedCategories || []);
-          state.initializeCategories();
-          state.initializeAuth();
-          
-          // Check for permanent access on app load
-          if (state.checkPermanentAccess) {
-            state.checkPermanentAccess();
-          }
-        }
+        localStorage.remove
       }
     }
+    )
   )
-);
+)

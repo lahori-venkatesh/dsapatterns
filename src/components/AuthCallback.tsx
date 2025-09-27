@@ -11,8 +11,6 @@ export const AuthCallback: React.FC = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        const { supabase } = await import('../config/supabase');
-        
         console.log('=== AUTH CALLBACK START ===');
         console.log('Current URL:', window.location.href);
         console.log('URL Search:', window.location.search);

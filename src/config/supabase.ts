@@ -3,14 +3,18 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Fallback values for development/demo
-const fallbackUrl = 'https://demo.supabase.co';
-const fallbackKey = 'demo-key';
+console.log('Supabase Config:', {
+  url: supabaseUrl ? 'Set' : 'Missing',
+  key: supabaseAnonKey ? 'Set' : 'Missing'
+});
 
-export const supabase = createClient(
-  supabaseUrl || fallbackUrl, 
-  supabaseAnonKey || fallbackKey, 
-  {
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables');
+  console.error('VITE_SUPABASE_URL:', supabaseUrl);
+  console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Present' : 'Missing');
+}
+
+export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
@@ -19,17 +23,13 @@ export const supabase = createClient(
   }
 });
 
-// Only test connection if we have real credentials
-if (supabaseUrl && supabaseAnonKey) {
-  supabase.auth.getSession().then(({ data, error }) => {
-    console.log('Initial session check:', { data, error });
-    if (data.session) {
-      console.log('Active session found:', data.session.user?.email);
-    }
-  }).catch(err => {
-    console.warn('Supabase connection test failed:', err);
-  });
-}
+// Test Supabase connection
+supabase.auth.getSession().then(({ data, error }) => {
+  console.log('Initial session check:', { data, error });
+  if (data.session) {
+    console.log('Active session found:', data.session.user?.email);
+  }
+});
 
 // Auth event listeners
 export const onAuthStateChange = (callback: (event: string, session: any) => void) => {

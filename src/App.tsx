@@ -39,23 +39,20 @@ function App() {
   const isAuthCallback = React.useMemo(() => {
     const pathname = window.location.pathname;
     const search = window.location.search;
-    const hash = window.location.hash;
     
     console.log('Checking auth callback:', {
       pathname,
       search,
-      hash,
       fullUrl: window.location.href
     });
     
-    // Check for auth callback route or tokens
-    const isCallbackRoute = pathname === '/auth/callback' || pathname.includes('/auth/callback');
-    const hasAuthCode = search.includes('code=') && /[?&]code=[a-f0-9-]{36}/.test(search);
-    const hasAccessToken = hash.includes('access_token') || search.includes('access_token');
-    const hasAuthTokens = hasAuthCode || hasAccessToken || hash.includes('refresh_token');
+    // Check for auth callback route
+    const isCallbackRoute = pathname === '/auth/callback';
+    // Check for auth code in URL params
+    const hasAuthCode = search.includes('code=');
     
-    const result = isCallbackRoute || hasAuthTokens;
-    console.log('Auth callback result:', { isCallbackRoute, hasAuthCode, hasAccessToken, hasAuthTokens, result });
+    const result = isCallbackRoute || hasAuthCode;
+    console.log('Auth callback result:', { isCallbackRoute, hasAuthCode, result });
     
     return result;
   }, []);

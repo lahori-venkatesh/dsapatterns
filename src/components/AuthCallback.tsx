@@ -11,35 +11,47 @@ export const AuthCallback: React.FC = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        console.log('Handling auth callback...');
+        console.log('=== AUTH CALLBACK START ===');
         console.log('Current URL:', window.location.href);
-        console.log('URL Hash:', window.location.hash);
         console.log('URL Search:', window.location.search);
         console.log('URL Pathname:', window.location.pathname);
         
         setMessage('Processing authentication...');
         
-        // Wait for Supabase to process the auth callback
+        // Check if we have an auth code
+        const urlParams = new URLSearchParams(window.location.search);
+        const authCode = urlParams.get('code');
+        console.log('Auth code found:', authCode);
+        
+        if (!authCode) {
+          throw new Error('No authentication code found in URL');
+        }
+        
+        // Wait a bit for Supabase to process
         setMessage('Establishing session...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
         
         // Get the current session
         const { data, error } = await supabase.auth.getSession();
-        console.log('Session check result:', { data, error });
+        console.log('Session check result:', { 
+          hasSession: !!data.session, 
+          hasUser: !!data.session?.user,
+          error: error?.message 
+        });
         
         if (error) {
           console.error('Auth callback error:', error);
           setStatus('error');
-          setMessage(`Authentication failed: ${error.message}. Please try again.`);
+          setMessage(`Authentication failed: ${error.message}`);
           
           setTimeout(() => {
-            window.location.replace('/');
+            window.location.href = '/';
           }, 3000);
           return;
         }
 
         if (data.session?.user) {
-          console.log('User authenticated:', data.session.user);
+          console.log('User authenticated successfully');
           
           const user = {
             id: data.session.user.id,
@@ -62,22 +74,21 @@ export const AuthCallback: React.FC = () => {
           setStatus('success');
           setMessage('Authentication successful! Redirecting...');
           
-          // Clear the URL parameters before redirecting
-          window.history.replaceState({}, document.title, window.location.pathname);
+          console.log('Redirecting to home...');
           
           setTimeout(() => {
-            // Clear URL and redirect to home
-            window.location.replace('/');
+            window.location.href = '/';
           }, 1500);
         } else {
-          console.log('No session found');
-          // Try one more time after a longer wait
-          console.log('No session found, trying again...');
+          console.log('No session found, retrying...');
           setMessage('Still processing... please wait');
-          await new Promise(resolve => setTimeout(resolve, 3000));
+          await new Promise(resolve => setTimeout(resolve, 2000));
           
           const { data: retryData, error: retryError } = await supabase.auth.getSession();
-          console.log('Retry session check:', { retryData, retryError });
+          console.log('Retry session check:', { 
+            hasSession: !!retryData.session, 
+            hasUser: !!retryData.session?.user 
+          });
           
           if (retryData.session?.user) {
             const user = {
@@ -102,22 +113,22 @@ export const AuthCallback: React.FC = () => {
             setMessage('Authentication successful! Redirecting...');
             
             setTimeout(() => {
-              window.location.replace('/');
+              window.location.href = '/';
             }, 1500);
           } else {
             setStatus('error');
-            setMessage('Authentication session could not be established. Please try signing in again.');
+            setMessage('Could not establish session. Please try again.');
             setTimeout(() => {
-              window.location.replace('/');
+              window.location.href = '/';
             }, 3000);
           }
         }
       } catch (error) {
         console.error('Auth callback error:', error);
         setStatus('error');
-        setMessage(`An unexpected error occurred: ${error}. Redirecting to home...`);
+        setMessage(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setTimeout(() => {
-          window.location.replace('/');
+          window.location.href = '/';
         }, 3000);
       }
     };

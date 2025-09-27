@@ -744,71 +744,83 @@ export const useAppStore = create<AppState>()(
 
       initializeAuth: () => {
         console.log('Initializing auth state listener...');
-        const { data: { subscription } } = onAuthStateChange(async (event, session) => {
-          console.log('Auth state changed:', event, session);
-          if (session?.user) {
-            console.log('User signed in:', session.user);
-            const user: User = {
-              id: session.user.id,
-              username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-              email: session.user.email || '',
-              photoURL: session.user.user_metadata?.avatar_url || '',
-              isPremium: false,
-              createdAt: new Date(session.user.created_at),
-              lastLoginAt: new Date(),
-              deviceFingerprints: [],
-              loginAttempts: 0,
-              isEmailVerified: session.user.email_confirmed_at ? true : false,
-              authProvider: session.user.app_metadata?.provider || 'email'
-            };
-            set({ currentUser: user });
-            
-            set({ 
-              isLoginModalOpen: false, 
-              isRegistrationModalOpen: false,
-              authError: null 
-            });
-          } else {
-            console.log('User signed out');
-            set({ currentUser: null });
-          }
-        });
         
-        (window as any).authUnsubscribe = () => {
-          if (subscription) {
-            subscription.unsubscribe();
-          }
-        };
-        
-        const checkExistingSession = async () => {
+        const initAuth = async () => {
           try {
-            console.log('Checking for existing session...');
-            const { data: { session }, error } = await supabase.auth.getSession();
-            console.log('Existing session check:', { session, error });
+            const { onAuthStateChange, supabase } = await import('../config/supabase');
             
-            if (session?.user && !get().currentUser) {
-              console.log('Found existing session, setting user...');
-              const user: User = {
-                id: session.user.id,
-                username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-                email: session.user.email || '',
-                photoURL: session.user.user_metadata?.avatar_url || '',
-                isPremium: false,
-                createdAt: new Date(session.user.created_at),
-                lastLoginAt: new Date(),
-                deviceFingerprints: [],
-                loginAttempts: 0,
-                isEmailVerified: session.user.email_confirmed_at ? true : false,
-                authProvider: session.user.app_metadata?.provider || 'email'
-              };
-              set({ currentUser: user });
-            }
+            const { data: { subscription } } = onAuthStateChange(async (event, session) => {
+              console.log('Auth state changed:', event, session);
+              if (session?.user) {
+                console.log('User signed in:', session.user);
+                const user: User = {
+                  id: session.user.id,
+                  username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+                  email: session.user.email || '',
+                  photoURL: session.user.user_metadata?.avatar_url || '',
+                  isPremium: false,
+                  createdAt: new Date(session.user.created_at),
+                  lastLoginAt: new Date(),
+                  deviceFingerprints: [],
+                  loginAttempts: 0,
+                  isEmailVerified: session.user.email_confirmed_at ? true : false,
+                  authProvider: session.user.app_metadata?.provider || 'email'
+                };
+                set({ currentUser: user });
+                
+                set({ 
+                  isLoginModalOpen: false, 
+                  isRegistrationModalOpen: false,
+                  authError: null 
+                });
+              } else {
+                console.log('User signed out');
+                set({ currentUser: null });
+              }
+            });
+            
+            (window as any).authUnsubscribe = () => {
+              if (subscription) {
+                subscription.unsubscribe();
+              }
+            };
+            
+            const checkExistingSession = async () => {
+              try {
+                console.log('Checking for existing session...');
+                const { data: { session }, error } = await supabase.auth.getSession();
+                console.log('Existing session check:', { session, error });
+                
+                if (session?.user && !get().currentUser) {
+                  console.log('Found existing session, setting user...');
+                  const user: User = {
+                    id: session.user.id,
+                    username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+                    email: session.user.email || '',
+                    photoURL: session.user.user_metadata?.avatar_url || '',
+                    isPremium: false,
+                    createdAt: new Date(session.user.created_at),
+                    lastLoginAt: new Date(),
+                    deviceFingerprints: [],
+                    loginAttempts: 0,
+                    isEmailVerified: session.user.email_confirmed_at ? true : false,
+                    authProvider: session.user.app_metadata?.provider || 'email'
+                  };
+                  set({ currentUser: user });
+                }
+              } catch (error) {
+                console.error('Error checking existing session:', error);
+              }
+            };
+            
+            setTimeout(checkExistingSession, 1000);
           } catch (error) {
-            console.error('Error checking existing session:', error);
+            console.error('Error initializing auth:', error);
+            // Continue without auth if there's an error
           }
         };
         
-        setTimeout(checkExistingSession, 1000);
+        initAuth();
       },
 
       setCurrentUser: (user) => set({ currentUser: user }),

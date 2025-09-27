@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { Crown } from 'lucide-react';
-import { supabase } from './config/supabase';
 import { Header } from './components/Header';
 import { CategoryCard } from './components/CategoryCard';
 import { SearchModal } from './components/SearchModal';
@@ -37,24 +36,29 @@ function App() {
 
   // Check if this is the auth callback route
   const isAuthCallback = React.useMemo(() => {
-    const pathname = window.location.pathname;
-    const search = window.location.search;
+    try {
+      const pathname = window.location.pathname;
+      const search = window.location.search;
     
-    console.log('Checking auth callback:', {
-      pathname,
-      search,
-      fullUrl: window.location.href
-    });
+      console.log('Checking auth callback:', {
+        pathname,
+        search,
+        fullUrl: window.location.href
+      });
     
-    // Check for auth callback route
-    const isCallbackRoute = pathname === '/auth/callback';
-    // Check for auth code in URL params
-    const hasAuthCode = search.includes('code=');
+      // Check for auth callback route
+      const isCallbackRoute = pathname === '/auth/callback';
+      // Check for auth code in URL params
+      const hasAuthCode = search.includes('code=');
     
-    const result = isCallbackRoute || hasAuthCode;
-    console.log('Auth callback result:', { isCallbackRoute, hasAuthCode, result });
+      const result = isCallbackRoute || hasAuthCode;
+      console.log('Auth callback result:', { isCallbackRoute, hasAuthCode, result });
     
-    return result;
+      return result;
+    } catch (error) {
+      console.error('Error checking auth callback:', error);
+      return false;
+    }
   }, []);
 
   // If this is the auth callback, show the callback component
@@ -84,6 +88,7 @@ function App() {
   useEffect(() => {
     const checkSession = async () => {
       try {
+        const { supabase } = await import('./config/supabase');
         const { data: { session } } = await supabase.auth.getSession();
         console.log('App mount session check:', session);
         if (session?.user && !currentUser) {
@@ -95,7 +100,10 @@ function App() {
       }
     };
     
-    checkSession();
+    // Only check session if we're not in auth callback
+    if (!isAuthCallback) {
+      checkSession();
+    }
   }, [currentUser]);
 
   // Initialize categories on first load

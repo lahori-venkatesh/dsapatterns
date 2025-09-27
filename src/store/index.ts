@@ -75,7 +75,30 @@ interface AppState {
   getNotesForCategory: (categoryId: string) => Note[];
 
   // Progress
-  getUserProgress: () => UserProgress;
+  getUserProgress: () => {
+    const state = get();
+    let totalProblems = 0;
+    let completedProblems = 0;
+
+    // Calculate progress from categories
+    state.categories.forEach(category => {
+      category.patterns.forEach(pattern => {
+        pattern.problems.forEach(problem => {
+          totalProblems++;
+          if (problem.completed) {
+            completedProblems++;
+          }
+        });
+      });
+    });
+
+    return {
+      totalProblems,
+      completedProblems,
+      streakDays: 0, // Placeholder - streak logic not implemented yet
+      lastActiveDate: state.currentUser?.lastLoginAt || null
+    };
+  };
 
   // Authentication actions
   openLoginModal: () => void;

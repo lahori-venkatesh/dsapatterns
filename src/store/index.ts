@@ -293,19 +293,27 @@ export const useAppStore = create<AppState>()(
               lastAccessDate: new Date()
             }));
             
+            // Store in localStorage
+            localStorage.setItem('dsa_permanent_user_id', userId);
+            localStorage.setItem('dsa_user_fp', currentFingerprint);
+            localStorage.setItem('dsa_last_access', Date.now().toString());
+            
             return { success: true, message: 'Access recovered successfully!' };
           }
         }
         
-        return { success: false, message: 'Invalid verification code' };
+        return { success: false, message: 'Invalid verification code or code not found.' };
       },
       
       // Clear user session
       clearUserSession: () => {
+        localStorage.removeItem('dsa_session_id');
+        localStorage.removeItem('dsa_session_ts');
         set({ isPaid: false, userFingerprint: null, sessionId: null });
         localStorage.removeItem('dsa_user_fp');
         localStorage.removeItem('dsa_session_id');
         localStorage.removeItem('dsa_session_ts');
+        return false;
       },
 
       // Initialize categories on first load
@@ -531,13 +539,25 @@ export const useAppStore = create<AppState>()(
         // Verify that the stored verification code is still valid and bound to this device
         if (storedVerificationCode) {
           const codeData = state.verificationCodes[storedVerificationCode];
-          if (!codeData || codeData.deviceFingerprint !== currentFingerprint) {
+          if (!codeData || !codeData.used || codeData.deviceFingerprint !== currentFingerprint) {
             get().clearUserSession();
             return false;
           }
         }
         
         return true;
+      },
+      
+      clearUserSession: () => {
+        get().clearUserSession();
+        // Don't remove permanent data - keep for recovery
+        // localStorage.removeItem('dsa_user_fp');
+        // localStorage.removeItem('dsa_verification_code');
+        // localStorage.removeItem('dsa_permanent_user_id');
+        set({ 
+          sessionId: null 
+          // Keep permanent data for recovery
+        });
       },
 
       // Theme actions

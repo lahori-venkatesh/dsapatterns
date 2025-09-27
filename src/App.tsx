@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { Crown } from 'lucide-react';
+import { supabase } from './config/supabase';
 import { Header } from './components/Header';
 import { CategoryCard } from './components/CategoryCard';
 import { SearchModal } from './components/SearchModal';
@@ -25,7 +26,8 @@ function App() {
     expandedCategories,
     openNoteEditor,
     isPaid,
-    verifyUserSession
+    verifyUserSession,
+    currentUser
   } = useAppStore();
   
   const { filteredCategories, levelStats, hasCategories } = useCategories();
@@ -35,19 +37,40 @@ function App() {
 
   // Check if this is the auth callback route - handle both pathname and hash
   const isAuthCallback = React.useMemo(() => {
-    const pathname = window.location.pathname;
     const hash = window.location.hash;
     const search = window.location.search;
+    const pathname = window.location.pathname;
     
-    // Check for auth callback in various formats
-    return pathname === '/auth/callback' || 
-           pathname.includes('/auth/callback') ||
-           hash.includes('access_token') ||
-           search.includes('code=');
+    // Check for auth callback tokens in URL
+    const hasAuthTokens = hash.includes('access_token') ||
+           search.includes('code=') ||
+           hash.includes('refresh_token') ||
+           search.includes('access_token') ||
+           hash.includes('type=recovery') ||
+           search.includes('token_hash=') ||
+           hash.includes('token_hash=') ||
+           hash.includes('type=signup') ||
+           search.includes('type=recovery') ||
+           hash.includes('provider_token') ||
+           search.includes('provider_token') ||
+           pathname === '/auth/callback' ||
+           // Specifically check for Supabase auth codes
+           /[?&]code=[a-f0-9-]{36}/.test(search);
+           
+    console.log('Auth callback check:', {
+      hash,
+      search,
+      pathname,
+      hasAuthTokens,
+      fullUrl: window.location.href
+    });
+    
+    return hasAuthTokens;
   }, []);
 
   // If this is the auth callback, show the callback component
   if (isAuthCallback) {
+    console.log('Detected auth callback, showing callback component');
     return <AuthCallback />;
   }
 
@@ -68,6 +91,24 @@ function App() {
     };
   }, [initializeAuth]);
 
+  // Additional session check on app mount
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('App mount session check:', session);
+        if (session?.user && !currentUser) {
+          console.log('Session found but no current user, triggering auth state change...');
+          // The auth state listener should handle this, but let's be explicit
+        }
+      } catch (error) {
+        console.error('Session check error:', error);
+      }
+    };
+    
+    checkSession();
+  }, [currentUser]);
+
   // Initialize categories on first load
   useEffect(() => {
     if (!hasCategories) {
@@ -84,104 +125,146 @@ function App() {
     // Initial verification
     verifySession();
     
-    // Verify every 5 minutes
+    // Set up periodic verification every 5 minutes
     const interval = setInterval(verifySession, 5 * 60 * 1000);
     
-    // Verify when tab becomes visible
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        verifySession();
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
+    return () => clearInterval(interval);
   }, [verifyUserSession]);
 
-  // Optimized handlers
   const handleCategoryToggle = useCallback((categoryId: string) => {
     toggleCategory(categoryId);
   }, [toggleCategory]);
+
+  const handlePatternToggle = useCallback((patternId: string) => {
+    setSelectedPattern(patternId);
+  }, [setSelectedPattern]);
 
   const handleProblemToggle = useCallback((problemId: string) => {
     toggleProblemComplete(problemId);
   }, [toggleProblemComplete]);
 
-  const handlePatternToggle = useCallback((patternId: string | null) => {
-    setSelectedPattern(patternId);
-  }, [setSelectedPattern]);
-
   const handleAddNote = useCallback((problemId: string) => {
-    openNoteEditor({
-      id: '',
-      problemId,
-      title: '',
-      content: '',
-      tags: [],
-      createdAt: new Date(),
-      updatedAt: new Date()
-    });
+    openNoteEditor(problemId);
   }, [openNoteEditor]);
 
   const handleUpgrade = useCallback(() => {
     setShowPaymentModal(true);
   }, []);
-  // Set default level to beginner if none selected
-  useEffect(() => {
-    if (!selectedLevel) {
-      setSelectedLevel('beginner');
-    }
-  }, [selectedLevel, setSelectedLevel]);
 
   if (currentView === 'revision') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-        <Header />
-        <RevisionPage onUpgrade={handleUpgrade} />
-        <SearchModal />
-        <NoteEditor />
-        <PaymentModal isOpen={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
-      </div>
-    );
+    return <RevisionPage />;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-6 py-8 relative">
-        {/* Background decoration */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
-        </div>
+      {/* Why This Approach Works Section */}
+      <div className="bg-gradient-to-r from-gray-800/50 to-gray-700/50 backdrop-blur-sm border-b border-gray-600/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-emerald-500/5"></div>
         
-        {/* Welcome Section */}
-        <div className="mb-8 md:mb-12 relative z-10">
+        <div className="relative z-10 container mx-auto px-4 py-8 md:py-12">
           <div className="text-center mb-6 md:mb-8">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 rounded-full px-4 py-2 mb-6">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-300 font-medium">Live Learning Platform</span>
+            <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent mb-3">
+              Why This Approach Works
+            </h2>
+            <p className="text-gray-300 text-lg max-w-3xl mx-auto leading-relaxed">
+              Our structured pattern-based learning system is designed to maximize your success in technical interviews and career growth
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {/* High Paying Jobs */}
+            <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-gray-600/30 hover:border-blue-500/50 transition-all duration-300 group text-center">
+              <div className="p-3 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl w-fit mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <h4 className="text-lg font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">
+                High-Paying Jobs
+              </h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Solving these problems systematically prepares you for <span className="text-blue-400 font-semibold">10-25 LPA</span> positions at top tech companies and startups
+              </p>
+            </div>
+
+            {/* LeetCode Rating */}
+            <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-gray-600/30 hover:border-emerald-500/50 transition-all duration-300 group text-center">
+              <div className="p-3 bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 rounded-xl w-fit mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012-2m-6 0a2 2 0 002 2h2a2 2 0 002-2" />
+                </svg>
+              </div>
+              <h4 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                LeetCode Rating Boost
+              </h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Pattern-based learning helps you achieve <span className="text-emerald-400 font-semibold">1800+ rating</span> faster by recognizing problem types instantly
+              </p>
+            </div>
+
+            {/* Fast Revision */}
+            <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-gray-600/30 hover:border-purple-500/50 transition-all duration-300 group text-center">
+              <div className="p-3 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl w-fit mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h4 className="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
+                Lightning Fast Revision
+              </h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Organized patterns enable <span className="text-purple-400 font-semibold">3x faster</span> revision before interviews with our structured approach
+              </p>
+            </div>
+
+            {/* DSA Mastery */}
+            <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-gray-600/30 hover:border-amber-500/50 transition-all duration-300 group text-center">
+              <div className="p-3 bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-xl w-fit mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h4 className="text-lg font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">
+                Simple DSA Mastery
+              </h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Break down complex algorithms into <span className="text-amber-400 font-semibold">digestible patterns</span> making DSA mastery achievable for everyone
+              </p>
             </div>
           </div>
-          
-          {/* Level Selection */}
-          <LevelSelector />
-          
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent mb-4 text-center px-4">
-            {selectedLevel === 'beginner' && 'Beginner Level'}
-            {selectedLevel === 'intermediate' && 'Intermediate Level'}
-            {selectedLevel === 'pro' && 'Pro Level'}
-          </h2>
-          <p className="text-base md:text-lg text-gray-300 max-w-4xl mx-auto text-center leading-relaxed px-4">
-            {selectedLevel === 'beginner' && 'Build strong foundations • Target: 10-15 LPA jobs • Focus on core concepts and basic problem-solving patterns'}
-            {selectedLevel === 'intermediate' && 'Advance your skills • Target: 15-20 LPA positions • Master complex algorithms and data structures'}
-            {selectedLevel === 'pro' && 'Achieve mastery • Target: 20+ LPA FAANG interviews • Tackle the most challenging problems and advanced techniques'}
-          </p>
+
+          {/* Bottom CTA */}
+          <div className="mt-6 md:mt-8 text-center">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm border border-blue-500/20 rounded-full px-6 py-3">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-300 font-medium">
+                Join thousands of developers who've landed their dream jobs using this method
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {/* Level Selector */}
+        <LevelSelector />
+
+        {/* Hero Section */}
+        <div className="text-center space-y-6 py-8 md:py-12">
+          <>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent mb-4 text-center px-4">
+              {selectedLevel === 'beginner' && 'Beginner Level'}
+              {selectedLevel === 'intermediate' && 'Intermediate Level'}
+              {selectedLevel === 'pro' && 'Pro Level'}
+            </h2>
+            <p className="text-base md:text-lg text-gray-300 max-w-4xl mx-auto text-center leading-relaxed px-4">
+              {selectedLevel === 'beginner' && 'Build strong foundations • Target: 10-15 LPA jobs • Focus on core concepts and basic problem-solving patterns'}
+              {selectedLevel === 'intermediate' && 'Advance your skills • Target: 15-20 LPA positions • Master complex algorithms and data structures'}
+              {selectedLevel === 'pro' && 'Achieve mastery • Target: 20+ LPA FAANG interviews • Tackle the most challenging problems and advanced techniques'}
+            </p>
+          </>
         </div>
 
         {/* Stats Overview */}
@@ -320,10 +403,9 @@ function App() {
                 <div className="w-2 h-2 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
                 <div>
                   <p className="font-semibold text-amber-300 mb-1">Take Notes</p>
-                  <p className="text-sm leading-relaxed">Document key insights, edge cases, and optimization techniques for future reference.</p>
+                  <p className="text-sm leading-relaxed">Document key insights, edge cases, and optimization techniques for future reference{!isPaid && <span className="text-emerald-400"> • 1 category free</span>}.</p>
                 </div>
               </div>
-              {!isPaid && <span className="text-emerald-400"> • 1 category free</span>}
             </div>
           </div>
         </div>

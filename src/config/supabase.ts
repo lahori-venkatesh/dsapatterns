@@ -58,22 +58,24 @@ export const signInWithGoogle = async () => {
     // Check if Google provider is enabled
     console.log('Checking Google OAuth configuration...');
     
-    // Get the current origin for redirect
-    const currentOrigin = window.location.origin;
-    console.log('Current origin for redirect:', currentOrigin);
+    // Use production URL for redirect in production, localhost for development
+    const isProduction = window.location.hostname !== 'localhost';
+    const redirectUrl = isProduction 
+      ? 'https://dsapatterns.vercel.app/auth/callback'
+      : `${window.location.origin}/auth/callback`;
+    
+    console.log('Redirect URL:', redirectUrl);
     
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: currentOrigin,
+        redirectTo: redirectUrl,
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',
         },
         skipBrowserRedirect: false,
-        scopes: 'email profile',
-        // Ensure we use the correct redirect URL
-        redirectTo: `${currentOrigin}/auth/callback`
+        scopes: 'email profile'
       }
     });
 

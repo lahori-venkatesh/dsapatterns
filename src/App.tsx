@@ -54,6 +54,7 @@ function App() {
            hash.includes('provider_token') ||
            search.includes('provider_token') ||
            pathname === '/auth/callback' ||
+           pathname.includes('/auth/callback') ||
            // Specifically check for Supabase auth codes
            /[?&]code=[a-f0-9-]{36}/.test(search);
            

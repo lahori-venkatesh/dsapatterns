@@ -32,7 +32,7 @@ export const AuthCallback: React.FC = () => {
           setStatus('error');
           setMessage('Authentication failed - no tokens found. Please try again.');
           setTimeout(() => {
-            window.location.href = '/';
+            window.location.replace('/');
           }, 3000);
           return;
         }
@@ -108,7 +108,9 @@ export const AuthCallback: React.FC = () => {
           window.history.replaceState({}, document.title, window.location.pathname);
           
           setTimeout(() => {
-            window.location.reload();
+            // Clear URL and redirect to home
+            window.history.replaceState({}, document.title, '/');
+            window.location.replace('/');
           }, 1500);
         } else {
           console.log('No session found');

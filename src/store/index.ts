@@ -285,62 +285,6 @@ export const useAppStore = create<AppState>()(
                   ...userData,
                   devices: updatedDevices,
                   lastAccess: Date.now()
-                }
-              },
-              isPaid: true,
-              permanentUserId: userId,
-              userFingerprint: currentFingerprint,
-              lastAccessDate: new Date()
-            }));
-            
-            // Store in localStorage
-            localStorage.setItem('dsa_permanent_user_id', userId);
-            localStorage.setItem('dsa_user_fp', currentFingerprint);
-            localStorage.setItem('dsa_last_access', Date.now().toString());
-            
-            return { success: true, message: 'Access recovered successfully! Welcome back to Premium!' };
-          }
-        }
-        
-        return { success: false, message: 'Invalid recovery code. Please check your original verification code.' };
-      },
-
-      // Verify user session
-      verifyUserSession: () => {
-        const state = get();
-        if (!state.isPaid) return true; // Allow free users
-        
-        // First check permanent access
-        if (state.checkPermanentAccess()) {
-          return true;
-        }
-        
-        const currentFingerprint = state.generateUserFingerprint();
-        const storedFingerprint = localStorage.getItem('dsa_user_fp');
-        const storedSession = localStorage.getItem('dsa_session_id');
-        const sessionTimestamp = localStorage.getItem('dsa_session_ts');
-        const permanentUserId = localStorage.getItem('dsa_permanent_user_id');
-        
-        // Check if user has permanent access but lost session
-        if (permanentUserId && state.permanentUsers[permanentUserId]) {
-          const userData = state.permanentUsers[permanentUserId];
-          if (userData.devices && userData.devices.includes(currentFingerprint)) {
-            // Restore access
-            set({
-              isPaid: true,
-              permanentUserId: permanentUserId,
-              userFingerprint: currentFingerprint,
-              lastAccessDate: new Date()
-            });
-            return true;
-          }
-        }
-        
-        // Check if session is older than 24 hours
-        if (sessionTimestamp) {
-          const sessionAge = Date.now() - parseInt(sessionTimestamp);
-          if (sessionAge > 24 * 60 * 60 * 1000) { // 24 hours
-            // Session expired, require re-verification
             set({ isPaid: false, userFingerprint: null, sessionId: null });
             localStorage.removeItem('dsa_user_fp');
             localStorage.removeItem('dsa_session_id');
@@ -569,7 +513,7 @@ export const useAppStore = create<AppState>()(
           if (sessionAge > 30 * 24 * 60 * 60 * 1000) { // 30 days instead of 24 hours for permanent users
             // Check if user has permanent access
             if (!state.checkPermanentAccess()) {
-              state.clearUserSession();
+              get().clearUserSession();
               return false;
             }
           }
@@ -578,7 +522,7 @@ export const useAppStore = create<AppState>()(
         // Check fingerprint match
         if (storedFingerprint && storedFingerprint !== currentFingerprint) {
           // Different device/browser detected
-          state.clearUserSession();
+          get().clearUserSession();
           return false;
         }
         
@@ -587,7 +531,7 @@ export const useAppStore = create<AppState>()(
           const codeData = state.verificationCodes[storedVerificationCode];
           if (!codeData || !codeData.used || (codeData.deviceFingerprint && codeData.deviceFingerprint !== currentFingerprint)) {
             // Verification code is invalid or bound to different device
-            state.clearUserSession();
+            get().clearUserSession();
             return false;
           }
         }

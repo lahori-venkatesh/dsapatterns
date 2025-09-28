@@ -11,13 +11,20 @@ console.log('Supabase Config:', {
   keyValue: supabaseAnonKey ? supabaseAnonKey.substring(0, 20) + '...' : 'undefined'
 });
 
-// Create Supabase client
-let supabase: any = null;
+// Create Supabase client - ensure it's always created if credentials exist
+const supabase = (() => {
+  try {
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Supabase credentials missing:', {
+        url: supabaseUrl ? 'Present' : 'Missing',
+        key: supabaseAnonKey ? 'Present' : 'Missing',
+        allEnvVars: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
+      });
+      return null;
+    }
 
-try {
-  if (supabaseUrl && supabaseAnonKey) {
-    console.log('Creating Supabase client with credentials');
-    supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    console.log('Creating Supabase client...');
+    const client = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         autoRefreshToken: true,
         persistSession: true,
@@ -26,26 +33,24 @@ try {
       }
     });
     
-    // Test Supabase connection
-    supabase.auth.getSession().then(({ data, error }) => {
-      console.log('Initial session check:', { data, error });
-      if (data.session) {
-        console.log('Active session found:', data.session.user?.email);
+    console.log('Supabase client created successfully');
+    
+    // Test connection asynchronously
+    setTimeout(async () => {
+      try {
+        const { data, error } = await client.auth.getSession();
+        console.log('Initial session check:', { hasSession: !!data.session, error });
+      } catch (error) {
+        console.error('Session check failed:', error);
       }
-    }).catch((error: any) => {
-      console.error('Session check failed:', error);
-    });
-  } else {
-    console.error('Supabase credentials missing:', {
-      url: supabaseUrl,
-      key: supabaseAnonKey,
-      env: import.meta.env
-    });
-    throw new Error('Supabase credentials not found');
+    }, 100);
+    
+    return client;
+  } catch (error) {
+    console.error('Failed to create Supabase client:', error);
+    return null;
   }
-} catch (error) {
-  console.error('Failed to initialize Supabase:', error);
-}
+})();
 
 export { supabase };
 

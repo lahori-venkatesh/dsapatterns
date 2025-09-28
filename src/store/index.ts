@@ -707,37 +707,46 @@ export const useAppStore = create<AppState>()(
 
       signInWithGoogle: async () => {
         try {
+          console.log('Store: signInWithGoogle called, supabase available:', !!supabase);
           return await supabaseSignInWithGoogle();
         } catch (error: any) {
+          console.error('Store: signInWithGoogle error:', error);
           return { success: false, error: error.message };
         }
       },
 
       signInWithEmail: async (email, password) => {
         try {
+          console.log('Store: signInWithEmail called, supabase available:', !!supabase);
           return await supabaseSignInWithEmail(email, password);
         } catch (error: any) {
+          console.error('Store: signInWithEmail error:', error);
           return { success: false, error: error.message };
         }
       },
 
       signUpWithEmail: async (email, password, username) => {
         try {
+          console.log('Store: signUpWithEmail called, supabase available:', !!supabase);
           return await supabaseSignUpWithEmail(email, password, username);
         } catch (error: any) {
+          console.error('Store: signUpWithEmail error:', error);
           return { success: false, error: error.message };
         }
       },
 
       resetPassword: async (email) => {
         try {
+          console.log('Store: resetPassword called, supabase available:', !!supabase);
           return await supabaseResetPassword(email);
         } catch (error: any) {
+          console.error('Store: resetPassword error:', error);
           return { success: false, error: error.message };
         }
       },
 
       logout: () => {
+        console.log('Store: logout called, supabase available:', !!supabase);
         supabaseSignOut();
         set({ currentUser: null });
       },
@@ -745,9 +754,10 @@ export const useAppStore = create<AppState>()(
       initializeAuth: () => {
         try {
           console.log('Initializing auth state listener...');
+          console.log('Supabase client available:', !!supabase);
           
           if (!supabase) {
-            console.warn('Supabase not available for auth initialization');
+            console.error('Supabase client is null - cannot initialize auth');
             return;
           }
           

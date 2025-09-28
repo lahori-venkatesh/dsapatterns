@@ -1,67 +1,89 @@
 import React, { useState } from 'react';
-import { BookOpen, CheckCircle, Circle, ExternalLink, StickyNote, CreditCard as Edit3, Trash2, Filter, Search } from 'lucide-react';
+import { BookOpen, CheckCircle, Circle, ExternalLink, StickyNote, CreditCard as Edit3, Trash2, Filter, Search, ArrowLeft, Crown } from 'lucide-react';
 import { useAppStore } from '../store';
+import { PaymentModal } from './PaymentModal';
 
 interface RevisionPageProps {
-  onUpgrade?: () => void;
 }
 
-export const RevisionPage: React.FC<RevisionPageProps> = ({ onUpgrade }) => {
-  const { categories, notes, openNoteEditor, deleteNote, getNotesForProblem, currentUser } = useAppStore();
+export const RevisionPage: React.FC<RevisionPageProps> = () => {
+  const { categories, notes, openNoteEditor, deleteNote, getNotesForProblem, currentUser, setCurrentView, toggleProblemComplete } = useAppStore();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   
   // If not paid, show payment gate
   if (!currentUser?.isPremium) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="text-center py-16">
-          <div className="p-6 bg-amber-500/20 rounded-2xl w-fit mx-auto mb-6">
-            <svg className="w-16 h-16 mx-auto text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
+      <>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+          <div className="max-w-7xl mx-auto px-6 py-8">
+            {/* Back Navigation */}
+            <div className="mb-6">
+              <button
+                onClick={() => setCurrentView('dashboard')}
+                className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-200 group"
+              >
+                <ArrowLeft className="w-5 h-5 group-hover:transform group-hover:-translate-x-1 transition-transform duration-200" />
+                <span>Back to Dashboard</span>
+              </button>
+            </div>
+
+            <div className="text-center py-16">
+              <div className="p-6 bg-amber-500/20 rounded-2xl w-fit mx-auto mb-6">
+                <Crown className="w-16 h-16 mx-auto text-amber-400" />
+              </div>
+              <h1 className="text-3xl font-bold text-amber-300 mb-4">
+                {!currentUser ? 'Login Required' : 'Premium Revision Center'}
+              </h1>
+              <p className="text-amber-200 text-lg mb-8 max-w-2xl mx-auto">
+                {!currentUser 
+                  ? 'Please login to access the revision center and track your progress'
+                  : 'Access your complete revision dashboard with progress tracking, notes management, and advanced filtering for just ₹299'
+                }
+              </p>
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 max-w-md mx-auto mb-8">
+                <h3 className="text-xl font-bold text-white mb-4">What you'll get:</h3>
+                <ul className="text-left space-y-2 text-gray-300">
+                  <li className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                    <span>Complete problem revision dashboard</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span>Advanced search and filtering</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                    <span>Unlimited notes and organization</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                    <span>Progress tracking and analytics</span>
+                  </li>
+                </ul>
+              </div>
+              <button
+                onClick={() => setShowPaymentModal(true)}
+                className="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                Upgrade Now - ₹299 Only
+              </button>
+              <p className="text-amber-300 text-sm mt-4">
+                ⚡ One-time payment • Lifetime access • 30-day money-back guarantee
+              </p>
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-amber-300 mb-4">
-            {!currentUser ? 'Login Required' : 'Premium Revision Center'}
-          </h1>
-          <p className="text-amber-200 text-lg mb-8 max-w-2xl mx-auto">
-            {!currentUser 
-              ? 'Please login to access the revision center and track your progress'
-              : 'Access your complete revision dashboard with progress tracking, notes management, and advanced filtering for just ₹299'
-            }
-          </p>
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 max-w-md mx-auto mb-8">
-            <h3 className="text-xl font-bold text-white mb-4">What you'll get:</h3>
-            <ul className="text-left space-y-2 text-gray-300">
-              <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-                <span>Complete problem revision dashboard</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                <span>Advanced search and filtering</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                <span>Unlimited notes and organization</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
-                <span>Progress tracking and analytics</span>
-              </li>
-            </ul>
+        </div>
+        
+        {/* Payment Modal */}
+        {showPaymentModal && (
+          <div className="fixed inset-0 z-50">
+            <PaymentModal 
+              isOpen={showPaymentModal} 
+              onClose={() => setShowPaymentModal(false)} 
+            />
           </div>
-          <button
-            onClick={onUpgrade}
-            className="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl"
-          >
-            Upgrade Now - ₹299 Only
-          </button>
-          <p className="text-amber-300 text-sm mt-4">
-            ⚡ One-time payment • Lifetime access • 30-day money-back guarantee
-          </p>
-        </div>
-        </div>
-      </div>
+        )}
+      </>
     );
   }
   
@@ -133,8 +155,26 @@ export const RevisionPage: React.FC<RevisionPageProps> = ({ onUpgrade }) => {
     }
   };
 
+  const handleProblemCheck = (problemId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleProblemComplete(problemId);
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          {/* Back Navigation */}
+          <div className="mb-6">
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-200 group"
+            >
+              <ArrowLeft className="w-5 h-5 group-hover:transform group-hover:-translate-x-1 transition-transform duration-200" />
+              <span>Back to Dashboard</span>
+            </button>
+          </div>
+
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center space-x-3 mb-4">

@@ -12,7 +12,8 @@ export const RevisionPage: React.FC<RevisionPageProps> = ({ onUpgrade }) => {
   // If not paid, show payment gate
   if (!currentUser?.isPremium) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="text-center py-16">
           <div className="p-6 bg-amber-500/20 rounded-2xl w-fit mx-auto mb-6">
             <svg className="w-16 h-16 mx-auto text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,6 +59,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = ({ onUpgrade }) => {
           <p className="text-amber-300 text-sm mt-4">
             ⚡ One-time payment • Lifetime access • 30-day money-back guarantee
           </p>
+        </div>
         </div>
       </div>
     );

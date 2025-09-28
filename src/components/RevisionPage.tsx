@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, CheckCircle, Circle, ExternalLink, StickyNote, Edit3, Trash2, Filter, Search } from 'lucide-react';
+import { BookOpen, CheckCircle, Circle, ExternalLink, StickyNote, CreditCard as Edit3, Trash2, Filter, Search } from 'lucide-react';
 import { useAppStore } from '../store';
 
 interface RevisionPageProps {

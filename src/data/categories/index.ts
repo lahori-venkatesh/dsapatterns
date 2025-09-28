@@ -1,6 +1,14 @@
 // Export all categories
-export { arraysStringsCategory } from './arraysStrings';
-export { linkedListsCategory } from './linkedLists';
+export { 
+  arraysStringsCategory,
+  arraysStringsIntermediateCategory,
+  arraysStringsProCategory 
+} from './arraysStrings';
+export { 
+  linkedListsCategory,
+  linkedListsIntermediateCategory,
+  linkedListsProCategory 
+} from './linkedLists';
 export { stacksQueuesCategory } from './stacksQueues';
 export { binaryTreesCategory } from './binaryTrees';
 export { hashTablesCategory } from './hashTables';

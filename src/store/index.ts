@@ -746,7 +746,7 @@ export const useAppStore = create<AppState>()(
         try {
           console.log('Initializing auth state listener...');
           
-          if (!supabase || !supabase.auth) {
+          if (!supabase) {
             console.warn('Supabase not available for auth initialization');
             return;
           }
@@ -789,7 +789,7 @@ export const useAppStore = create<AppState>()(
           
           const checkExistingSession = async () => {
             try {
-              if (!supabase || !supabase.auth) {
+              if (!supabase) {
                 console.warn('Supabase not available for session check');
                 return;
               }

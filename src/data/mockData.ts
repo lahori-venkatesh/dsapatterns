@@ -3,7 +3,13 @@ import {
   arraysStringsCategory,
   linkedListsCategory,
   stacksQueuesCategory,
-  binaryTreesCategory
+  binaryTreesCategory,
+  hashTablesCategory,
+  heapsCategory,
+  graphsCategory,
+  dynamicProgrammingCategory,
+  greedyAlgorithmsCategory,
+  backtrackingCategory
 } from './categories';
 
 // Main categories array - now much cleaner and organized
@@ -11,14 +17,13 @@ export const mockCategories: Category[] = [
   arraysStringsCategory,
   linkedListsCategory,
   stacksQueuesCategory,
-  binaryTreesCategory
-  // Add more categories here as you create them:
-  // hashTablesCategory,
-  // heapsCategory,
-  // graphsCategory,
-  // dynamicProgrammingCategory,
-  // greedyAlgorithmsCategory,
-  // backtrackingCategory
+  binaryTreesCategory,
+  hashTablesCategory,
+  heapsCategory,
+  graphsCategory,
+  dynamicProgrammingCategory,
+  greedyAlgorithmsCategory,
+  backtrackingCategory
 ];
 
 // Helper function to get category by ID

@@ -337,6 +337,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
                                           {/* Notes */}
                                           {item.notes.length > 0 && (
                                             <div className="space-y-2">
+                                             <h6 className="text-sm font-medium text-purple-300 mb-2">📝 Your Notes:</h6>
                                               {item.notes.map((note: any) => (
                                                 <div key={note.id} className="bg-gray-700/50 rounded-lg p-3 border border-gray-600/30">
                                                   <div className="flex items-start justify-between mb-2">
@@ -356,8 +357,52 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
                                                       </button>
                                                     </div>
                                                   </div>
-                                                  {note.content && (
-                                                    <p className="text-xs text-gray-300 mb-2 line-clamp-2 leading-relaxed">{note.content}</p>
+                                                  {note.content && note.content.trim() && (
+                                                    <div className="mb-3">
+                                                      <p className="text-xs text-gray-400 mb-1">Text Notes:</p>
+                                                      <div className="bg-gray-800/50 rounded p-2 max-h-32 overflow-y-auto">
+                                                        <p className="text-xs text-gray-300 leading-relaxed whitespace-pre-wrap">{note.content}</p>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                  {note.drawingData && note.drawingData !== '[]' && (
+                                                    <div className="mb-3">
+                                                      <p className="text-xs text-gray-400 mb-1">Drawing Notes:</p>
+                                                      <div className="bg-white rounded p-2">
+                                                        <canvas 
+                                                          ref={(canvas) => {
+                                                            if (canvas && note.drawingData) {
+                                                              try {
+                                                                const paths = JSON.parse(note.drawingData);
+                                                                const ctx = canvas.getContext('2d');
+                                                                if (ctx && paths.length > 0) {
+                                                                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                                                  paths.forEach((path: any) => {
+                                                                    if (path.points && path.points.length > 0) {
+                                                                      ctx.beginPath();
+                                                                      ctx.strokeStyle = path.color || '#000000';
+                                                                      ctx.lineWidth = path.size || 2;
+                                                                      ctx.lineCap = 'round';
+                                                                      ctx.lineJoin = 'round';
+                                                                      ctx.moveTo(path.points[0].x, path.points[0].y);
+                                                                      path.points.forEach((point: any) => {
+                                                                        ctx.lineTo(point.x, point.y);
+                                                                      });
+                                                                      ctx.stroke();
+                                                                    }
+                                                                  });
+                                                                }
+                                                              } catch (error) {
+                                                                console.error('Error rendering drawing:', error);
+                                                              }
+                                                            }
+                                                          }}
+                                                          width={300}
+                                                          height={200}
+                                                          className="border border-gray-300 rounded max-w-full"
+                                                        />
+                                                      </div>
+                                                    </div>
                                                   )}
                                                   {note.tags.length > 0 && (
                                                     <div className="flex flex-wrap gap-1">

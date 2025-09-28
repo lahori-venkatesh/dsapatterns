@@ -102,7 +102,7 @@ export const NoteEditor: React.FC = () => {
       title: title.trim(),
       content: content.trim(),
       tags,
-      drawingData: JSON.stringify(paths),
+      drawingData: paths.length > 0 ? JSON.stringify(paths) : '',
       problemId: editingNote?.problemId,
       patternId: editingNote?.patternId,
       categoryId: editingNote?.categoryId,

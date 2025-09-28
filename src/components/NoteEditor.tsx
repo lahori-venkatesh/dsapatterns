@@ -22,7 +22,7 @@ export const NoteEditor: React.FC = () => {
     if (editingNote) {
       setTitle(editingNote.title);
       setContent(editingNote.content);
-      setTags(editingNote.tags);
+      setTags(editingNote.tags || []);
       setDrawingData(editingNote.drawingData || '');
     } else {
       // Auto-populate title with problem title if creating a new note for a problem

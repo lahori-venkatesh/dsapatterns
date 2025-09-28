@@ -95,7 +95,7 @@ export const NoteEditor: React.FC = () => {
   };
 
   const handleSave = () => {
-    if (!title.trim()) return;
+    if (!title || !title.trim()) return;
 
     const noteData = {
       title: title.trim(),

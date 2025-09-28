@@ -32,6 +32,7 @@ export const NoteEditor: React.FC = () => {
       setTags([]);
       setDrawingData('');
     }
+  }, [editingNote]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -95,7 +96,7 @@ export const NoteEditor: React.FC = () => {
   };
 
   const handleSave = () => {
-    if (!title || !title.trim()) return;
+    if (!title.trim()) return;
 
     const noteData = {
       title: title.trim(),

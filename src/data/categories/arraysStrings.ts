@@ -5,7 +5,7 @@ export const arraysStringsCategory: Category = {
   name: 'Arrays & Strings',
   icon: 'Grid3X3',
   level: 'beginner',
-  totalProblems: 45,
+  totalProblems: 135, // 45 per level
   completedProblems: 0,
   patterns: [
     {

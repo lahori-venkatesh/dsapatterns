@@ -107,6 +107,7 @@ interface AppState {
   initializeAuth: () => void;
   setCurrentUser: (user: User | null) => void;
   activatePremiumWithCode: (code: string) => { success: boolean; message: string };
+  clearPremiumOnLogout: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -748,7 +749,25 @@ export const useAppStore = create<AppState>()(
       logout: () => {
         console.log('Store: logout called, supabase available:', !!supabase);
         supabaseSignOut();
-        set({ currentUser: null });
+        // Clear user and premium status on logout
+        set({ 
+          currentUser: null,
+          isPaid: false,
+          userFingerprint: null,
+          sessionId: null,
+          permanentUserId: null,
+          activationDate: null,
+          lastAccessDate: null
+        });
+        
+        // Clear localStorage premium data
+        localStorage.removeItem('dsa_user_fp');
+        localStorage.removeItem('dsa_session_id');
+        localStorage.removeItem('dsa_session_ts');
+        localStorage.removeItem('dsa_verification_code');
+        localStorage.removeItem('dsa_permanent_user_id');
+        localStorage.removeItem('dsa_activation_date');
+        localStorage.removeItem('dsa_last_access');
       },
 
       initializeAuth: () => {
@@ -770,7 +789,7 @@ export const useAppStore = create<AppState>()(
                 username: session.user.user_metadata?.username || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
                 email: session.user.email || '',
                 photoURL: session.user.user_metadata?.avatar_url || '',
-                isPremium: false,
+                isPremium: session.user.user_metadata?.isPremium || false,
                 createdAt: new Date(session.user.created_at),
                 lastLoginAt: new Date(),
                 deviceFingerprints: [],
@@ -780,6 +799,28 @@ export const useAppStore = create<AppState>()(
               };
               set({ currentUser: user });
               
+              
+              // Check if user has premium status
+              if (user.isPremium) {
+                set({ isPaid: true });
+              } else {
+                set({ isPaid: false });
+              }
+              
+              // Check if user has premium status from server/metadata
+              if (user.isPremium) {
+                set({ isPaid: true });
+              } else {
+                // Clear any local premium status if user doesn't have server premium
+                set({ 
+                  isPaid: false,
+                  userFingerprint: null,
+                  sessionId: null,
+                  permanentUserId: null,
+                  activationDate: null,
+                  lastAccessDate: null
+                });
+              }
               set({ 
                 isLoginModalOpen: false, 
                 isRegistrationModalOpen: false,
@@ -787,7 +828,25 @@ export const useAppStore = create<AppState>()(
               });
             } else {
               console.log('User signed out');
-              set({ currentUser: null });
+              // Clear everything on sign out
+              set({ 
+                currentUser: null,
+                isPaid: false,
+                userFingerprint: null,
+                sessionId: null,
+                permanentUserId: null,
+                activationDate: null,
+                lastAccessDate: null
+              });
+              
+              // Clear localStorage
+              localStorage.removeItem('dsa_user_fp');
+              localStorage.removeItem('dsa_session_id');
+              localStorage.removeItem('dsa_session_ts');
+              localStorage.removeItem('dsa_verification_code');
+              localStorage.removeItem('dsa_permanent_user_id');
+              localStorage.removeItem('dsa_activation_date');
+              localStorage.removeItem('dsa_last_access');
             }
           });
           
@@ -867,11 +926,20 @@ export const useAppStore = create<AppState>()(
           return { success: false, message: 'Your account is already premium!' };
         }
 
+        // Update user premium status
         const updatedUser = { 
           ...state.currentUser, 
           isPremium: true,
           premiumActivatedAt: new Date()
         };
+        
+        // TODO: In a real app, you would update the user's premium status on the server
+        // For now, we'll update Supabase user metadata
+        if (supabase && state.currentUser) {
+          supabase.auth.updateUser({
+            data: { isPremium: true, premiumActivatedAt: new Date().toISOString() }
+          }).catch(error => console.error('Failed to update user metadata:', error));
+        }
         
         set({
           currentUser: updatedUser,
@@ -882,19 +950,34 @@ export const useAppStore = create<AppState>()(
 
         return { success: true, message: 'Premium activated successfully! Welcome to Premium!' };
       },
+      
+      clearPremiumOnLogout: () => {
+        set({ 
+          isPaid: false,
+          userFingerprint: null,
+          sessionId: null,
+          permanentUserId: null,
+          activationDate: null,
+          lastAccessDate: null
+        });
+        
+        // Clear localStorage
+        localStorage.removeItem('dsa_user_fp');
+        localStorage.removeItem('dsa_session_id');
+        localStorage.removeItem('dsa_session_ts');
+        localStorage.removeItem('dsa_verification_code');
+        localStorage.removeItem('dsa_permanent_user_id');
+        localStorage.removeItem('dsa_activation_date');
+        localStorage.removeItem('dsa_last_access');
+      },
     }),
     {
       name: 'dsa-platform-storage-v3',
       partialize: (state) => ({
-        isPaid: state.isPaid,
-        permanentUserId: state.permanentUserId,
-        permanentUsers: state.permanentUsers,
-        activationDate: state.activationDate,
-        lastAccessDate: state.lastAccessDate,
         notes: state.notes,
-        usedCodes: state.usedCodes,
         expandedCategories: Array.from(state.expandedCategories),
         currentUser: state.currentUser,
+        // Remove premium-related data from persistence - it should be tied to user account
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,

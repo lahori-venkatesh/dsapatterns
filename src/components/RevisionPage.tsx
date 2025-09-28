@@ -416,7 +416,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
                                                     </div>
                                                   )}
                                                 </div>
-                          {item.notes && item.notes.length > 0 && (
+                                              ))}
                                             </div>
                                           )}
                                         </div>
@@ -432,16 +432,16 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
                                         <ExternalLink className="w-3 h-3" />
                                       </a>
                                     </div>
+                                    
+                                    {/* Show message if no notes */}
+                                    {(!item.notes || item.notes.length === 0) && (
+                                      <div className="mt-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600/30">
+                                        <p className="text-xs text-gray-400 text-center">No notes added for this problem yet</p>
+                                      </div>
+                                    )}
                                   </div>
                                 ))}
                               </div>
-                            </div>
-                          )}
-                          
-                          {/* Show message if no notes */}
-                          {(!item.notes || item.notes.length === 0) && (
-                            <div className="mt-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600/30">
-                              <p className="text-xs text-gray-400 text-center">No notes added for this problem yet</p>
                             </div>
                           )}
                         </div>

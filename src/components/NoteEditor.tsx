@@ -96,23 +96,35 @@ export const NoteEditor: React.FC = () => {
   };
 
   const handleSave = () => {
-    if (!title || !title.trim()) return;
+    if (!title || !title.trim()) {
+      alert('Please enter a title for your note');
+      return;
+    }
 
     const noteData = {
       title: title.trim(),
       content: content.trim(),
       tags,
       drawingData: paths.length > 0 ? JSON.stringify(paths) : '',
-      problemId: editingNote?.problemId,
+      problemId: editingNote?.problemId || (window as any).currentProblemId,
       patternId: editingNote?.patternId,
       categoryId: editingNote?.categoryId,
     };
+
+    console.log('Saving note with data:', noteData);
 
     if (editingNote && editingNote.id) {
       updateNote(editingNote.id, noteData);
     } else {
       createNote(noteData);
     }
+
+    // Reset form
+    setTitle('');
+    setContent('');
+    setTags([]);
+    setPaths([]);
+    setDrawingData('');
 
     closeNoteEditor();
   };

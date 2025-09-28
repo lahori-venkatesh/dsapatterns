@@ -56,6 +56,8 @@ export const PatternItem: React.FC<PatternItemProps> = memo(({
 
   const handleAddNote = useCallback((problemId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    // Store the problem ID globally so NoteEditor can access it
+    (window as any).currentProblemId = problemId;
     onAddNote(problemId);
   }, [onAddNote]);
 

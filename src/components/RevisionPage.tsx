@@ -105,6 +105,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
           // Only include solved problems
           if (problem.userStatus.completed) {
             const problemNotes = getNotesForProblem(problem.id);
+            console.log(`Problem ${problem.title} (${problem.id}) has ${problemNotes.length} notes:`, problemNotes);
             solvedProblems.push({
               problem,
               category: category.name,
@@ -118,6 +119,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
       });
     });
 
+    console.log('All solved problems with notes:', solvedProblems);
     return solvedProblems;
   };
 
@@ -414,7 +416,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
                                                     </div>
                                                   )}
                                                 </div>
-                                              ))}
+                          {item.notes && item.notes.length > 0 && (
                                             </div>
                                           )}
                                         </div>
@@ -433,6 +435,13 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
                                   </div>
                                 ))}
                               </div>
+                            </div>
+                          )}
+                          
+                          {/* Show message if no notes */}
+                          {(!item.notes || item.notes.length === 0) && (
+                            <div className="mt-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600/30">
+                              <p className="text-xs text-gray-400 text-center">No notes added for this problem yet</p>
                             </div>
                           )}
                         </div>

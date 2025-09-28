@@ -20,8 +20,8 @@ export const NoteEditor: React.FC = () => {
 
   useEffect(() => {
     if (editingNote) {
-      setTitle(editingNote.title);
-      setContent(editingNote.content);
+      setTitle(editingNote.title || '');
+      setContent(editingNote.content || '');
       setTags(editingNote.tags || []);
       setDrawingData(editingNote.drawingData || '');
     } else {
@@ -32,7 +32,6 @@ export const NoteEditor: React.FC = () => {
       setTags([]);
       setDrawingData('');
     }
-  }, [editingNote]);
 
   useEffect(() => {
     if (canvasRef.current) {

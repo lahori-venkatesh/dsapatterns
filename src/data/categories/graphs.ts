@@ -740,3 +740,4 @@ export const graphsCategory: Category = {
       ]
     }
   ]
+}

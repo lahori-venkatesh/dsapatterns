@@ -4,22 +4,22 @@ export const dynamicProgrammingCategory: Category = {
   id: 'dynamic-programming',
   name: 'Dynamic Programming',
   icon: 'Zap',
-  level: 'pro',
-  totalProblems: 20,
+  level: 'beginner',
+  totalProblems: 45,
   completedProblems: 0,
   patterns: [
     {
-      id: 'linear-dp',
-      name: 'Linear DP',
-      description: 'Solve 1D dynamic programming problems with optimal substructure',
-      totalProblems: 8,
+      id: 'basic-dp',
+      name: 'Basic DP',
+      description: 'Learn fundamental dynamic programming concepts with simple problems',
+      totalProblems: 15,
       completedProblems: 0,
       problems: [
         {
           id: 'climbing-stairs',
           title: 'Climbing Stairs',
           difficulty: 'Easy',
-          pattern: 'linear-dp',
+          pattern: 'basic-dp',
           category: 'dynamic-programming',
           leetcodeUrl: 'https://leetcode.com/problems/climbing-stairs/',
           estimatedTime: 20,
@@ -32,14 +32,247 @@ export const dynamicProgrammingCategory: Category = {
           }
         },
         {
+          id: 'fibonacci-number',
+          title: 'Fibonacci Number',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/fibonacci-number/',
+          estimatedTime: 15,
+          tags: ['math', 'dynamic-programming', 'recursion', 'memoization'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'n-th-tribonacci-number',
+          title: 'N-th Tribonacci Number',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/n-th-tribonacci-number/',
+          estimatedTime: 20,
+          tags: ['math', 'dynamic-programming', 'memoization'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'min-cost-climbing-stairs',
+          title: 'Min Cost Climbing Stairs',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/min-cost-climbing-stairs/',
+          estimatedTime: 20,
+          tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'is-subsequence',
+          title: 'Is Subsequence',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/is-subsequence/',
+          estimatedTime: 20,
+          tags: ['two-pointers', 'string', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'divisor-game',
+          title: 'Divisor Game',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/divisor-game/',
+          estimatedTime: 15,
+          tags: ['math', 'dynamic-programming', 'game-theory'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'get-maximum-generated-array',
+          title: 'Get Maximum in Generated Array',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/get-maximum-in-generated-array/',
+          estimatedTime: 20,
+          tags: ['array', 'dynamic-programming', 'simulation'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'counting-bits',
+          title: 'Counting Bits',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/counting-bits/',
+          estimatedTime: 25,
+          tags: ['dynamic-programming', 'bit-manipulation'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'range-sum-query-immutable',
+          title: 'Range Sum Query - Immutable',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/range-sum-query-immutable/',
+          estimatedTime: 20,
+          tags: ['array', 'design', 'prefix-sum'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
           id: 'house-robber',
           title: 'House Robber',
           difficulty: 'Medium',
-          pattern: 'linear-dp',
+          pattern: 'basic-dp',
           category: 'dynamic-programming',
           leetcodeUrl: 'https://leetcode.com/problems/house-robber/',
           estimatedTime: 25,
           tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'maximum-subarray',
+          title: 'Maximum Subarray',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/maximum-subarray/',
+          estimatedTime: 25,
+          tags: ['array', 'divide-and-conquer', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'best-time-buy-sell-stock',
+          title: 'Best Time to Buy and Sell Stock',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/',
+          estimatedTime: 20,
+          tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'pascal-triangle',
+          title: 'Pascal\'s Triangle',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/pascals-triangle/',
+          estimatedTime: 20,
+          tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'pascal-triangle-ii',
+          title: 'Pascal\'s Triangle II',
+          difficulty: 'Easy',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/pascals-triangle-ii/',
+          estimatedTime: 20,
+          tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'delete-and-earn',
+          title: 'Delete and Earn',
+          difficulty: 'Medium',
+          pattern: 'basic-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/delete-and-earn/',
+          estimatedTime: 30,
+          tags: ['array', 'hash-table', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        }
+      ]
+    },
+    {
+      id: 'linear-dp',
+      name: 'Linear DP',
+      description: 'Solve 1D dynamic programming problems with optimal substructure',
+      totalProblems: 15,
+      completedProblems: 0,
+      problems: [
+        {
+          id: 'unique-paths',
+          title: 'Unique Paths',
+          difficulty: 'Medium',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/unique-paths/',
+          estimatedTime: 25,
+          tags: ['math', 'dynamic-programming', 'combinatorics'],
           userStatus: {
             completed: false,
             attempted: false,
@@ -142,6 +375,134 @@ export const dynamicProgrammingCategory: Category = {
             lastAttempted: null,
             timeSpent: 0
           }
+        },
+        {
+          id: 'coin-change-2',
+          title: 'Coin Change 2',
+          difficulty: 'Medium',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/coin-change-2/',
+          estimatedTime: 30,
+          tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'combination-sum-iv',
+          title: 'Combination Sum IV',
+          difficulty: 'Medium',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/combination-sum-iv/',
+          estimatedTime: 30,
+          tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'house-robber-iii',
+          title: 'House Robber III',
+          difficulty: 'Medium',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/house-robber-iii/',
+          estimatedTime: 35,
+          tags: ['dynamic-programming', 'tree', 'depth-first-search', 'binary-tree'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'best-time-buy-sell-stock-ii',
+          title: 'Best Time to Buy and Sell Stock II',
+          difficulty: 'Easy',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/',
+          estimatedTime: 20,
+          tags: ['array', 'dynamic-programming', 'greedy'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'best-time-buy-sell-stock-cooldown',
+          title: 'Best Time to Buy and Sell Stock with Cooldown',
+          difficulty: 'Medium',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/',
+          estimatedTime: 35,
+          tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'perfect-squares',
+          title: 'Perfect Squares',
+          difficulty: 'Medium',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/perfect-squares/',
+          estimatedTime: 30,
+          tags: ['math', 'dynamic-programming', 'breadth-first-search'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'wiggle-subsequence',
+          title: 'Wiggle Subsequence',
+          difficulty: 'Medium',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/wiggle-subsequence/',
+          estimatedTime: 30,
+          tags: ['array', 'dynamic-programming', 'greedy'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'integer-break',
+          title: 'Integer Break',
+          difficulty: 'Medium',
+          pattern: 'linear-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/integer-break/',
+          estimatedTime: 25,
+          tags: ['math', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
         }
       ]
     },
@@ -149,18 +510,18 @@ export const dynamicProgrammingCategory: Category = {
       id: 'grid-dp',
       name: 'Grid DP',
       description: 'Solve 2D grid-based dynamic programming problems',
-      totalProblems: 6,
+      totalProblems: 15,
       completedProblems: 0,
       problems: [
         {
-          id: 'unique-paths',
-          title: 'Unique Paths',
+          id: 'longest-common-subsequence',
+          title: 'Longest Common Subsequence',
           difficulty: 'Medium',
           pattern: 'grid-dp',
           category: 'dynamic-programming',
-          leetcodeUrl: 'https://leetcode.com/problems/unique-paths/',
-          estimatedTime: 25,
-          tags: ['math', 'dynamic-programming', 'combinatorics'],
+          leetcodeUrl: 'https://leetcode.com/problems/longest-common-subsequence/',
+          estimatedTime: 35,
+          tags: ['string', 'dynamic-programming'],
           userStatus: {
             completed: false,
             attempted: false,
@@ -217,6 +578,54 @@ export const dynamicProgrammingCategory: Category = {
           }
         },
         {
+          id: 'triangle',
+          title: 'Triangle',
+          difficulty: 'Medium',
+          pattern: 'grid-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/triangle/',
+          estimatedTime: 30,
+          tags: ['array', 'dynamic-programming'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'minimum-falling-path-sum',
+          title: 'Minimum Falling Path Sum',
+          difficulty: 'Medium',
+          pattern: 'grid-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/minimum-falling-path-sum/',
+          estimatedTime: 30,
+          tags: ['array', 'dynamic-programming', 'matrix'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'maximal-rectangle',
+          title: 'Maximal Rectangle',
+          difficulty: 'Hard',
+          pattern: 'grid-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/maximal-rectangle/',
+          estimatedTime: 50,
+          tags: ['array', 'dynamic-programming', 'stack', 'matrix', 'monotonic-stack'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
           id: 'dungeon-game',
           title: 'Dungeon Game',
           difficulty: 'Hard',
@@ -247,73 +656,16 @@ export const dynamicProgrammingCategory: Category = {
             lastAttempted: null,
             timeSpent: 0
           }
-        }
-      ]
-    },
-    {
-      id: 'string-dp',
-      name: 'String DP',
-      description: 'Dynamic programming on strings: LCS, edit distance, palindromes',
-      totalProblems: 6,
-      completedProblems: 0,
-      problems: [
-        {
-          id: 'longest-common-subsequence',
-          title: 'Longest Common Subsequence',
-          difficulty: 'Medium',
-          pattern: 'string-dp',
-          category: 'dynamic-programming',
-          leetcodeUrl: 'https://leetcode.com/problems/longest-common-subsequence/',
-          estimatedTime: 35,
-          tags: ['string', 'dynamic-programming'],
-          userStatus: {
-            completed: false,
-            attempted: false,
-            lastAttempted: null,
-            timeSpent: 0
-          }
         },
         {
-          id: 'edit-distance',
-          title: 'Edit Distance',
-          difficulty: 'Hard',
-          pattern: 'string-dp',
-          category: 'dynamic-programming',
-          leetcodeUrl: 'https://leetcode.com/problems/edit-distance/',
-          estimatedTime: 45,
-          tags: ['string', 'dynamic-programming'],
-          userStatus: {
-            completed: false,
-            attempted: false,
-            lastAttempted: null,
-            timeSpent: 0
-          }
-        },
-        {
-          id: 'longest-palindromic-substring',
-          title: 'Longest Palindromic Substring',
+          id: 'count-square-submatrices',
+          title: 'Count Square Submatrices with All Ones',
           difficulty: 'Medium',
-          pattern: 'string-dp',
+          pattern: 'grid-dp',
           category: 'dynamic-programming',
-          leetcodeUrl: 'https://leetcode.com/problems/longest-palindromic-substring/',
-          estimatedTime: 35,
-          tags: ['string', 'dynamic-programming'],
-          userStatus: {
-            completed: false,
-            attempted: false,
-            lastAttempted: null,
-            timeSpent: 0
-          }
-        },
-        {
-          id: 'palindromic-substrings',
-          title: 'Palindromic Substrings',
-          difficulty: 'Medium',
-          pattern: 'string-dp',
-          category: 'dynamic-programming',
-          leetcodeUrl: 'https://leetcode.com/problems/palindromic-substrings/',
+          leetcodeUrl: 'https://leetcode.com/problems/count-square-submatrices-with-all-ones/',
           estimatedTime: 30,
-          tags: ['string', 'dynamic-programming'],
+          tags: ['array', 'dynamic-programming', 'matrix'],
           userStatus: {
             completed: false,
             attempted: false,
@@ -322,14 +674,46 @@ export const dynamicProgrammingCategory: Category = {
           }
         },
         {
-          id: 'distinct-subsequences',
-          title: 'Distinct Subsequences',
-          difficulty: 'Hard',
-          pattern: 'string-dp',
+          id: 'largest-1-bordered-square',
+          title: 'Largest 1-Bordered Square',
+          difficulty: 'Medium',
+          pattern: 'grid-dp',
           category: 'dynamic-programming',
-          leetcodeUrl: 'https://leetcode.com/problems/distinct-subsequences/',
+          leetcodeUrl: 'https://leetcode.com/problems/largest-1-bordered-square/',
+          estimatedTime: 40,
+          tags: ['array', 'dynamic-programming', 'matrix'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'maximum-side-length-square',
+          title: 'Maximum Side Length of a Square with Sum Less than or Equal to Threshold',
+          difficulty: 'Medium',
+          pattern: 'grid-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/',
+          estimatedTime: 35,
+          tags: ['array', 'binary-search', 'matrix', 'prefix-sum'],
+          userStatus: {
+            completed: false,
+            attempted: false,
+            lastAttempted: null,
+            timeSpent: 0
+          }
+        },
+        {
+          id: 'count-submatrices-sum-target',
+          title: 'Number of Submatrices That Sum to Target',
+          difficulty: 'Hard',
+          pattern: 'grid-dp',
+          category: 'dynamic-programming',
+          leetcodeUrl: 'https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/',
           estimatedTime: 45,
-          tags: ['string', 'dynamic-programming'],
+          tags: ['array', 'hash-table', 'matrix', 'prefix-sum'],
           userStatus: {
             completed: false,
             attempted: false,
@@ -338,14 +722,14 @@ export const dynamicProgrammingCategory: Category = {
           }
         },
         {
-          id: 'regular-expression-matching',
-          title: 'Regular Expression Matching',
+          id: 'cherry-pickup-ii',
+          title: 'Cherry Pickup II',
           difficulty: 'Hard',
-          pattern: 'string-dp',
+          pattern: 'grid-dp',
           category: 'dynamic-programming',
-          leetcodeUrl: 'https://leetcode.com/problems/regular-expression-matching/',
+          leetcodeUrl: 'https://leetcode.com/problems/cherry-pickup-ii/',
           estimatedTime: 50,
-          tags: ['string', 'dynamic-programming', 'recursion'],
+          tags: ['array', 'dynamic-programming', 'matrix'],
           userStatus: {
             completed: false,
             attempted: false,
@@ -356,4 +740,3 @@ export const dynamicProgrammingCategory: Category = {
       ]
     }
   ]
-};

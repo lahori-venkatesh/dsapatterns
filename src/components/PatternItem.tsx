@@ -18,7 +18,7 @@ export const PatternItem: React.FC<PatternItemProps> = memo(({
   onProblemToggle, 
   onAddNote 
 }) => {
-  const { currentUser, categories } = useAppStore();
+  const { currentUser, categories, isPaid } = useAppStore();
   
   // Find the category this pattern belongs to
   const parentCategory = categories.find(cat => 
@@ -27,7 +27,7 @@ export const PatternItem: React.FC<PatternItemProps> = memo(({
   
   // Arrays & Strings is free to use as a model, others require payment
   const isFreeCategory = parentCategory?.name === 'Arrays & Strings';
-  const hasAccess = (currentUser?.isPremium) || isFreeCategory;
+  const hasAccess = (currentUser?.isPremium || isPaid) || isFreeCategory;
   
   // Memoized completion percentage
   const completionPercentage = useMemo(() => {

@@ -867,9 +867,17 @@ export const useAppStore = create<AppState>()(
           return { success: false, message: 'Your account is already premium!' };
         }
 
-        const updatedUser = { ...state.currentUser, isPremium: true };
+        const updatedUser = { 
+          ...state.currentUser, 
+          isPremium: true,
+          premiumActivatedAt: new Date()
+        };
+        
         set({
-          currentUser: updatedUser
+          currentUser: updatedUser,
+          isPaid: true,
+          activationDate: new Date(),
+          lastAccessDate: new Date()
         });
 
         return { success: true, message: 'Premium activated successfully! Welcome to Premium!' };

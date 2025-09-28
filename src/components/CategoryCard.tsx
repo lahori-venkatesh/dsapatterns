@@ -24,11 +24,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = memo(({
   onAddNote,
   onUpgrade
 }) => {
-  const { selectedPattern, currentUser } = useAppStore();
+  const { selectedPattern, currentUser, isPaid } = useAppStore();
   
   // Arrays & Strings is free to view as a model, others require payment
   const isFreeCategory = category.name === 'Arrays & Strings';
-  const hasAccess = (currentUser?.isPremium) || isFreeCategory;
+  const hasAccess = (currentUser?.isPremium || isPaid) || isFreeCategory;
   
   // Memoized icon component for better performance
   const IconComponent = useMemo(() => {

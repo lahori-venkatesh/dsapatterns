@@ -7,12 +7,11 @@ interface RevisionPageProps {
 }
 
 export const RevisionPage: React.FC<RevisionPageProps> = () => {
-  const { categories, notes, openNoteEditor, deleteNote, getNotesForProblem, currentUser, setCurrentView, toggleProblemComplete } = useAppStore();
+  const { categories, notes, openNoteEditor, deleteNote, getNotesForProblem, currentUser, setCurrentView, toggleProblemComplete, isPaid } = useAppStore();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   
   // If not paid, show payment gate
-  if (!currentUser?.isPremium) {
-    return (
+  if (!(currentUser?.isPremium || isPaid)) {
       <>
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
           <div className="max-w-7xl mx-auto px-6 py-8">

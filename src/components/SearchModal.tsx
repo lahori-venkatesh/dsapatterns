@@ -3,7 +3,7 @@ import { X, Search, ExternalLink, FileText, Sparkles } from 'lucide-react';
 import { useAppStore } from '../store';
 
 export const SearchModal: React.FC = () => {
-  const { isSearchOpen, toggleSearch, searchQuery, setSearchQuery, categories, notes, isPaid, verifyUserSession } = useAppStore();
+  const { isSearchOpen, toggleSearch, searchQuery, setSearchQuery, categories, notes, isPaid, currentUser } = useAppStore();
   const [activeTab, setActiveTab] = useState<'problems' | 'notes'>('problems');
 
   // Search through problems
@@ -163,13 +163,13 @@ export const SearchModal: React.FC = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`flex items-center space-x-2 px-4 py-2 text-sm rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl ${
-                            currentUser?.isPremium
+                            currentUser?.isPremium || isPaid
                               ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
                               : 'bg-gray-600 text-gray-300 cursor-not-allowed'
                           }`}
-                          onClick={!currentUser?.isPremium ? (e) => e.preventDefault() : undefined}
+                          onClick={!(currentUser?.isPremium || isPaid) ? (e) => e.preventDefault() : undefined}
                         >
-                          <span>{currentUser?.isPremium ? 'Solve' : 'Premium'}</span>
+                          <span>{(currentUser?.isPremium || isPaid) ? 'Solve' : 'Premium'}</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>

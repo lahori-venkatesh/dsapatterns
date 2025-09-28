@@ -4,7 +4,7 @@ export const heapsCategory: Category = {
   id: 'heaps',
   name: 'Heaps & Priority Queues',
   icon: 'Triangle',
-  level: 'beginner',
+  level: 'intermediate',
   totalProblems: 45,
   completedProblems: 0,
   patterns: [

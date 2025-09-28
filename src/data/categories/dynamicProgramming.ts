@@ -4,7 +4,7 @@ export const dynamicProgrammingCategory: Category = {
   id: 'dynamic-programming',
   name: 'Dynamic Programming',
   icon: 'Zap',
-  level: 'beginner',
+  level: 'pro',
   totalProblems: 45,
   completedProblems: 0,
   patterns: [

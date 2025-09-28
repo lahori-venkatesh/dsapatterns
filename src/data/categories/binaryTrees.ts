@@ -4,7 +4,7 @@ export const binaryTreesCategory: Category = {
   id: 'binary-trees',
   name: 'Binary Trees',
   icon: 'GitBranch',
-  level: 'beginner',
+  level: 'intermediate',
   totalProblems: 45,
   completedProblems: 0,
   patterns: [

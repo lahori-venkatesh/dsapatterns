@@ -1,7 +1,11 @@
 import { Category } from '../types';
 import { 
   arraysStringsCategory,
+  arraysStringsIntermediateCategory,
+  arraysStringsProCategory,
   linkedListsCategory,
+  linkedListsIntermediateCategory,
+  linkedListsProCategory,
   stacksQueuesCategory,
   binaryTreesCategory,
   hashTablesCategory,
@@ -14,15 +18,22 @@ import {
 
 // Main categories array - now much cleaner and organized
 export const mockCategories: Category[] = [
+  // Beginner Level
   arraysStringsCategory,
   linkedListsCategory,
+  // Intermediate Level
+  arraysStringsIntermediateCategory,
+  linkedListsIntermediateCategory,
   stacksQueuesCategory,
   binaryTreesCategory,
   hashTablesCategory,
   heapsCategory,
+  greedyAlgorithmsCategory,
+  // Pro Level
+  arraysStringsProCategory,
+  linkedListsProCategory,
   graphsCategory,
   dynamicProgrammingCategory,
-  greedyAlgorithmsCategory,
   backtrackingCategory
 ];
 

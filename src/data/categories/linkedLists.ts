@@ -6,7 +6,7 @@ export const linkedListsCategory: Category = {
   name: 'Linked Lists',
   icon: 'Link',
   level: 'beginner',
-  totalProblems: 45,
+  totalProblems: 135, // 45 per level
   completedProblems: 0,
   patterns: [
     {
@@ -1399,7 +1399,7 @@ export const linkedListsProCategory: Category = {
           leetcodeUrl: 'https://leetcode.com/problems/design-bounded-blocking-queue/',
           estimatedTime: 35,
           tags: ['concurrency'],
-          userStatus: { compressed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+          userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
         },
         {
           id: 'web-crawler-multithreaded',

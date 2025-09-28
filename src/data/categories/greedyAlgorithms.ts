@@ -4,7 +4,7 @@ export const greedyAlgorithmsCategory: Category = {
   id: 'greedy-algorithms',
   name: 'Greedy Algorithms',
   icon: 'TrendingUp',
-  level: 'beginner',
+  level: 'intermediate',
   totalProblems: 45,
   completedProblems: 0,
   patterns: [

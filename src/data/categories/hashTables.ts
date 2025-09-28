@@ -4,7 +4,7 @@ export const hashTablesCategory: Category = {
   id: 'hash-tables',
   name: 'Hash Tables',
   icon: 'Hash',
-  level: 'beginner',
+  level: 'intermediate',
   totalProblems: 45,
   completedProblems: 0,
   patterns: [

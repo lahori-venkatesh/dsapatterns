@@ -4,7 +4,7 @@ export const backtrackingCategory: Category = {
   id: 'backtracking',
   name: 'Backtracking',
   icon: 'RotateCcw',
-  level: 'beginner',
+  level: 'pro',
   totalProblems: 45,
   completedProblems: 0,
   patterns: [

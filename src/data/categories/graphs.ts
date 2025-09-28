@@ -4,7 +4,7 @@ export const graphsCategory: Category = {
   id: 'graphs',
   name: 'Graphs',
   icon: 'Network',
-  level: 'beginner',
+  level: 'pro',
   totalProblems: 45,
   completedProblems: 0,
   patterns: [

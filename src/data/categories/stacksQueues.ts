@@ -4,7 +4,7 @@ export const stacksQueuesCategory: Category = {
   id: 'stacks-queues',
   name: 'Stacks & Queues',
   icon: 'Layers',
-  level: 'beginner',
+  level: 'intermediate',
   totalProblems: 45,
   completedProblems: 0,
   patterns: [

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, CheckCircle, Circle, ExternalLink, StickyNote, CreditCard as Edit3, Trash2, Filter, Search, ArrowLeft, Crown } from 'lucide-react';
+import { BookOpen, CheckCircle, Circle, ExternalLink, StickyNote, Edit3, Trash2, Filter, Search, ArrowLeft, Crown, ChevronDown, ChevronRight } from 'lucide-react';
 import { useAppStore } from '../store';
 import { PaymentModal } from './PaymentModal';
 
@@ -9,6 +9,8 @@ interface RevisionPageProps {
 export const RevisionPage: React.FC<RevisionPageProps> = () => {
   const { categories, notes, openNoteEditor, deleteNote, getNotesForProblem, currentUser, setCurrentView, toggleProblemComplete, isPaid } = useAppStore();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [expandedPatterns, setExpandedPatterns] = useState<Set<string>>(new Set());
   
   // Check if user has premium access
   const hasAccess = currentUser?.isPremium || isPaid;
@@ -85,64 +87,61 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
       </>
     );
   }
-  
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterCompleted, setFilterCompleted] = useState<'all' | 'completed' | 'incomplete'>('all');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [groupBy, setGroupBy] = useState<'category' | 'flat'>('category');
 
-  // Get all problems with their category and pattern info
-  const getAllProblems = () => {
-    const allProblems: Array<{
+  // Get all solved problems with their category and pattern info
+  const getSolvedProblemsWithNotes = () => {
+    const solvedProblems: Array<{
       problem: any;
       category: string;
       pattern: string;
       categoryId: string;
       patternId: string;
+      notes: any[];
     }> = [];
 
     categories.forEach(category => {
       category.patterns.forEach(pattern => {
         pattern.problems.forEach(problem => {
-          allProblems.push({
-            problem,
-            category: category.name,
-            pattern: pattern.name,
-            categoryId: category.id,
-            patternId: pattern.id
-          });
+          // Only include solved problems
+          if (problem.userStatus.completed) {
+            const problemNotes = getNotesForProblem(problem.id);
+            solvedProblems.push({
+              problem,
+              category: category.name,
+              pattern: pattern.name,
+              categoryId: category.id,
+              patternId: pattern.id,
+              notes: problemNotes
+            });
+          }
         });
       });
     });
 
-    return allProblems;
+    return solvedProblems;
   };
 
-  // Filter problems based on search and filters
-  const filteredProblems = getAllProblems().filter(({ problem, category, pattern }) => {
-    // Search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      if (!problem.title.toLowerCase().includes(query) &&
-          !category.toLowerCase().includes(query) &&
-          !pattern.toLowerCase().includes(query)) {
-        return false;
-      }
+  const solvedProblems = getSolvedProblemsWithNotes();
+
+  // Group solved problems by category and pattern
+  const groupedProblems = solvedProblems.reduce((acc, item) => {
+    if (!acc[item.categoryId]) {
+      acc[item.categoryId] = {
+        categoryName: item.category,
+        patterns: {}
+      };
     }
-
-    // Completion filter
-    if (filterCompleted === 'completed' && !problem.userStatus.completed) return false;
-    if (filterCompleted === 'incomplete' && problem.userStatus.completed) return false;
-
-    // Category filter
-    if (selectedCategory !== 'all' && selectedCategory !== problem.category) return false;
-
-    return true;
-  });
-
-  // Get completed problems count
-  const completedCount = getAllProblems().filter(({ problem }) => problem.userStatus.completed).length;
-  const totalCount = getAllProblems().length;
+    
+    if (!acc[item.categoryId].patterns[item.patternId]) {
+      acc[item.categoryId].patterns[item.patternId] = {
+        patternName: item.pattern,
+        problems: []
+      };
+    }
+    
+    acc[item.categoryId].patterns[item.patternId].problems.push(item);
+    return acc;
+  }, {} as any);
 
   const handleEditNote = (note: any) => {
     openNoteEditor(note);
@@ -157,6 +156,30 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
   const handleProblemCheck = (problemId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     toggleProblemComplete(problemId);
+  };
+
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(categoryId)) {
+        newSet.delete(categoryId);
+      } else {
+        newSet.add(categoryId);
+      }
+      return newSet;
+    });
+  };
+
+  const togglePattern = (patternId: string) => {
+    setExpandedPatterns(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(patternId)) {
+        newSet.delete(patternId);
+      } else {
+        newSet.add(patternId);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -183,7 +206,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
               <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Revision Center
               </h1>
-              <p className="text-gray-400">Review your progress and notes across all patterns</p>
+              <p className="text-gray-400">Review your solved problems and notes</p>
             </div>
           </div>
 
@@ -192,14 +215,10 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400">Total Progress</p>
-                  <p className="text-2xl font-bold text-white">{completedCount} / {totalCount}</p>
+                  <p className="text-sm text-gray-400">Solved Problems</p>
+                  <p className="text-2xl font-bold text-white">{solvedProblems.length}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm text-emerald-400 font-semibold">
-                    {Math.round((completedCount / totalCount) * 100)}%
-                  </p>
-                </div>
+                <CheckCircle className="w-8 h-8 text-emerald-400" />
               </div>
             </div>
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
@@ -208,303 +227,176 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
                   <p className="text-sm text-gray-400">Total Notes</p>
                   <p className="text-2xl font-bold text-white">{notes.length}</p>
                 </div>
+                <StickyNote className="w-8 h-8 text-purple-400" />
               </div>
             </div>
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-400">Categories</p>
-                  <p className="text-2xl font-bold text-white">{categories.length}</p>
+                  <p className="text-2xl font-bold text-white">{Object.keys(groupedProblems).length}</p>
                 </div>
+                <Filter className="w-8 h-8 text-blue-400" />
               </div>
             </div>
           </div>
-
-          {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search problems, categories, patterns..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200"
-              />
-            </div>
-            <select
-              value={filterCompleted}
-              onChange={(e) => setFilterCompleted(e.target.value as any)}
-              className="px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200"
-            >
-              <option value="all">All Problems</option>
-              <option value="completed">Completed</option>
-              <option value="incomplete">Incomplete</option>
-            </select>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200"
-            >
-              <option value="all">All Categories</option>
-              {categories.map(category => (
-                <option key={category.id} value={category.name}>{category.name}</option>
-              ))}
-            </select>
-          </div>
         </div>
 
-        {/* Problems List */}
-        {groupBy === 'category' ? (
-          <div className="space-y-8">
-            {categories.map(category => {
-              const categoryProblems = filteredProblems.filter(({ problem }) => 
-                problem.category === category.name
-              );
-              
-              if (categoryProblems.length === 0) return null;
-              
-              return (
-                <div key={category.id} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl">
-                      <div className="w-6 h-6 bg-blue-400 rounded"></div>
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-white">{category.name}</h2>
-                      <p className="text-sm text-gray-400">{categoryProblems.length} problems</p>
-                    </div>
-                  </div>
-                  
-                  {/* Group by patterns within category */}
-                  {category.patterns.map(pattern => {
-                    const patternProblems = categoryProblems.filter(({ problem }) => 
-                      problem.pattern === pattern.name
-                    );
-                    
-                    if (patternProblems.length === 0) return null;
-                    
-                    return (
-                      <div key={pattern.id} className="mb-6 last:mb-0">
-                        <h3 className="text-lg font-semibold text-blue-300 mb-4 flex items-center space-x-2">
-                          <div className="w-1 h-6 bg-gradient-to-b from-blue-400 to-purple-400 rounded-full"></div>
-                          <span>{pattern.name}</span>
-                          <span className="text-sm text-gray-400">({patternProblems.length})</span>
-                        </h3>
-                        
-                        <div className="space-y-3">
-                          {patternProblems.map(({ problem }) => {
-                            const problemNotes = getNotesForProblem(problem.id);
-                            
-                            return (
-                              <div key={problem.id} className="bg-gray-700/30 rounded-xl p-4 border border-gray-600/30">
-                                <div className="flex items-start justify-between">
-                                  <div className="flex items-start space-x-3 flex-1">
-                                    <button
-                                      onClick={(e) => handleProblemCheck(problem.id, e)}
-                                      className="flex-shrink-0 mt-1 p-1 hover:bg-gray-600/30 rounded-full transition-all duration-200"
-                                    >
-                                      {problem.userStatus.completed ? (
-                                        <CheckCircle className="w-5 h-5 text-emerald-400" />
-                                      ) : problem.userStatus.attempted ? (
-                                        <Circle className="w-5 h-5 text-amber-400 fill-current" />
-                                      ) : (
-                                        <Circle className="w-5 h-5 text-gray-500" />
-                                      )}
-                                    </button>
-                                    
-                                    <div className="flex-1">
-                                      <h4 className="font-semibold text-white mb-2">{problem.title}</h4>
-                                      <div className="flex items-center space-x-3 mb-3">
-                                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                                          problem.difficulty === 'Easy' 
-                                            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                                            : problem.difficulty === 'Medium'
-                                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                            : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                                        }`}>
-                                          {problem.difficulty}
-                                        </span>
-                                        {problemNotes.length > 0 && (
-                                          <div className="flex items-center space-x-1 text-purple-400">
-                                            <StickyNote className="w-3 h-3" />
-                                            <span className="text-xs">{problemNotes.length} note{problemNotes.length > 1 ? 's' : ''}</span>
-                                          </div>
-                                        )}
-                                      </div>
-                                      
-                                      {/* Notes */}
-                                      {problemNotes.length > 0 && (
-                                        <div className="space-y-2">
-                                          {problemNotes.map((note) => (
-                                            <div key={note.id} className="bg-gray-800/50 rounded-lg p-3 border border-gray-600/30">
-                                              <div className="flex items-start justify-between mb-2">
-                                                <h5 className="font-medium text-white text-sm">{note.title}</h5>
-                                                <div className="flex items-center space-x-1">
-                                                  <button
-                                                    onClick={() => handleEditNote(note)}
-                                                    className="p-1 text-gray-400 hover:text-blue-400 transition-colors"
-                                                  >
-                                                    <Edit3 className="w-3 h-3" />
-                                                  </button>
-                                                  <button
-                                                    onClick={() => handleDeleteNote(note.id)}
-                                                    className="p-1 text-gray-400 hover:text-red-400 transition-colors"
-                                                  >
-                                                    <Trash2 className="w-3 h-3" />
-                                                  </button>
-                                                </div>
-                                              </div>
-                                              {note.content && (
-                                                <p className="text-xs text-gray-300 mb-2 line-clamp-2 leading-relaxed">{note.content}</p>
-                                              )}
-                                              {note.tags.length > 0 && (
-                                                <div className="flex flex-wrap gap-1">
-                                                  {note.tags.map((tag) => (
-                                                    <span key={tag} className="text-xs px-2 py-1 bg-gray-600/50 text-gray-400 rounded-full">
-                                                      {tag}
-                                                    </span>
-                                                  ))}
-                                                </div>
-                                              )}
-                                            </div>
-                                          ))}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                  
-                                  <a
-                                    href={problem.leetcodeUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center space-x-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-xs rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl flex-shrink-0"
-                                  >
-                                    <span>Solve</span>
-                                    <ExternalLink className="w-3 h-3" />
-                                  </a>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
+        {/* Solved Problems by Category */}
+        {Object.keys(groupedProblems).length === 0 ? (
+          <div className="text-center py-12">
+            <div className="p-4 bg-gray-800/50 rounded-2xl w-fit mx-auto mb-4">
+              <CheckCircle className="w-12 h-12 mx-auto text-gray-500" />
+            </div>
+            <p className="text-lg font-medium text-gray-400 mb-2">No solved problems yet</p>
+            <p className="text-sm text-gray-500">Start solving problems to see them here for revision</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredProblems.map(({ problem, category, pattern }) => {
-              const problemNotes = getNotesForProblem(problem.id);
-              
-              return (
-                <div
-                  key={problem.id}
-                  className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 hover:border-gray-600/50 transition-all duration-200"
+          <div className="space-y-6">
+            {Object.entries(groupedProblems).map(([categoryId, categoryData]: [string, any]) => (
+              <div key={categoryId} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl border border-gray-700/50 overflow-hidden">
+                {/* Category Header */}
+                <button
+                  onClick={() => toggleCategory(categoryId)}
+                  className="w-full p-6 text-left hover:bg-gray-700/30 transition-all duration-200 flex items-center justify-between"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start space-x-4 flex-1">
-                      <button
-                        onClick={(e) => handleProblemCheck(problem.id, e)}
-                        className="flex-shrink-0 p-1 hover:bg-gray-600/30 rounded-full transition-all duration-200"
-                      >
-                        {problem.userStatus.completed ? (
-                          <CheckCircle className="w-5 h-5 text-emerald-400 hover:text-emerald-300" />
-                        ) : problem.userStatus.attempted ? (
-                          <Circle className="w-5 h-5 text-amber-400 hover:text-amber-300 fill-current" />
-                        ) : (
-                          <Circle className="w-5 h-5 text-gray-500 hover:text-gray-400" />
-                        )}
-                      </button>
-                      
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-white mb-2">{problem.title}</h3>
-                        <div className="flex items-center space-x-4 mb-3">
-                          <span className="text-sm text-gray-400">{category} → {pattern}</span>
-                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                            problem.difficulty === 'Easy' 
-                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                              : problem.difficulty === 'Medium'
-                              ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                              : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                          }`}>
-                            {problem.difficulty}
-                          </span>
-                          {problemNotes.length > 0 && (
-                            <div className="flex items-center space-x-1 text-purple-400">
-                              <StickyNote className="w-3 h-3" />
-                              <span className="text-xs">{problemNotes.length} note{problemNotes.length > 1 ? 's' : ''}</span>
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl">
+                      <BookOpen className="w-6 h-6 text-blue-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">{categoryData.categoryName}</h2>
+                      <p className="text-sm text-gray-400">
+                        {Object.keys(categoryData.patterns).length} patterns • {
+                          Object.values(categoryData.patterns).reduce((sum: number, pattern: any) => sum + pattern.problems.length, 0)
+                        } solved problems
+                      </p>
+                    </div>
+                  </div>
+                  {expandedCategories.has(categoryId) ? (
+                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                  )}
+                </button>
+
+                {/* Category Content */}
+                {expandedCategories.has(categoryId) && (
+                  <div className="border-t border-gray-700/50 bg-gray-900/30">
+                    <div className="p-6 space-y-4">
+                      {Object.entries(categoryData.patterns).map(([patternId, patternData]: [string, any]) => (
+                        <div key={patternId} className="bg-gray-700/30 rounded-xl overflow-hidden">
+                          {/* Pattern Header */}
+                          <button
+                            onClick={() => togglePattern(patternId)}
+                            className="w-full p-4 text-left hover:bg-gray-600/30 transition-all duration-200 flex items-center justify-between"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <div className="w-1 h-6 bg-gradient-to-b from-blue-400 to-purple-400 rounded-full"></div>
+                              <div>
+                                <h3 className="text-lg font-semibold text-blue-300">{patternData.patternName}</h3>
+                                <p className="text-sm text-gray-400">{patternData.problems.length} solved problems</p>
+                              </div>
+                            </div>
+                            {expandedPatterns.has(patternId) ? (
+                              <ChevronDown className="w-4 h-4 text-gray-400" />
+                            ) : (
+                              <ChevronRight className="w-4 h-4 text-gray-400" />
+                            )}
+                          </button>
+
+                          {/* Pattern Problems */}
+                          {expandedPatterns.has(patternId) && (
+                            <div className="border-t border-gray-600/30 bg-gray-800/30">
+                              <div className="p-4 space-y-3">
+                                {patternData.problems.map((item: any) => (
+                                  <div key={item.problem.id} className="bg-gray-600/30 rounded-lg p-4 border border-gray-500/30">
+                                    <div className="flex items-start justify-between mb-3">
+                                      <div className="flex items-start space-x-3 flex-1">
+                                        <CheckCircle className="w-5 h-5 text-emerald-400 mt-1 flex-shrink-0" />
+                                        <div className="flex-1">
+                                          <h4 className="font-semibold text-white mb-2">{item.problem.title}</h4>
+                                          <div className="flex items-center space-x-3 mb-3">
+                                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                              item.problem.difficulty === 'Easy' 
+                                                ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                                                : item.problem.difficulty === 'Medium'
+                                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                                : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                            }`}>
+                                              {item.problem.difficulty}
+                                            </span>
+                                            {item.notes.length > 0 && (
+                                              <div className="flex items-center space-x-1 text-purple-400">
+                                                <StickyNote className="w-3 h-3" />
+                                                <span className="text-xs">{item.notes.length} note{item.notes.length > 1 ? 's' : ''}</span>
+                                              </div>
+                                            )}
+                                          </div>
+                                          
+                                          {/* Notes */}
+                                          {item.notes.length > 0 && (
+                                            <div className="space-y-2">
+                                              {item.notes.map((note: any) => (
+                                                <div key={note.id} className="bg-gray-700/50 rounded-lg p-3 border border-gray-600/30">
+                                                  <div className="flex items-start justify-between mb-2">
+                                                    <h5 className="font-medium text-white text-sm">{note.title}</h5>
+                                                    <div className="flex items-center space-x-1">
+                                                      <button
+                                                        onClick={() => handleEditNote(note)}
+                                                        className="p-1 text-gray-400 hover:text-blue-400 transition-colors"
+                                                      >
+                                                        <Edit3 className="w-3 h-3" />
+                                                      </button>
+                                                      <button
+                                                        onClick={() => handleDeleteNote(note.id)}
+                                                        className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+                                                      >
+                                                        <Trash2 className="w-3 h-3" />
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                  {note.content && (
+                                                    <p className="text-xs text-gray-300 mb-2 line-clamp-2 leading-relaxed">{note.content}</p>
+                                                  )}
+                                                  {note.tags.length > 0 && (
+                                                    <div className="flex flex-wrap gap-1">
+                                                      {note.tags.map((tag: string) => (
+                                                        <span key={tag} className="text-xs px-2 py-1 bg-gray-600/50 text-gray-400 rounded-full">
+                                                          {tag}
+                                                        </span>
+                                                      ))}
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                      
+                                      <a
+                                        href={item.problem.leetcodeUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center space-x-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-xs rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl flex-shrink-0"
+                                      >
+                                        <span>Solve Again</span>
+                                        <ExternalLink className="w-3 h-3" />
+                                      </a>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           )}
                         </div>
-                        
-                        {/* Notes */}
-                        {problemNotes.length > 0 && (
-                          <div className="space-y-3">
-                            {problemNotes.map((note) => (
-                              <div key={note.id} className="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
-                                <div className="flex items-start justify-between mb-2">
-                                  <h4 className="font-medium text-white">{note.title}</h4>
-                                  <div className="flex items-center space-x-1">
-                                    <button
-                                      onClick={() => handleEditNote(note)}
-                                      className="p-1 text-gray-400 hover:text-blue-400 transition-colors"
-                                    >
-                                      <Edit3 className="w-3 h-3" />
-                                    </button>
-                                    <button
-                                      onClick={() => handleDeleteNote(note.id)}
-                                      className="p-1 text-gray-400 hover:text-red-400 transition-colors"
-                                    >
-                                      <Trash2 className="w-3 h-3" />
-                                    </button>
-                                  </div>
-                                </div>
-                                {note.content && (
-                                  <p className="text-sm text-gray-300 mb-2 leading-relaxed">{note.content}</p>
-                                )}
-                                {note.tags.length > 0 && (
-                                  <div className="flex flex-wrap gap-1">
-                                    {note.tags.map((tag) => (
-                                      <span key={tag} className="text-xs px-2 py-1 bg-gray-600/50 text-gray-400 rounded-full">
-                                        {tag}
-                                      </span>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                      ))}
                     </div>
-                    
-                    <a
-                      href={problem.leetcodeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-sm rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl flex-shrink-0"
-                    >
-                      <span>Solve</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {filteredProblems.length === 0 && (
-          <div className="text-center py-12">
-            <div className="p-4 bg-gray-800/50 rounded-2xl w-fit mx-auto mb-4">
-              <Filter className="w-12 h-12 mx-auto text-gray-500" />
-            </div>
-            <p className="text-lg font-medium text-gray-400 mb-2">No problems found</p>
-            <p className="text-sm text-gray-500">Try adjusting your search or filters</p>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>

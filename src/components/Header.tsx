@@ -110,7 +110,7 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Actions */}
+        {/* User Authentication */}
         <div className="flex items-center space-x-2">
           {/* User Authentication */}
           {currentUser ? (
@@ -180,14 +180,6 @@ export const Header: React.FC = () => {
             </button>
           )}
           
-          {/* Premium Badge */}
-          {isPaid && !currentUser && (
-            <div className="hidden sm:flex items-center space-x-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 px-3 py-1 rounded-full">
-              <Crown className="w-3 h-3 text-amber-400" />
-              <span className="text-xs text-amber-300 font-medium">Premium</span>
-            </div>
-          )}
-          
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center space-x-1">
             <button
@@ -211,18 +203,6 @@ export const Header: React.FC = () => {
               <RotateCcw className="w-4 h-4" />
             </button>
           </div>
-          
-          <button
-            onClick={toggleSearch}
-            className={`p-2 rounded-xl transition-all duration-200 relative ${
-              isSearchOpen
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
-                : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
-            }`}
-            title="Search"
-          >
-            <Search className="w-5 h-5" />
-          </button>
         </div>
       </div>
     </header>

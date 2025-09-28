@@ -137,11 +137,19 @@ export const CategoryCard: React.FC<CategoryCardProps> = memo(({
           </div>
           
           <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
-            {/* Pro Badge for Non-Free Categories */}
-            {!isFreeCategory && (
+            {/* Pro Badge for Non-Free Categories - Only show if user doesn't have access */}
+            {!isFreeCategory && !hasAccess && (
               <div className="flex items-center space-x-1 bg-amber-500/20 border border-amber-500/30 px-2 py-1 rounded-full">
                 <Lock className="w-3 h-3 text-amber-400" />
                 <span className="text-xs text-amber-300 font-medium">Pro</span>
+              </div>
+            )}
+            
+            {/* Premium Badge for users who have premium access */}
+            {!isFreeCategory && hasAccess && (
+              <div className="flex items-center space-x-1 bg-emerald-500/20 border border-emerald-500/30 px-2 py-1 rounded-full">
+                <Crown className="w-3 h-3 text-emerald-400" />
+                <span className="text-xs text-emerald-300 font-medium">Premium</span>
               </div>
             )}
             

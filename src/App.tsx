@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { Crown } from 'lucide-react';
+import { Crown, Coffee, Code2, BookOpen } from 'lucide-react';
 import { supabase } from './config/supabase';
 import { Header } from './components/Header';
 import { useCategories } from './hooks/useCategories';
 import { usePerformance } from './hooks/usePerformance';
 import { useAppStore } from './store';
+import { javaMastery, pythonMastery, cppMastery } from './data/categories';
 
 // Lazy load heavy components for code splitting
 const CategoryCard = lazy(() => import('./components/CategoryCard').then(m => ({ default: m.CategoryCard })));
@@ -328,12 +329,111 @@ function App() {
           </div>
         </div>
 
-        {/* Entry Cards Section */}
-        <main className="container mx-auto px-4 py-12 md:py-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Choose Your Learning Path</h2>
-            <p className="text-gray-400 text-lg">Select a domain to start your preparation journey</p>
+        {/* Main Content */}
+        <main className="container mx-auto px-4 py-12 md:py-16 space-y-16">
+          {/* Programming Languages Section */}
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Learn Programming Languages</h2>
+              <p className="text-gray-400 text-lg">Master the fundamentals before diving into DSA</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {/* Java Card */}
+              <button
+                onClick={() => setShowDSAMastery(true)}
+                className="group relative overflow-hidden rounded-2xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-red-600/10 backdrop-blur-sm p-6 text-left transition-all duration-300 hover:border-orange-500/60 hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-3 bg-orange-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                      <Coffee className="w-8 h-8 text-orange-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">{javaMastery.language}</h3>
+                      <p className="text-sm text-gray-400">{javaMastery.totalProblems} problems</p>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-300 mb-4 leading-relaxed">{javaMastery.description}</p>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-orange-500/20">
+                    <span className="text-sm text-orange-400 font-medium">Start Learning →</span>
+                    <div className="text-xs text-gray-500">
+                      <span className="text-orange-400 font-bold">{javaMastery.completedProblems}</span>/{javaMastery.totalProblems}
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              {/* Python Card */}
+              <button
+                onClick={() => setShowDSAMastery(true)}
+                className="group relative overflow-hidden rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-yellow-500/10 backdrop-blur-sm p-6 text-left transition-all duration-300 hover:border-blue-500/60 hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-3 bg-blue-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                      <Code2 className="w-8 h-8 text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">{pythonMastery.language}</h3>
+                      <p className="text-sm text-gray-400">{pythonMastery.totalProblems} problems</p>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-300 mb-4 leading-relaxed">{pythonMastery.description}</p>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-blue-500/20">
+                    <span className="text-sm text-blue-400 font-medium">Start Learning →</span>
+                    <div className="text-xs text-gray-500">
+                      <span className="text-blue-400 font-bold">{pythonMastery.completedProblems}</span>/{pythonMastery.totalProblems}
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              {/* C++ Card */}
+              <button
+                onClick={() => setShowDSAMastery(true)}
+                className="group relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm p-6 text-left transition-all duration-300 hover:border-purple-500/60 hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-3 bg-purple-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                      <BookOpen className="w-8 h-8 text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">{cppMastery.language}</h3>
+                      <p className="text-sm text-gray-400">{cppMastery.totalProblems} problems</p>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-300 mb-4 leading-relaxed">{cppMastery.description}</p>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-purple-500/20">
+                    <span className="text-sm text-purple-400 font-medium">Start Learning →</span>
+                    <div className="text-xs text-gray-500">
+                      <span className="text-purple-400 font-bold">{cppMastery.completedProblems}</span>/{cppMastery.totalProblems}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
           </div>
+
+          {/* Entry Cards Section */}
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Choose Your Learning Path</h2>
+              <p className="text-gray-400 text-lg">Select a domain to start your preparation journey</p>
+            </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* DSA Mastery Card */}
@@ -422,9 +522,10 @@ function App() {
               </div>
             </button>
           </div>
+          </div>
 
           {/* Big O Notation Section */}
-          <div className="mt-16 bg-gradient-to-r from-purple-900/30 to-blue-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-500/30">
+          <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-500/30">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-white mb-2">Master Big O Notation</h3>

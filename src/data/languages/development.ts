@@ -7,7 +7,7 @@ export const developmentMastery: LanguageMastery = {
   icon: 'Code',
   description: 'Complete Full Stack interview preparation: Frontend, Backend, DevOps, Security, Testing & System Design',
   color: 'from-emerald-500 to-teal-600',
-  totalProblems: 150,
+  totalProblems: 159,
   completedProblems: 0,
   problems: [
     // ========================================
@@ -6775,6 +6775,3486 @@ getLCP(console.log);
 ✅ Monitor Core Web Vitals`,
       topics: ['Performance', 'Core Web Vitals', 'Optimization', 'Caching', 'LCP', 'FID', 'CLS'],
       estimatedTime: 40,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // Express.js
+    // ========================================
+    {
+      id: 'expressjs-middleware',
+      title: 'Express.js Middleware Pattern',
+      difficulty: 'Medium' as any,
+      category: 'Express.js',
+      description: 'Understanding middleware, routing, and error handling in Express.js',
+      answer: `# Express.js Middleware Pattern
+
+## What is Middleware?
+
+Middleware functions are functions that have access to the request object (req), response object (res), and the next middleware function in the application's request-response cycle.
+
+## Basic Middleware Structure
+
+\`\`\`javascript
+const express = require('express');
+const app = express();
+
+// Application-level middleware
+app.use((req, res, next) => {
+  console.log('Time:', Date.now());
+  next(); // Pass control to next middleware
+});
+
+// Built-in middleware
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.static('public')); // Serve static files
+
+// Router-level middleware
+const router = express.Router();
+router.use((req, res, next) => {
+  console.log('Request URL:', req.originalUrl);
+  next();
+});
+
+app.use('/api', router);
+\`\`\`
+
+## Custom Middleware Examples
+
+### Authentication Middleware
+\`\`\`javascript
+const authenticateToken = (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access token required' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
+// Usage
+app.get('/api/protected', authenticateToken, (req, res) => {
+  res.json({ message: 'Protected data', user: req.user });
+});
+\`\`\`
+
+### Request Logger Middleware
+\`\`\`javascript
+const requestLogger = (req, res, next) => {
+  const start = Date.now();
+
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(\`\${req.method} \${req.url} - \${res.statusCode} - \${duration}ms\`);
+  });
+
+  next();
+};
+
+app.use(requestLogger);
+\`\`\`
+
+### Rate Limiting Middleware
+\`\`\`javascript
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests, please try again later'
+});
+
+app.use('/api/', limiter);
+\`\`\`
+
+## Error Handling Middleware
+
+\`\`\`javascript
+// 404 Handler
+app.use((req, res, next) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
+// Global Error Handler (must have 4 parameters)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message,
+      status: err.status || 500,
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    }
+  });
+});
+
+// Async Error Handler Wrapper
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// Usage
+app.get('/api/users/:id', asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  res.json(user);
+}));
+\`\`\`
+
+## RESTful API Example
+
+\`\`\`javascript
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+// CRUD Operations
+app.get('/api/users', async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+app.get('/api/users/:id', async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json(user);
+});
+
+app.post('/api/users', async (req, res) => {
+  const user = await User.create(req.body);
+  res.status(201).json(user);
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json(user);
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.status(204).send();
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(\`Server running on port \${PORT}\`));
+\`\`\`
+
+## Best Practices
+
+✅ Always call \`next()\` or send a response
+✅ Use async/await with error handling
+✅ Organize routes into separate files
+✅ Validate input with middleware (joi, express-validator)
+✅ Use helmet for security headers
+✅ Enable CORS appropriately
+✅ Implement proper logging
+✅ Use compression middleware
+✅ Handle errors centrally`,
+      topics: ['Express.js', 'Middleware', 'REST API', 'Error Handling', 'Backend'],
+      estimatedTime: 35,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // Java Spring Boot
+    // ========================================
+    {
+      id: 'spring-boot-rest-api',
+      title: 'Spring Boot REST API with Dependency Injection',
+      difficulty: 'Medium' as any,
+      category: 'Spring Boot',
+      description: 'Building REST APIs with Spring Boot, annotations, and dependency injection',
+      answer: `# Spring Boot REST API
+
+## Spring Boot Overview
+
+Spring Boot is a framework that simplifies Spring application development with auto-configuration, embedded servers, and production-ready features.
+
+## Key Annotations
+
+\`\`\`java
+@SpringBootApplication  // Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
+@RestController        // Combines @Controller + @ResponseBody
+@RequestMapping        // Map HTTP requests to handler methods
+@GetMapping           // HTTP GET requests
+@PostMapping          // HTTP POST requests
+@PutMapping           // HTTP PUT requests
+@DeleteMapping        // HTTP DELETE requests
+@PathVariable         // Extract values from URI path
+@RequestBody          // Bind HTTP request body to method parameter
+@Service              // Service layer component
+@Repository           // Data access layer component
+@Autowired            // Dependency injection
+@Component            // Generic component
+\`\`\`
+
+## Complete REST API Example
+
+### Entity Class
+\`\`\`java
+import javax.persistence.*;
+import lombok.Data;
+
+@Entity
+@Table(name = "users")
+@Data // Lombok: generates getters, setters, toString, etc.
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String name;
+
+    private Integer age;
+}
+\`\`\`
+
+### Repository Interface
+\`\`\`java
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+    List<User> findByAgeGreaterThan(Integer age);
+}
+\`\`\`
+
+### Service Layer
+\`\`\`java
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    public User createUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new DuplicateResourceException("Email already exists");
+        }
+        return userRepository.save(user);
+    }
+
+    public User updateUser(Long id, User userDetails) {
+        User user = getUserById(id);
+        user.setName(userDetails.getName());
+        user.setEmail(userDetails.getEmail());
+        user.setAge(userDetails.getAge());
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        User user = getUserById(id);
+        userRepository.delete(user);
+    }
+}
+\`\`\`
+
+### REST Controller
+\`\`\`java
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import javax.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/users")
+@CrossOrigin(origins = "*")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+        User created = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(
+        @PathVariable Long id,
+        @Valid @RequestBody User user
+    ) {
+        return ResponseEntity.ok(userService.updateUser(id, user));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+\`\`\`
+
+### Exception Handler
+\`\`\`java
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(
+        ResourceNotFoundException ex
+    ) {
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.NOT_FOUND.value(),
+            ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateResource(
+        DuplicateResourceException ex
+    ) {
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.CONFLICT.value(),
+            ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+}
+\`\`\`
+
+## Application Properties
+
+\`\`\`properties
+# application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=password
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+server.port=8080
+\`\`\`
+
+## Dependency Injection Types
+
+\`\`\`java
+// 1. Constructor Injection (Recommended)
+@Service
+public class UserService {
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+}
+
+// 2. Field Injection
+@Service
+public class UserService {
+    @Autowired
+    private UserRepository userRepository;
+}
+
+// 3. Setter Injection
+@Service
+public class UserService {
+    private UserRepository userRepository;
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+}
+\`\`\`
+
+## Testing
+
+\`\`\`java
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class UserControllerTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    public void testGetAllUsers() {
+        ResponseEntity<User[]> response = restTemplate.getForEntity(
+            "/api/users",
+            User[].class
+        );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+}
+\`\`\`
+
+## Best Practices
+
+✅ Use constructor injection over field injection
+✅ Validate input with @Valid and Bean Validation
+✅ Handle exceptions globally with @RestControllerAdvice
+✅ Use DTOs to separate API contracts from entities
+✅ Implement pagination for large datasets
+✅ Use proper HTTP status codes
+✅ Document APIs with Swagger/OpenAPI
+✅ Implement security with Spring Security`,
+      topics: ['Spring Boot', 'Java', 'REST API', 'Dependency Injection', 'Backend'],
+      estimatedTime: 40,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // Python Backend
+    // ========================================
+    {
+      id: 'python-flask-api',
+      title: 'Python Flask/FastAPI REST API Development',
+      difficulty: 'Medium' as any,
+      category: 'Python',
+      description: 'Building REST APIs with Flask or FastAPI frameworks',
+      answer: `# Python REST API Development
+
+## Flask vs FastAPI
+
+| Feature | Flask | FastAPI |
+|---------|-------|---------|
+| Speed | Moderate | Very Fast (ASGI) |
+| Async Support | Limited | Native |
+| Type Hints | Optional | Required |
+| Auto Documentation | Manual | Automatic (Swagger) |
+| Validation | Manual/Extensions | Built-in (Pydantic) |
+
+## FastAPI Example (Recommended for New Projects)
+
+### Basic Setup
+\`\`\`python
+from fastapi import FastAPI, HTTPException, Depends, status
+from pydantic import BaseModel, EmailStr, validator
+from typing import List, Optional
+from datetime import datetime
+
+app = FastAPI(title="User API", version="1.0.0")
+
+# Pydantic Models (automatic validation)
+class UserBase(BaseModel):
+    email: EmailStr
+    name: str
+    age: Optional[int] = None
+
+    @validator('age')
+    def validate_age(cls, v):
+        if v is not None and (v < 0 or v > 150):
+            raise ValueError('Age must be between 0 and 150')
+        return v
+
+class UserCreate(UserBase):
+    password: str
+
+class UserResponse(UserBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+# In-memory database (use real DB in production)
+fake_db = []
+
+@app.get("/")
+def root():
+    return {"message": "Welcome to User API"}
+
+@app.get("/api/users", response_model=List[UserResponse])
+def get_all_users(skip: int = 0, limit: int = 10):
+    """Get all users with pagination"""
+    return fake_db[skip:skip + limit]
+
+@app.get("/api/users/{user_id}", response_model=UserResponse)
+def get_user(user_id: int):
+    """Get user by ID"""
+    user = next((u for u in fake_db if u['id'] == user_id), None)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@app.post("/api/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user(user: UserCreate):
+    """Create a new user"""
+    # Check if email exists
+    if any(u['email'] == user.email for u in fake_db):
+        raise HTTPException(status_code=400, detail="Email already exists")
+
+    user_dict = user.dict()
+    user_dict['id'] = len(fake_db) + 1
+    user_dict['created_at'] = datetime.now()
+    fake_db.append(user_dict)
+    return user_dict
+
+@app.put("/api/users/{user_id}", response_model=UserResponse)
+def update_user(user_id: int, user: UserBase):
+    """Update user by ID"""
+    existing_user = next((u for u in fake_db if u['id'] == user_id), None)
+    if not existing_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    existing_user.update(user.dict())
+    return existing_user
+
+@app.delete("/api/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(user_id: int):
+    """Delete user by ID"""
+    global fake_db
+    user = next((u for u in fake_db if u['id'] == user_id), None)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    fake_db = [u for u in fake_db if u['id'] != user_id]
+    return None
+
+# Run with: uvicorn main:app --reload
+\`\`\`
+
+## Flask Example
+
+\`\`\`python
+from flask import Flask, request, jsonify
+from functools import wraps
+import jwt
+from datetime import datetime, timedelta
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key'
+
+fake_db = []
+
+# Decorator for authentication
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.headers.get('Authorization')
+        if not token:
+            return jsonify({'error': 'Token is missing'}), 401
+
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            current_user = data['user_id']
+        except:
+            return jsonify({'error': 'Token is invalid'}), 401
+
+        return f(current_user, *args, **kwargs)
+
+    return decorated
+
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    return jsonify(fake_db), 200
+
+@app.route('/api/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = next((u for u in fake_db if u['id'] == user_id), None)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    return jsonify(user), 200
+
+@app.route('/api/users', methods=['POST'])
+def create_user():
+    data = request.get_json()
+
+    if not data or not data.get('email') or not data.get('name'):
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    if any(u['email'] == data['email'] for u in fake_db):
+        return jsonify({'error': 'Email already exists'}), 400
+
+    user = {
+        'id': len(fake_db) + 1,
+        'email': data['email'],
+        'name': data['name'],
+        'age': data.get('age'),
+        'created_at': datetime.now().isoformat()
+    }
+    fake_db.append(user)
+    return jsonify(user), 201
+
+@app.route('/api/users/<int:user_id>', methods=['PUT'])
+@token_required
+def update_user(current_user, user_id):
+    user = next((u for u in fake_db if u['id'] == user_id), None)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    data = request.get_json()
+    user.update(data)
+    return jsonify(user), 200
+
+@app.route('/api/users/<int:user_id>', methods=['DELETE'])
+@token_required
+def delete_user(current_user, user_id):
+    global fake_db
+    user = next((u for u in fake_db if u['id'] == user_id), None)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    fake_db = [u for u in fake_db if u['id'] != user_id]
+    return '', 204
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': 'Not found'}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({'error': 'Internal server error'}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
+\`\`\`
+
+## Database Integration (SQLAlchemy)
+
+\`\`\`python
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from datetime import datetime
+
+# Database setup
+SQLALCHEMY_DATABASE_URL = "postgresql://user:password@localhost/dbname"
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# Model
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, nullable=False)
+    age = Column(Integer)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Usage in FastAPI
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
+@app.get("/api/users")
+def get_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
+\`\`\`
+
+## Async Operations (FastAPI)
+
+\`\`\`python
+from fastapi import FastAPI
+import httpx
+
+app = FastAPI()
+
+@app.get("/api/external-data")
+async def get_external_data():
+    async with httpx.AsyncClient() as client:
+        response = await client.get("https://api.example.com/data")
+        return response.json()
+\`\`\`
+
+## Best Practices
+
+✅ Use type hints (especially with FastAPI)
+✅ Validate input with Pydantic models
+✅ Use environment variables for configuration
+✅ Implement proper error handling
+✅ Use async/await for I/O operations
+✅ Add authentication/authorization
+✅ Document APIs (FastAPI auto-generates)
+✅ Use database migrations (Alembic)
+✅ Write tests (pytest)
+✅ Log properly (logging module)`,
+      topics: ['Python', 'FastAPI', 'Flask', 'REST API', 'Backend', 'Pydantic'],
+      estimatedTime: 40,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // Vite
+    // ========================================
+    {
+      id: 'vite-modern-build',
+      title: 'Vite - Modern Frontend Build Tool',
+      difficulty: 'Easy' as any,
+      category: 'Vite',
+      description: 'Understanding Vite for fast development and optimized production builds',
+      answer: `# Vite - Modern Build Tool
+
+## What is Vite?
+
+Vite is a next-generation frontend build tool that provides lightning-fast development and optimized production builds using native ES modules and esbuild.
+
+## Key Features
+
+✅ Instant server start (no bundling in dev)
+✅ Lightning-fast HMR (Hot Module Replacement)
+✅ Optimized production builds with Rollup
+✅ Built-in TypeScript support
+✅ CSS pre-processors support
+✅ Plugin ecosystem
+
+## Project Setup
+
+\`\`\`bash
+# Create new project
+npm create vite@latest my-app -- --template react-ts
+cd my-app
+npm install
+npm run dev
+
+# Available templates
+# vanilla, vanilla-ts, vue, vue-ts, react, react-ts
+# preact, preact-ts, lit, lit-ts, svelte, svelte-ts
+\`\`\`
+
+## Vite Configuration
+
+\`\`\`javascript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+
+  // Path aliases
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@utils': path.resolve(__dirname, './src/utils')
+    }
+  },
+
+  // Server configuration
+  server: {
+    port: 3000,
+    open: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\\/api/, '')
+      }
+    }
+  },
+
+  // Build configuration
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@mui/material']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  },
+
+  // Environment variables
+  define: {
+    __APP_VERSION__: JSON.stringify('1.0.0')
+  },
+
+  // CSS configuration
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: \`@import "@/styles/variables.scss";\`
+      }
+    },
+    modules: {
+      localsConvention: 'camelCase'
+    }
+  }
+});
+\`\`\`
+
+## Environment Variables
+
+\`\`\`bash
+# .env
+VITE_API_URL=https://api.example.com
+VITE_API_KEY=your-api-key
+
+# .env.development
+VITE_API_URL=http://localhost:3000
+
+# .env.production
+VITE_API_URL=https://prod-api.example.com
+\`\`\`
+
+\`\`\`typescript
+// Usage in code
+const apiUrl = import.meta.env.VITE_API_URL;
+const isDev = import.meta.env.DEV;
+const isProd = import.meta.env.PROD;
+\`\`\`
+
+## Import Features
+
+### Static Assets
+\`\`\`typescript
+// Image imports
+import logo from './logo.png';
+<img src={logo} alt="Logo" />
+
+// URL imports
+import imageUrl from './image.png?url';
+
+// Inline as base64
+import imageData from './image.png?inline';
+
+// Import as string (for SVG)
+import svgContent from './icon.svg?raw';
+\`\`\`
+
+### Dynamic Imports
+\`\`\`typescript
+// Code splitting with lazy loading
+const UserProfile = lazy(() => import('./components/UserProfile'));
+
+// Dynamic import with variables
+const loadModule = async (name: string) => {
+  const module = await import(\`./modules/\${name}.ts\`);
+  return module;
+};
+
+// Glob imports
+const modules = import.meta.glob('./modules/*.ts');
+const eagerModules = import.meta.glob('./modules/*.ts', { eager: true });
+\`\`\`
+
+## Plugins
+
+### Popular Vite Plugins
+\`\`\`typescript
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
+import compression from 'vite-plugin-compression';
+import checker from 'vite-plugin-checker';
+
+export default defineConfig({
+  plugins: [
+    react(),
+
+    // Bundle analyzer
+    visualizer({
+      open: true,
+      gzipSize: true,
+      brotliSize: true
+    }),
+
+    // Gzip compression
+    compression({
+      algorithm: 'gzip',
+      ext: '.gz'
+    }),
+
+    // TypeScript checker
+    checker({
+      typescript: true,
+      eslint: {
+        lintCommand: 'eslint "./src/**/*.{ts,tsx}"'
+      }
+    })
+  ]
+});
+\`\`\`
+
+### Custom Plugin Example
+\`\`\`typescript
+function myPlugin() {
+  return {
+    name: 'my-plugin',
+
+    // Transform code
+    transform(code: string, id: string) {
+      if (id.endsWith('.custom')) {
+        return {
+          code: transformCode(code),
+          map: null
+        };
+      }
+    },
+
+    // Modify HTML
+    transformIndexHtml(html: string) {
+      return html.replace(
+        '</head>',
+        '<script>console.log("Injected!")</script></head>'
+      );
+    }
+  };
+}
+\`\`\`
+
+## Performance Optimization
+
+\`\`\`typescript
+// Lazy load routes
+const routes = [
+  {
+    path: '/dashboard',
+    component: lazy(() => import('./pages/Dashboard'))
+  },
+  {
+    path: '/profile',
+    component: lazy(() => import('./pages/Profile'))
+  }
+];
+
+// Preload critical resources
+<link rel="modulepreload" href="/src/main.tsx" />
+
+// Manual chunk optimization
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) {
+              return 'react-vendor';
+            }
+            return 'vendor';
+          }
+        }
+      }
+    }
+  }
+});
+\`\`\`
+
+## Development vs Production
+
+| Aspect | Development | Production |
+|--------|-------------|------------|
+| Module System | Native ESM | Bundled (Rollup) |
+| Speed | Instant | Optimized |
+| HMR | Yes | No |
+| Minification | No | Yes |
+| Tree Shaking | No | Yes |
+
+## Commands
+
+\`\`\`bash
+npm run dev          # Start dev server
+npm run build        # Production build
+npm run preview      # Preview production build
+npm run build -- --watch  # Watch mode build
+\`\`\`
+
+## Best Practices
+
+✅ Use path aliases for cleaner imports
+✅ Leverage dynamic imports for code splitting
+✅ Configure proxy for API calls
+✅ Use environment variables properly
+✅ Optimize chunk size with manual chunks
+✅ Enable compression plugins
+✅ Use TypeScript for type safety
+✅ Implement lazy loading for routes
+✅ Use visualizer to analyze bundle size
+
+## Common Issues
+
+**Port already in use:**
+\`\`\`bash
+# Change port in vite.config.ts or use flag
+vite --port 3001
+\`\`\`
+
+**CORS issues in development:**
+\`\`\`typescript
+server: {
+  proxy: {
+    '/api': 'http://localhost:8080'
+  }
+}
+\`\`\`
+
+**Large chunk warning:**
+\`\`\`typescript
+build: {
+  chunkSizeWarningLimit: 1000,
+  rollupOptions: {
+    output: {
+      manualChunks: { /* ... */ }
+    }
+  }
+}
+\`\`\``,
+      topics: ['Vite', 'Build Tools', 'Frontend', 'ES Modules', 'Performance'],
+      estimatedTime: 30,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // Webpack
+    // ========================================
+    {
+      id: 'webpack-bundler',
+      title: 'Webpack Module Bundler Configuration',
+      difficulty: 'Medium' as any,
+      category: 'Webpack',
+      description: 'Understanding Webpack configuration, loaders, and plugins',
+      answer: `# Webpack Module Bundler
+
+## What is Webpack?
+
+Webpack is a static module bundler that processes your application, builds a dependency graph, and bundles everything into one or more optimized bundles.
+
+## Core Concepts
+
+1. **Entry** - Starting point for bundling
+2. **Output** - Where to emit bundles
+3. **Loaders** - Transform files (CSS, images, TypeScript)
+4. **Plugins** - Perform wider range of tasks
+5. **Mode** - Development or production
+
+## Basic Configuration
+
+\`\`\`javascript
+// webpack.config.js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = {
+  // Entry point
+  entry: './src/index.js',
+
+  // Output configuration
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].[contenthash].js',
+    clean: true, // Clean dist folder before build
+    publicPath: '/'
+  },
+
+  // Development server
+  devServer: {
+    static: './dist',
+    port: 3000,
+    hot: true,
+    open: true,
+    historyApiFallback: true,
+    proxy: {
+      '/api': 'http://localhost:8080'
+    }
+  },
+
+  // Source maps for debugging
+  devtool: 'source-map',
+
+  // Module rules (loaders)
+  module: {
+    rules: [
+      // JavaScript/TypeScript
+      {
+        test: /\\.(js|jsx|ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript'
+            ]
+          }
+        }
+      },
+
+      // CSS
+      {
+        test: /\\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader'
+        ]
+      },
+
+      // SCSS/SASS
+      {
+        test: /\\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ]
+      },
+
+      // Images
+      {
+        test: /\\.(png|jpg|jpeg|gif|svg)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name].[hash][ext]'
+        }
+      },
+
+      // Fonts
+      {
+        test: /\\.(woff|woff2|eot|ttf|otf)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name].[hash][ext]'
+        }
+      }
+    ]
+  },
+
+  // Plugins
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      favicon: './public/favicon.ico'
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    })
+  ],
+
+  // Resolve extensions
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@components': path.resolve(__dirname, 'src/components')
+    }
+  },
+
+  // Optimization
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\\\/]node_modules[\\\\/]/,
+          name: 'vendors',
+          priority: 10
+        },
+        common: {
+          minChunks: 2,
+          priority: 5,
+          reuseExistingChunk: true
+        }
+      }
+    },
+    runtimeChunk: 'single'
+  }
+};
+\`\`\`
+
+## Development vs Production Config
+
+\`\`\`javascript
+// webpack.common.js
+const common = {
+  entry: './src/index.js',
+  module: {
+    rules: [/* shared rules */]
+  },
+  plugins: [/* shared plugins */]
+};
+
+// webpack.dev.js
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common.js');
+
+module.exports = merge(common, {
+  mode: 'development',
+  devtool: 'eval-source-map',
+  devServer: {
+    hot: true,
+    port: 3000
+  }
+});
+
+// webpack.prod.js
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common.js');
+const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+
+module.exports = merge(common, {
+  mode: 'production',
+  devtool: 'source-map',
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true
+          }
+        }
+      }),
+      new CssMinimizerPlugin()
+    ]
+  }
+});
+\`\`\`
+
+## Popular Plugins
+
+\`\`\`javascript
+const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CompressionPlugin = require('compression-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+module.exports = {
+  plugins: [
+    // Clean dist folder
+    new CleanWebpackPlugin(),
+
+    // Environment variables
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.API_URL': JSON.stringify('https://api.example.com')
+    }),
+
+    // Bundle analyzer
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false
+    }),
+
+    // Gzip compression
+    new CompressionPlugin({
+      algorithm: 'gzip',
+      test: /\\.(js|css|html|svg)$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+
+    // Copy files
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'public/images', to: 'images' }
+      ]
+    })
+  ]
+};
+\`\`\`
+
+## Code Splitting
+
+\`\`\`javascript
+// Dynamic imports
+const loadComponent = () => import('./Component');
+
+// React lazy loading
+const LazyComponent = React.lazy(() => import('./Component'));
+
+// Webpack configuration
+optimization: {
+  splitChunks: {
+    chunks: 'all',
+    maxInitialRequests: Infinity,
+    minSize: 0,
+    cacheGroups: {
+      vendor: {
+        test: /[\\\\/]node_modules[\\\\/]/,
+        name(module) {
+          const packageName = module.context.match(
+            /[\\\\/]node_modules[\\\\/](.*?)([\\\\/]|$)/
+          )[1];
+          return \`npm.\${packageName.replace('@', '')}\`;
+        }
+      }
+    }
+  }
+}
+\`\`\`
+
+## Performance Optimization
+
+\`\`\`javascript
+module.exports = {
+  // Cache for faster rebuilds
+  cache: {
+    type: 'filesystem',
+    cacheDirectory: path.resolve(__dirname, '.webpack_cache')
+  },
+
+  // Parallel builds
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true
+      })
+    ]
+  },
+
+  // Reduce resolve complexity
+  resolve: {
+    modules: ['node_modules'],
+    extensions: ['.js', '.jsx']
+  },
+
+  // Ignore large dependencies
+  externals: {
+    lodash: '_',
+    moment: 'moment'
+  }
+};
+\`\`\`
+
+## Custom Loaders
+
+\`\`\`javascript
+// custom-loader.js
+module.exports = function(source) {
+  // Transform source code
+  const transformed = source.replace(/console\\.log/g, '');
+  return transformed;
+};
+
+// Usage in webpack.config.js
+module: {
+  rules: [
+    {
+      test: /\\.js$/,
+      use: [
+        {
+          loader: path.resolve('custom-loader.js')
+        }
+      ]
+    }
+  ]
+}
+\`\`\`
+
+## Package.json Scripts
+
+\`\`\`json
+{
+  "scripts": {
+    "dev": "webpack serve --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "build:analyze": "webpack --config webpack.prod.js --profile --json > stats.json && webpack-bundle-analyzer stats.json",
+    "clean": "rm -rf dist"
+  }
+}
+\`\`\`
+
+## Troubleshooting
+
+**Build too slow:**
+- Enable cache
+- Use parallel builds
+- Reduce resolve complexity
+- Use DLL plugin for vendors
+
+**Bundle too large:**
+- Use code splitting
+- Tree shaking (ES modules)
+- Analyze with bundle analyzer
+- Use compression plugin
+- Lazy load routes/components
+
+## Best Practices
+
+✅ Split development and production configs
+✅ Use content hashes for cache busting
+✅ Implement code splitting
+✅ Enable tree shaking
+✅ Use source maps for debugging
+✅ Optimize images and assets
+✅ Enable gzip compression
+✅ Monitor bundle size
+✅ Use environment variables
+✅ Clean dist before build`,
+      topics: ['Webpack', 'Build Tools', 'Bundler', 'Module System', 'Performance'],
+      estimatedTime: 35,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // WebSockets & Socket.io
+    // ========================================
+    {
+      id: 'websockets-socketio',
+      title: 'WebSockets & Socket.io Real-time Communication',
+      difficulty: 'Medium' as any,
+      category: 'WebSockets',
+      description: 'Implementing real-time bidirectional communication with WebSockets and Socket.io',
+      answer: `# WebSockets & Socket.io
+
+## WebSockets vs HTTP
+
+| Feature | HTTP | WebSockets |
+|---------|------|------------|
+| Direction | Request-Response | Bidirectional |
+| Connection | New per request | Persistent |
+| Overhead | High (headers) | Low |
+| Real-time | Polling required | Native |
+| Use Case | Traditional web | Chat, gaming, live updates |
+
+## Native WebSockets
+
+### Client Side (Browser)
+\`\`\`javascript
+// Create connection
+const socket = new WebSocket('ws://localhost:8080');
+
+// Connection opened
+socket.addEventListener('open', (event) => {
+  console.log('Connected to WebSocket server');
+  socket.send('Hello Server!');
+});
+
+// Listen for messages
+socket.addEventListener('message', (event) => {
+  console.log('Message from server:', event.data);
+});
+
+// Listen for errors
+socket.addEventListener('error', (error) => {
+  console.error('WebSocket error:', error);
+});
+
+// Connection closed
+socket.addEventListener('close', (event) => {
+  console.log('Disconnected from WebSocket server');
+  console.log('Code:', event.code, 'Reason:', event.reason);
+});
+
+// Send message
+function sendMessage(message) {
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify(message));
+  }
+}
+
+// Close connection
+socket.close();
+\`\`\`
+
+### Server Side (Node.js with ws library)
+\`\`\`javascript
+const WebSocket = require('ws');
+const server = new WebSocket.Server({ port: 8080 });
+
+server.on('connection', (socket) => {
+  console.log('Client connected');
+
+  // Send welcome message
+  socket.send('Welcome to WebSocket server!');
+
+  // Handle incoming messages
+  socket.on('message', (data) => {
+    console.log('Received:', data);
+
+    // Broadcast to all clients
+    server.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(data);
+      }
+    });
+  });
+
+  // Handle errors
+  socket.on('error', (error) => {
+    console.error('WebSocket error:', error);
+  });
+
+  // Handle disconnection
+  socket.on('close', () => {
+    console.log('Client disconnected');
+  });
+});
+
+console.log('WebSocket server running on ws://localhost:8080');
+\`\`\`
+
+## Socket.io (Recommended for Production)
+
+Socket.io provides additional features like automatic reconnection, rooms, namespaces, and fallback to HTTP polling.
+
+### Server Setup
+\`\`\`javascript
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
+});
+
+// Connection handler
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  // Handle custom events
+  socket.on('chat-message', (data) => {
+    console.log('Message:', data);
+
+    // Broadcast to everyone including sender
+    io.emit('chat-message', {
+      id: socket.id,
+      message: data.message,
+      timestamp: Date.now()
+    });
+  });
+
+  // Send only to sender
+  socket.emit('welcome', 'Welcome to the chat!');
+
+  // Broadcast to everyone except sender
+  socket.broadcast.emit('user-joined', socket.id);
+
+  // Join room
+  socket.on('join-room', (room) => {
+    socket.join(room);
+    socket.to(room).emit('user-joined-room', socket.id);
+  });
+
+  // Send to specific room
+  socket.on('room-message', (data) => {
+    io.to(data.room).emit('room-message', data);
+  });
+
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+    io.emit('user-left', socket.id);
+  });
+});
+
+server.listen(3001, () => {
+  console.log('Server running on http://localhost:3001');
+});
+\`\`\`
+
+### Client Setup (React)
+\`\`\`javascript
+import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3001', {
+  autoConnect: false
+});
+
+function ChatApp() {
+  const [messages, setMessages] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    // Connect
+    socket.connect();
+
+    // Connection events
+    socket.on('connect', () => {
+      console.log('Connected:', socket.id);
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected');
+      setIsConnected(false);
+    });
+
+    // Listen for messages
+    socket.on('chat-message', (data) => {
+      setMessages((prev) => [...prev, data]);
+    });
+
+    socket.on('welcome', (message) => {
+      console.log(message);
+    });
+
+    socket.on('user-joined', (userId) => {
+      console.log('User joined:', userId);
+    });
+
+    // Cleanup
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('chat-message');
+      socket.disconnect();
+    };
+  }, []);
+
+  const sendMessage = () => {
+    if (inputMessage.trim()) {
+      socket.emit('chat-message', { message: inputMessage });
+      setInputMessage('');
+    }
+  };
+
+  return (
+    <div>
+      <div>Status: {isConnected ? 'Connected' : 'Disconnected'}</div>
+
+      <div className="messages">
+        {messages.map((msg, index) => (
+          <div key={index}>
+            <strong>{msg.id}:</strong> {msg.message}
+          </div>
+        ))}
+      </div>
+
+      <input
+        value={inputMessage}
+        onChange={(e) => setInputMessage(e.target.value)}
+        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+        placeholder="Type a message..."
+      />
+      <button onClick={sendMessage}>Send</button>
+    </div>
+  );
+}
+\`\`\`
+
+## Advanced Features
+
+### Rooms & Namespaces
+\`\`\`javascript
+// Namespaces (different endpoints)
+const chatNamespace = io.of('/chat');
+const adminNamespace = io.of('/admin');
+
+chatNamespace.on('connection', (socket) => {
+  // Join room
+  socket.join('room1');
+
+  // Leave room
+  socket.leave('room1');
+
+  // Send to room
+  socket.to('room1').emit('message', 'Hello room');
+
+  // Send to all in namespace
+  chatNamespace.emit('announcement', 'Server message');
+
+  // Get rooms
+  console.log('Rooms:', socket.rooms);
+});
+
+// Client side
+const chatSocket = io('http://localhost:3001/chat');
+\`\`\`
+
+### Authentication
+\`\`\`javascript
+// Server
+const io = new Server(server, {
+  cors: { origin: '*' }
+});
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+
+  if (isValidToken(token)) {
+    socket.userId = getUserIdFromToken(token);
+    next();
+  } else {
+    next(new Error('Authentication error'));
+  }
+});
+
+// Client
+const socket = io('http://localhost:3001', {
+  auth: {
+    token: 'your-jwt-token'
+  }
+});
+\`\`\`
+
+### Acknowledgments
+\`\`\`javascript
+// Server
+socket.on('save-data', (data, callback) => {
+  // Save data...
+  callback({ status: 'success', id: 123 });
+});
+
+// Client
+socket.emit('save-data', { name: 'John' }, (response) => {
+  console.log('Server response:', response);
+});
+\`\`\`
+
+## Real-world Use Cases
+
+### 1. Live Chat
+\`\`\`javascript
+socket.on('typing', (userId) => {
+  socket.broadcast.emit('user-typing', userId);
+});
+
+socket.on('stop-typing', (userId) => {
+  socket.broadcast.emit('user-stop-typing', userId);
+});
+\`\`\`
+
+### 2. Live Notifications
+\`\`\`javascript
+// Server
+function sendNotification(userId, notification) {
+  io.to(userId).emit('notification', notification);
+}
+
+// Client
+socket.on('notification', (data) => {
+  showNotification(data);
+});
+\`\`\`
+
+### 3. Collaborative Editing
+\`\`\`javascript
+socket.on('document-change', (change) => {
+  socket.broadcast.to(documentId).emit('apply-change', change);
+});
+\`\`\`
+
+### 4. Live Dashboard
+\`\`\`javascript
+setInterval(() => {
+  const stats = getSystemStats();
+  io.emit('stats-update', stats);
+}, 5000);
+\`\`\`
+
+## Best Practices
+
+✅ Always validate and sanitize incoming data
+✅ Use namespaces to separate concerns
+✅ Implement authentication for secure connections
+✅ Handle connection errors and reconnection
+✅ Use rooms for targeted messaging
+✅ Implement rate limiting to prevent abuse
+✅ Clean up event listeners on disconnect
+✅ Use acknowledgments for critical operations
+✅ Monitor connection health with heartbeats
+✅ Scale with Redis adapter for multiple servers
+
+## Scaling with Redis
+\`\`\`javascript
+const { createAdapter } = require('@socket.io/redis-adapter');
+const { createClient } = require('redis');
+
+const pubClient = createClient({ url: 'redis://localhost:6379' });
+const subClient = pubClient.duplicate();
+
+Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+  io.adapter(createAdapter(pubClient, subClient));
+});
+\`\`\``,
+      topics: ['WebSockets', 'Socket.io', 'Real-time', 'Bidirectional', 'Communication'],
+      estimatedTime: 40,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // Networking & CDN
+    // ========================================
+    {
+      id: 'networking-cdn',
+      title: 'Networking Fundamentals & CDN Optimization',
+      difficulty: 'Medium' as any,
+      category: 'Networking',
+      description: 'Understanding HTTP, DNS, CDN, and network optimization techniques',
+      answer: `# Networking & CDN
+
+## HTTP Protocol
+
+### HTTP Methods
+\`\`\`
+GET     - Retrieve data (idempotent, cacheable)
+POST    - Create resource (not idempotent)
+PUT     - Update/Replace resource (idempotent)
+PATCH   - Partial update (not idempotent)
+DELETE  - Remove resource (idempotent)
+HEAD    - Same as GET but without body
+OPTIONS - Describe communication options
+\`\`\`
+
+### HTTP Status Codes
+\`\`\`
+1xx - Informational
+  100 Continue
+  101 Switching Protocols
+
+2xx - Success
+  200 OK
+  201 Created
+  204 No Content
+
+3xx - Redirection
+  301 Moved Permanently
+  302 Found (Temporary Redirect)
+  304 Not Modified (Cache)
+
+4xx - Client Errors
+  400 Bad Request
+  401 Unauthorized
+  403 Forbidden
+  404 Not Found
+  429 Too Many Requests
+
+5xx - Server Errors
+  500 Internal Server Error
+  502 Bad Gateway
+  503 Service Unavailable
+  504 Gateway Timeout
+\`\`\`
+
+### HTTP Headers
+
+**Request Headers:**
+\`\`\`http
+GET /api/users HTTP/1.1
+Host: api.example.com
+User-Agent: Mozilla/5.0
+Accept: application/json
+Authorization: Bearer token123
+Content-Type: application/json
+Cache-Control: no-cache
+If-Modified-Since: Wed, 21 Oct 2024 07:28:00 GMT
+Origin: https://example.com
+\`\`\`
+
+**Response Headers:**
+\`\`\`http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 1234
+Cache-Control: public, max-age=3600
+ETag: "33a64df551425fcc55e4d42a148795d9f25f89d4"
+Last-Modified: Wed, 21 Oct 2024 07:28:00 GMT
+Access-Control-Allow-Origin: *
+Set-Cookie: sessionId=abc123; HttpOnly; Secure
+\`\`\`
+
+## HTTP/2 vs HTTP/1.1
+
+| Feature | HTTP/1.1 | HTTP/2 |
+|---------|----------|--------|
+| Multiplexing | No (6 connections) | Yes (single connection) |
+| Header Compression | No | Yes (HPACK) |
+| Server Push | No | Yes |
+| Binary Protocol | No (text) | Yes |
+| Prioritization | No | Yes |
+
+## DNS (Domain Name System)
+
+### DNS Lookup Process
+\`\`\`
+1. Browser Cache
+2. OS Cache
+3. Router Cache
+4. ISP DNS Server
+5. Root DNS Server
+6. TLD DNS Server (.com, .org)
+7. Authoritative DNS Server
+\`\`\`
+
+### DNS Record Types
+\`\`\`
+A      - IPv4 address (example.com → 192.0.2.1)
+AAAA   - IPv6 address
+CNAME  - Canonical name (alias)
+MX     - Mail exchange
+TXT    - Text record (verification, SPF)
+NS     - Name server
+SOA    - Start of authority
+\`\`\`
+
+### DNS Optimization
+\`\`\`html
+<!-- DNS Prefetch -->
+<link rel="dns-prefetch" href="//api.example.com">
+
+<!-- Preconnect (DNS + TCP + TLS) -->
+<link rel="preconnect" href="https://cdn.example.com">
+
+<!-- Prefetch resource -->
+<link rel="prefetch" href="/next-page.html">
+
+<!-- Preload critical resource -->
+<link rel="preload" href="/critical.css" as="style">
+\`\`\`
+
+## Content Delivery Network (CDN)
+
+### What is a CDN?
+
+A CDN is a geographically distributed network of servers that caches content closer to users, reducing latency and improving load times.
+
+### Benefits of CDN
+✅ Reduced latency (closer to users)
+✅ Decreased bandwidth costs
+✅ Improved reliability (redundancy)
+✅ Enhanced security (DDoS protection)
+✅ Better scalability
+
+### Popular CDN Providers
+- Cloudflare
+- AWS CloudFront
+- Akamai
+- Fastly
+- Google Cloud CDN
+- Azure CDN
+
+### CDN Configuration Example
+
+\`\`\`javascript
+// Using Cloudflare CDN
+// 1. Point DNS to Cloudflare
+// 2. Configure caching rules
+
+// Cache-Control headers
+app.use((req, res, next) => {
+  // Static assets - cache for 1 year
+  if (req.url.match(/\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff2)$/)) {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  }
+
+  // HTML - cache for 1 hour, revalidate
+  else if (req.url.endsWith('.html')) {
+    res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+  }
+
+  // API responses - no cache
+  else if (req.url.startsWith('/api/')) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  }
+
+  next();
+});
+\`\`\`
+
+### Cache Strategies
+
+**1. Cache-Control Directives**
+\`\`\`
+public           - Cacheable by any cache
+private          - Cacheable only by browser
+no-cache         - Must revalidate before use
+no-store         - Do not cache at all
+max-age=3600     - Cache for 3600 seconds
+must-revalidate  - Must revalidate when stale
+immutable        - Never revalidate (perfect for versioned assets)
+\`\`\`
+
+**2. ETag (Entity Tag)**
+\`\`\`http
+Response:
+ETag: "33a64df5"
+
+Next Request:
+If-None-Match: "33a64df5"
+
+Response:
+304 Not Modified (use cached version)
+\`\`\`
+
+**3. Last-Modified**
+\`\`\`http
+Response:
+Last-Modified: Wed, 21 Oct 2024 07:28:00 GMT
+
+Next Request:
+If-Modified-Since: Wed, 21 Oct 2024 07:28:00 GMT
+
+Response:
+304 Not Modified
+\`\`\`
+
+## Network Optimization Techniques
+
+### 1. Asset Optimization
+\`\`\`javascript
+// Image optimization
+<img
+  src="image.jpg"
+  srcset="image-320w.jpg 320w,
+          image-640w.jpg 640w,
+          image-1280w.jpg 1280w"
+  sizes="(max-width: 320px) 280px,
+         (max-width: 640px) 600px,
+         1200px"
+  loading="lazy"
+  alt="Description"
+/>
+
+// WebP with fallback
+<picture>
+  <source srcset="image.webp" type="image/webp">
+  <source srcset="image.jpg" type="image/jpeg">
+  <img src="image.jpg" alt="Description">
+</picture>
+\`\`\`
+
+### 2. Resource Hints
+\`\`\`html
+<!-- DNS Prefetch -->
+<link rel="dns-prefetch" href="//cdn.example.com">
+
+<!-- Preconnect -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<!-- Prefetch (low priority) -->
+<link rel="prefetch" href="/next-page.js">
+
+<!-- Preload (high priority) -->
+<link rel="preload" href="/critical.css" as="style">
+<link rel="preload" href="/font.woff2" as="font" type="font/woff2" crossorigin>
+
+<!-- Prerender (Chrome only) -->
+<link rel="prerender" href="/next-page.html">
+\`\`\`
+
+### 3. Compression
+\`\`\`javascript
+// Express.js with compression
+const compression = require('compression');
+app.use(compression());
+
+// Nginx configuration
+gzip on;
+gzip_types text/plain text/css application/json application/javascript;
+gzip_min_length 1000;
+gzip_comp_level 6;
+
+// Brotli (better than gzip)
+brotli on;
+brotli_types text/plain text/css application/json application/javascript;
+\`\`\`
+
+### 4. HTTP/2 Server Push
+\`\`\`javascript
+// Node.js HTTP/2
+const http2 = require('http2');
+const server = http2.createSecureServer(options);
+
+server.on('stream', (stream, headers) => {
+  if (headers[':path'] === '/') {
+    // Push critical CSS
+    stream.pushStream({ ':path': '/critical.css' }, (err, pushStream) => {
+      pushStream.respondWithFile('critical.css');
+    });
+
+    stream.respondWithFile('index.html');
+  }
+});
+\`\`\`
+
+### 5. Code Splitting & Lazy Loading
+\`\`\`javascript
+// React lazy loading
+const Dashboard = lazy(() => import('./Dashboard'));
+
+// Dynamic imports
+const loadModule = async () => {
+  const module = await import('./heavy-module.js');
+  module.init();
+};
+
+// Intersection Observer for lazy loading
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const img = entry.target;
+      img.src = img.dataset.src;
+      observer.unobserve(img);
+    }
+  });
+});
+\`\`\`
+
+## Monitoring Network Performance
+
+\`\`\`javascript
+// Navigation Timing API
+const perfData = window.performance.timing;
+const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+const connectTime = perfData.responseEnd - perfData.requestStart;
+const renderTime = perfData.domComplete - perfData.domLoading;
+
+console.log(\`Page Load Time: \${pageLoadTime}ms\`);
+
+// Resource Timing API
+const resources = performance.getEntriesByType('resource');
+resources.forEach(resource => {
+  console.log(\`\${resource.name}: \${resource.duration}ms\`);
+});
+
+// Network Information API
+if ('connection' in navigator) {
+  const connection = navigator.connection;
+  console.log('Effective Type:', connection.effectiveType);
+  console.log('Downlink:', connection.downlink, 'Mbps');
+  console.log('RTT:', connection.rtt, 'ms');
+}
+\`\`\`
+
+## Best Practices
+
+✅ Use CDN for static assets
+✅ Enable compression (gzip/brotli)
+✅ Implement proper caching strategies
+✅ Use HTTP/2 or HTTP/3
+✅ Optimize images (format, size, lazy load)
+✅ Minimize DNS lookups
+✅ Use resource hints (preconnect, prefetch)
+✅ Enable Keep-Alive connections
+✅ Reduce payload size (minify, tree shake)
+✅ Monitor performance with real user metrics`,
+      topics: ['Networking', 'CDN', 'HTTP', 'DNS', 'Caching', 'Performance'],
+      estimatedTime: 40,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // DBMS
+    // ========================================
+    {
+      id: 'dbms-fundamentals',
+      title: 'Database Management Systems (DBMS) Fundamentals',
+      difficulty: 'Medium' as any,
+      category: 'DBMS',
+      description: 'Understanding DBMS concepts, normalization, indexing, and transactions',
+      answer: `# Database Management Systems (DBMS)
+
+## DBMS vs File System
+
+| Feature | File System | DBMS |
+|---------|-------------|------|
+| Data Redundancy | High | Low |
+| Data Consistency | Difficult | Ensured |
+| Data Integrity | No enforcement | Enforced |
+| Concurrent Access | Limited | Managed |
+| Security | Basic | Advanced |
+| Backup/Recovery | Manual | Automated |
+
+## Types of Databases
+
+### 1. Relational (SQL)
+- MySQL, PostgreSQL, Oracle, SQL Server
+- Structured data with relationships
+- ACID properties
+
+### 2. NoSQL
+- **Document**: MongoDB, CouchDB
+- **Key-Value**: Redis, DynamoDB
+- **Column-Family**: Cassandra, HBase
+- **Graph**: Neo4j, ArangoDB
+
+## Database Normalization
+
+### Normal Forms
+
+**1NF (First Normal Form)**
+- Atomic values (no repeating groups)
+- Each column contains single value
+
+\`\`\`sql
+-- ❌ Violation
+CREATE TABLE students (
+  id INT,
+  name VARCHAR(100),
+  courses VARCHAR(500) -- "Math, Science, English"
+);
+
+-- ✅ 1NF Compliant
+CREATE TABLE students (
+  id INT,
+  name VARCHAR(100)
+);
+
+CREATE TABLE student_courses (
+  student_id INT,
+  course VARCHAR(100)
+);
+\`\`\`
+
+**2NF (Second Normal Form)**
+- Must be in 1NF
+- No partial dependencies (all non-key attributes depend on entire primary key)
+
+\`\`\`sql
+-- ❌ Violation (student_name depends only on student_id)
+CREATE TABLE enrollments (
+  student_id INT,
+  course_id INT,
+  student_name VARCHAR(100),
+  course_name VARCHAR(100),
+  PRIMARY KEY (student_id, course_id)
+);
+
+-- ✅ 2NF Compliant
+CREATE TABLE students (
+  student_id INT PRIMARY KEY,
+  student_name VARCHAR(100)
+);
+
+CREATE TABLE courses (
+  course_id INT PRIMARY KEY,
+  course_name VARCHAR(100)
+);
+
+CREATE TABLE enrollments (
+  student_id INT,
+  course_id INT,
+  PRIMARY KEY (student_id, course_id),
+  FOREIGN KEY (student_id) REFERENCES students(student_id),
+  FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+\`\`\`
+
+**3NF (Third Normal Form)**
+- Must be in 2NF
+- No transitive dependencies
+
+\`\`\`sql
+-- ❌ Violation (department_name depends on department_id, not employee_id)
+CREATE TABLE employees (
+  employee_id INT PRIMARY KEY,
+  name VARCHAR(100),
+  department_id INT,
+  department_name VARCHAR(100)
+);
+
+-- ✅ 3NF Compliant
+CREATE TABLE employees (
+  employee_id INT PRIMARY KEY,
+  name VARCHAR(100),
+  department_id INT,
+  FOREIGN KEY (department_id) REFERENCES departments(department_id)
+);
+
+CREATE TABLE departments (
+  department_id INT PRIMARY KEY,
+  department_name VARCHAR(100)
+);
+\`\`\`
+
+## ACID Properties
+
+**A - Atomicity**
+- All or nothing (transaction completes fully or not at all)
+
+**C - Consistency**
+- Database remains in valid state before and after transaction
+
+**I - Isolation**
+- Concurrent transactions don't interfere with each other
+
+**D - Durability**
+- Committed changes persist even after system failure
+
+\`\`\`sql
+-- Example: Bank Transfer
+BEGIN TRANSACTION;
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE account_id = 1;
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE account_id = 2;
+
+COMMIT; -- Both succeed or both fail
+\`\`\`
+
+## Indexing
+
+### Types of Indexes
+
+**1. Primary Index**
+\`\`\`sql
+CREATE TABLE users (
+  id INT PRIMARY KEY,  -- Automatically indexed
+  email VARCHAR(255)
+);
+\`\`\`
+
+**2. Unique Index**
+\`\`\`sql
+CREATE UNIQUE INDEX idx_email ON users(email);
+\`\`\`
+
+**3. Composite Index**
+\`\`\`sql
+CREATE INDEX idx_name_age ON users(last_name, first_name, age);
+\`\`\`
+
+**4. Full-Text Index**
+\`\`\`sql
+CREATE FULLTEXT INDEX idx_content ON articles(content);
+SELECT * FROM articles WHERE MATCH(content) AGAINST('database');
+\`\`\`
+
+### When to Use Indexes
+
+✅ Use indexes for:
+- Primary keys (automatic)
+- Foreign keys
+- Frequently searched columns
+- Columns used in JOIN, WHERE, ORDER BY
+
+❌ Avoid indexes for:
+- Small tables
+- Columns with low cardinality (few unique values)
+- Frequently updated columns
+- Wide columns (large data)
+
+### Index Performance
+
+\`\`\`sql
+-- Check query execution plan
+EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';
+
+-- Create index
+CREATE INDEX idx_email ON users(email);
+
+-- Verify improvement
+EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';
+\`\`\`
+
+## Transactions & Isolation Levels
+
+### Isolation Levels
+
+**1. READ UNCOMMITTED**
+- Lowest isolation, highest performance
+- Dirty reads possible
+
+**2. READ COMMITTED** (Most common default)
+- Prevents dirty reads
+- Non-repeatable reads possible
+
+**3. REPEATABLE READ**
+- Prevents dirty and non-repeatable reads
+- Phantom reads possible
+
+**4. SERIALIZABLE**
+- Highest isolation, lowest performance
+- No concurrency issues
+
+\`\`\`sql
+-- Set isolation level
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+BEGIN TRANSACTION;
+  -- Your queries
+COMMIT;
+\`\`\`
+
+## Database Design Best Practices
+
+### Entity-Relationship Diagram (ERD)
+
+\`\`\`
+Users (1) ─────< (M) Orders (M) ─────> (1) Products
+  │
+  │ (1)
+  │
+  ↓
+  (M)
+Addresses
+\`\`\`
+
+### Relationships
+
+**One-to-One**
+\`\`\`sql
+CREATE TABLE users (
+  user_id INT PRIMARY KEY,
+  username VARCHAR(50)
+);
+
+CREATE TABLE profiles (
+  profile_id INT PRIMARY KEY,
+  user_id INT UNIQUE,
+  bio TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+\`\`\`
+
+**One-to-Many**
+\`\`\`sql
+CREATE TABLE authors (
+  author_id INT PRIMARY KEY,
+  name VARCHAR(100)
+);
+
+CREATE TABLE books (
+  book_id INT PRIMARY KEY,
+  title VARCHAR(200),
+  author_id INT,
+  FOREIGN KEY (author_id) REFERENCES authors(author_id)
+);
+\`\`\`
+
+**Many-to-Many**
+\`\`\`sql
+CREATE TABLE students (
+  student_id INT PRIMARY KEY,
+  name VARCHAR(100)
+);
+
+CREATE TABLE courses (
+  course_id INT PRIMARY KEY,
+  title VARCHAR(100)
+);
+
+CREATE TABLE enrollments (
+  student_id INT,
+  course_id INT,
+  enrollment_date DATE,
+  PRIMARY KEY (student_id, course_id),
+  FOREIGN KEY (student_id) REFERENCES students(student_id),
+  FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+\`\`\`
+
+## Query Optimization
+
+### Optimization Techniques
+
+**1. Use Indexes**
+\`\`\`sql
+-- Slow without index
+SELECT * FROM users WHERE email = 'test@example.com';
+
+-- Fast with index
+CREATE INDEX idx_email ON users(email);
+\`\`\`
+
+**2. Avoid SELECT ***
+\`\`\`sql
+-- ❌ Slow
+SELECT * FROM users;
+
+-- ✅ Fast
+SELECT id, name, email FROM users;
+\`\`\`
+
+**3. Use LIMIT**
+\`\`\`sql
+SELECT * FROM orders ORDER BY created_at DESC LIMIT 10;
+\`\`\`
+
+**4. Use JOIN instead of Subqueries**
+\`\`\`sql
+-- ❌ Slow
+SELECT * FROM orders
+WHERE user_id IN (SELECT id FROM users WHERE active = 1);
+
+-- ✅ Fast
+SELECT o.* FROM orders o
+INNER JOIN users u ON o.user_id = u.id
+WHERE u.active = 1;
+\`\`\`
+
+**5. Use EXISTS instead of IN**
+\`\`\`sql
+-- ❌ Slower
+SELECT * FROM users
+WHERE id IN (SELECT user_id FROM orders);
+
+-- ✅ Faster
+SELECT * FROM users u
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id);
+\`\`\`
+
+## Database Sharding
+
+Splitting large database into smaller, faster pieces.
+
+\`\`\`
+Horizontal Sharding (by rows):
+  Shard 1: users 1-1000
+  Shard 2: users 1001-2000
+  Shard 3: users 2001-3000
+
+Vertical Sharding (by columns):
+  Shard 1: user_id, email, password
+  Shard 2: user_id, profile_data, preferences
+\`\`\`
+
+## Backup & Recovery
+
+\`\`\`bash
+# MySQL Backup
+mysqldump -u root -p database_name > backup.sql
+
+# Restore
+mysql -u root -p database_name < backup.sql
+
+# PostgreSQL Backup
+pg_dump database_name > backup.sql
+
+# Restore
+psql database_name < backup.sql
+\`\`\`
+
+## Best Practices
+
+✅ Normalize to 3NF (unless performance requires denormalization)
+✅ Use appropriate data types
+✅ Index frequently queried columns
+✅ Use foreign keys for referential integrity
+✅ Implement proper backup strategy
+✅ Use transactions for multi-step operations
+✅ Avoid N+1 query problems
+✅ Monitor slow queries
+✅ Use connection pooling
+✅ Regular database maintenance (vacuum, analyze)`,
+      topics: ['DBMS', 'Database', 'Normalization', 'Indexing', 'Transactions', 'SQL'],
+      estimatedTime: 45,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // Operating System
+    // ========================================
+    {
+      id: 'operating-system-concepts',
+      title: 'Operating System Core Concepts',
+      difficulty: 'Medium' as any,
+      category: 'Operating System',
+      description: 'Understanding OS fundamentals: processes, threads, memory, and scheduling',
+      answer: `# Operating System Concepts
+
+## What is an Operating System?
+
+An OS is system software that manages hardware resources and provides services for application programs.
+
+## OS Functions
+
+1. **Process Management** - Create, schedule, terminate processes
+2. **Memory Management** - Allocate and deallocate memory
+3. **File System Management** - Organize and access files
+4. **Device Management** - Control hardware devices
+5. **Security** - Protect system resources
+6. **Networking** - Enable network communication
+
+## Process vs Thread
+
+| Feature | Process | Thread |
+|---------|---------|--------|
+| Definition | Independent program execution | Lightweight unit within process |
+| Memory | Separate address space | Shared address space |
+| Communication | IPC (slow) | Direct (fast) |
+| Creation | Expensive | Cheap |
+| Isolation | High | Low |
+| Example | Chrome tab | Chrome tab's rendering thread |
+
+### Process States
+
+\`\`\`
+NEW → READY → RUNNING → TERMINATED
+        ↑         ↓
+        └── WAITING
+\`\`\`
+
+**NEW**: Process created
+**READY**: Waiting for CPU
+**RUNNING**: Executing on CPU
+**WAITING**: Waiting for I/O or event
+**TERMINATED**: Execution completed
+
+### Process Creation
+
+\`\`\`javascript
+// Node.js child process
+const { spawn } = require('child_process');
+
+const child = spawn('ls', ['-la']);
+
+child.stdout.on('data', (data) => {
+  console.log(\`stdout: \${data}\`);
+});
+
+child.on('close', (code) => {
+  console.log(\`Process exited with code \${code}\`);
+});
+\`\`\`
+
+\`\`\`python
+# Python multiprocessing
+import multiprocessing
+
+def worker(num):
+    print(f'Worker {num}')
+
+if __name__ == '__main__':
+    processes = []
+    for i in range(5):
+        p = multiprocessing.Process(target=worker, args=(i,))
+        processes.append(p)
+        p.start()
+
+    for p in processes:
+        p.join()
+\`\`\`
+
+## CPU Scheduling Algorithms
+
+### 1. First-Come, First-Served (FCFS)
+- Simple, non-preemptive
+- Convoy effect (short processes wait for long ones)
+
+### 2. Shortest Job First (SJF)
+- Non-preemptive
+- Optimal average waiting time
+- Hard to predict execution time
+
+### 3. Round Robin (RR)
+- Preemptive FCFS with time quantum
+- Fair, good response time
+- Context switching overhead
+
+### 4. Priority Scheduling
+- Each process has priority
+- Can cause starvation
+- Solution: Aging (gradually increase priority)
+
+### 5. Multi-Level Queue
+- Separate queues for different process types
+- Each queue has its own scheduling algorithm
+
+## Memory Management
+
+### Memory Hierarchy
+\`\`\`
+Registers (fastest, smallest)
+    ↓
+L1 Cache
+    ↓
+L2 Cache
+    ↓
+L3 Cache
+    ↓
+RAM
+    ↓
+Disk (slowest, largest)
+\`\`\`
+
+### Virtual Memory
+
+Benefits:
+- Programs can be larger than physical memory
+- Memory isolation between processes
+- Efficient memory use
+
+\`\`\`
+Virtual Address → MMU → Physical Address
+                 (Memory Management Unit)
+\`\`\`
+
+### Paging
+
+- Divide memory into fixed-size blocks (pages)
+- Page size typically 4KB
+- Page table maps virtual to physical addresses
+
+### Page Replacement Algorithms
+
+**1. FIFO (First-In, First-Out)**
+- Replace oldest page
+- Simple but not optimal
+
+**2. LRU (Least Recently Used)**
+- Replace page not used for longest time
+- Better performance, more overhead
+
+**3. Optimal**
+- Replace page that won't be used for longest time
+- Theoretical best, impractical (requires future knowledge)
+
+## Deadlock
+
+### Necessary Conditions (all must be true)
+
+1. **Mutual Exclusion** - Resource can't be shared
+2. **Hold and Wait** - Process holds resource while waiting for another
+3. **No Preemption** - Resource can't be forcibly taken
+4. **Circular Wait** - Circular chain of processes waiting for resources
+
+### Deadlock Prevention
+
+Break at least one condition:
+
+\`\`\`javascript
+// Prevent circular wait with resource ordering
+class BankAccount {
+  constructor(id) {
+    this.id = id;
+    this.balance = 0;
+    this.lock = new Lock();
+  }
+
+  transfer(to, amount) {
+    // Always lock accounts in order of ID
+    const first = this.id < to.id ? this : to;
+    const second = this.id < to.id ? to : this;
+
+    first.lock.acquire();
+    try {
+      second.lock.acquire();
+      try {
+        this.balance -= amount;
+        to.balance += amount;
+      } finally {
+        second.lock.release();
+      }
+    } finally {
+      first.lock.release();
+    }
+  }
+}
+\`\`\`
+
+## Synchronization Primitives
+
+### 1. Mutex (Mutual Exclusion)
+\`\`\`javascript
+const mutex = new Mutex();
+
+async function criticalSection() {
+  await mutex.acquire();
+  try {
+    // Critical section code
+    console.log('Executing critical section');
+  } finally {
+    mutex.release();
+  }
+}
+\`\`\`
+
+### 2. Semaphore
+\`\`\`javascript
+class Semaphore {
+  constructor(count) {
+    this.count = count;
+    this.queue = [];
+  }
+
+  async acquire() {
+    if (this.count > 0) {
+      this.count--;
+    } else {
+      await new Promise(resolve => this.queue.push(resolve));
+    }
+  }
+
+  release() {
+    this.count++;
+    if (this.queue.length > 0) {
+      const resolve = this.queue.shift();
+      resolve();
+    }
+  }
+}
+
+// Usage: Limit concurrent connections
+const semaphore = new Semaphore(5); // Max 5 concurrent
+
+async function makeRequest() {
+  await semaphore.acquire();
+  try {
+    // Make request
+  } finally {
+    semaphore.release();
+  }
+}
+\`\`\`
+
+### 3. Monitor
+\`\`\`javascript
+class BoundedBuffer {
+  constructor(size) {
+    this.buffer = [];
+    this.size = size;
+  }
+
+  async produce(item) {
+    while (this.buffer.length >= this.size) {
+      await this.waitNotFull();
+    }
+    this.buffer.push(item);
+    this.notifyNotEmpty();
+  }
+
+  async consume() {
+    while (this.buffer.length === 0) {
+      await this.waitNotEmpty();
+    }
+    const item = this.buffer.shift();
+    this.notifyNotFull();
+    return item;
+  }
+}
+\`\`\`
+
+## Inter-Process Communication (IPC)
+
+### 1. Pipes
+\`\`\`bash
+# Shell pipe
+ls -la | grep "txt" | wc -l
+\`\`\`
+
+### 2. Message Queues
+\`\`\`javascript
+// Using Bull (Redis-backed queue)
+const Queue = require('bull');
+const taskQueue = new Queue('tasks');
+
+// Producer
+taskQueue.add({ task: 'process-image', imageId: 123 });
+
+// Consumer
+taskQueue.process(async (job) => {
+  const { task, imageId } = job.data;
+  // Process task
+});
+\`\`\`
+
+### 3. Shared Memory
+\`\`\`javascript
+// Web Workers with SharedArrayBuffer
+const sab = new SharedArrayBuffer(1024);
+const view = new Int32Array(sab);
+
+// Main thread
+worker.postMessage(sab);
+
+// Worker thread
+Atomics.add(view, 0, 1); // Atomic operation
+\`\`\`
+
+### 4. Sockets
+\`\`\`javascript
+// TCP Socket
+const net = require('net');
+
+const server = net.createServer((socket) => {
+  socket.on('data', (data) => {
+    console.log('Received:', data.toString());
+  });
+});
+
+server.listen(8080);
+\`\`\`
+
+## File System
+
+### File Operations
+\`\`\`javascript
+const fs = require('fs').promises;
+
+// Read file
+const content = await fs.readFile('file.txt', 'utf-8');
+
+// Write file
+await fs.writeFile('file.txt', 'content');
+
+// Append
+await fs.appendFile('file.txt', 'more content');
+
+// Delete
+await fs.unlink('file.txt');
+
+// Directory operations
+await fs.mkdir('dir');
+const files = await fs.readdir('dir');
+await fs.rmdir('dir');
+\`\`\`
+
+### File Allocation Methods
+
+**1. Contiguous Allocation**
+- Fast sequential access
+- External fragmentation
+
+**2. Linked Allocation**
+- No external fragmentation
+- Slow random access
+
+**3. Indexed Allocation**
+- Direct access
+- Extra space for index block
+
+## System Calls
+
+\`\`\`javascript
+// Node.js system calls
+const os = require('os');
+
+// System info
+console.log('Platform:', os.platform());
+console.log('CPU cores:', os.cpus().length);
+console.log('Total memory:', os.totalmem());
+console.log('Free memory:', os.freemem());
+console.log('Uptime:', os.uptime());
+
+// Process info
+console.log('Process ID:', process.pid);
+console.log('Memory usage:', process.memoryUsage());
+console.log('CPU usage:', process.cpuUsage());
+\`\`\`
+
+## Real-world Application
+
+### Process Management in Node.js
+
+\`\`\`javascript
+const cluster = require('cluster');
+const os = require('os');
+
+if (cluster.isMaster) {
+  const numCPUs = os.cpus().length;
+
+  // Fork workers
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  // Restart dead workers
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(\`Worker \${worker.process.pid} died\`);
+    cluster.fork();
+  });
+} else {
+  // Worker process
+  require('./app.js');
+}
+\`\`\`
+
+## Best Practices
+
+✅ Use thread pools for better resource management
+✅ Avoid busy waiting (use async/await)
+✅ Implement proper error handling in processes
+✅ Use IPC mechanisms appropriately
+✅ Monitor memory usage
+✅ Handle signals properly (SIGTERM, SIGINT)
+✅ Implement graceful shutdown
+✅ Use clustering for multi-core utilization
+✅ Profile and optimize critical paths
+✅ Understand system limits (ulimit, file descriptors)`,
+      topics: ['Operating System', 'Process', 'Thread', 'Memory', 'Scheduling', 'Deadlock'],
+      estimatedTime: 45,
+      platformLinks: [],
+      userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+    },
+
+    // ========================================
+    // Computer Networks
+    // ========================================
+    {
+      id: 'computer-networks',
+      title: 'Computer Networks - OSI Model & Protocols',
+      difficulty: 'Medium' as any,
+      category: 'Computer Networks',
+      description: 'Understanding network layers, protocols, TCP/IP, and network security',
+      answer: `# Computer Networks
+
+## OSI Model (7 Layers)
+
+\`\`\`
+7. Application   - HTTP, FTP, SMTP, DNS
+6. Presentation  - Encryption, Compression
+5. Session       - Session management
+4. Transport     - TCP, UDP (end-to-end)
+3. Network       - IP, ICMP, Routing
+2. Data Link     - MAC, Ethernet, Switches
+1. Physical      - Cables, Signals, Hubs
+\`\`\`
+
+## TCP/IP Model (4 Layers)
+
+\`\`\`
+4. Application   - HTTP, DNS, SMTP, FTP
+3. Transport     - TCP, UDP
+2. Internet      - IP, ICMP, ARP
+1. Network Access - Ethernet, WiFi
+\`\`\`
+
+## TCP vs UDP
+
+| Feature | TCP | UDP |
+|---------|-----|-----|
+| Connection | Connection-oriented | Connectionless |
+| Reliability | Reliable (ACK, retransmission) | Unreliable |
+| Ordering | Ordered delivery | No ordering |
+| Speed | Slower (overhead) | Faster |
+| Header Size | 20 bytes | 8 bytes |
+| Use Cases | Web, Email, File Transfer | Video, Gaming, DNS |
+
+### TCP Three-Way Handshake
+
+\`\`\`
+Client                    Server
+  │                          │
+  │────── SYN (seq=x) ───────→│
+  │                          │
+  │←─── SYN-ACK (seq=y,───────│
+  │      ack=x+1)            │
+  │                          │
+  │────── ACK (ack=y+1) ─────→│
+  │                          │
+  │   Connection Established │
+\`\`\`
+
+### TCP Connection Termination
+
+\`\`\`
+Client                    Server
+  │                          │
+  │────── FIN ──────────────→│
+  │                          │
+  │←────── ACK ──────────────│
+  │                          │
+  │←────── FIN ──────────────│
+  │                          │
+  │────── ACK ──────────────→│
+  │                          │
+  │   Connection Closed      │
+\`\`\`
+
+## IP Addressing
+
+### IPv4
+\`\`\`
+Format: 32 bits (4 octets)
+Example: 192.168.1.1
+
+Classes:
+  Class A: 1.0.0.0 to 126.255.255.255 (16M hosts)
+  Class B: 128.0.0.0 to 191.255.255.255 (65K hosts)
+  Class C: 192.0.0.0 to 223.255.255.255 (254 hosts)
+
+Private IP ranges:
+  10.0.0.0 to 10.255.255.255
+  172.16.0.0 to 172.31.255.255
+  192.168.0.0 to 192.168.255.255
+
+Special addresses:
+  127.0.0.1 - Localhost
+  0.0.0.0 - Default route
+  255.255.255.255 - Broadcast
+\`\`\`
+
+### IPv6
+\`\`\`
+Format: 128 bits (8 groups of 4 hex digits)
+Example: 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+Shortened: 2001:db8:85a3::8a2e:370:7334
+
+Loopback: ::1
+\`\`\`
+
+### Subnetting
+
+\`\`\`
+IP: 192.168.1.0/24
+Subnet Mask: 255.255.255.0
+Network: 192.168.1.0
+Broadcast: 192.168.1.255
+Usable IPs: 192.168.1.1 to 192.168.1.254 (254 hosts)
+
+CIDR Notation:
+  /24 = 255.255.255.0 (256 addresses)
+  /25 = 255.255.255.128 (128 addresses)
+  /26 = 255.255.255.192 (64 addresses)
+  /27 = 255.255.255.224 (32 addresses)
+\`\`\`
+
+## DNS (Domain Name System)
+
+### DNS Query Process
+\`\`\`
+1. Browser cache
+2. OS cache
+3. Router cache
+4. ISP DNS resolver
+5. Root DNS server
+6. TLD DNS server (.com)
+7. Authoritative DNS server
+8. Return IP address
+\`\`\`
+
+### DNS Record Types
+
+\`\`\`javascript
+// Example DNS records
+const dnsRecords = {
+  "A": "192.0.2.1",                    // IPv4 address
+  "AAAA": "2001:db8::1",               // IPv6 address
+  "CNAME": "alias.example.com",        // Canonical name
+  "MX": "mail.example.com",            // Mail exchange
+  "TXT": "v=spf1 include:_spf.google.com ~all", // Text
+  "NS": "ns1.example.com",             // Name server
+  "SOA": "ns1.example.com admin.example.com", // Start of authority
+  "PTR": "example.com"                 // Reverse DNS
+};
+
+// DNS lookup in Node.js
+const dns = require('dns').promises;
+
+async function lookupDomain(domain) {
+  const addresses = await dns.resolve4(domain);
+  console.log('IPv4 addresses:', addresses);
+
+  const mxRecords = await dns.resolveMx(domain);
+  console.log('MX records:', mxRecords);
+}
+\`\`\`
+
+## HTTP/HTTPS
+
+### HTTP Request
+\`\`\`http
+GET /api/users HTTP/1.1
+Host: api.example.com
+User-Agent: Mozilla/5.0
+Accept: application/json
+Authorization: Bearer token123
+Cookie: sessionId=abc123
+\`\`\`
+
+### HTTP Response
+\`\`\`http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 1234
+Cache-Control: max-age=3600
+Set-Cookie: sessionId=xyz789; HttpOnly; Secure
+
+{"users": [...]}
+\`\`\`
+
+### HTTPS (TLS/SSL Handshake)
+
+\`\`\`
+1. Client Hello (supported ciphers)
+2. Server Hello (chosen cipher, certificate)
+3. Client verifies certificate
+4. Key exchange (establish session key)
+5. Encrypted communication begins
+\`\`\`
+
+## Network Protocols
+
+### Application Layer
+
+**HTTP (Port 80)**
+\`\`\`javascript
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello World');
+});
+
+server.listen(80);
+\`\`\`
+
+**HTTPS (Port 443)**
+\`\`\`javascript
+const https = require('https');
+const fs = require('fs');
+
+const options = {
+  key: fs.readFileSync('private-key.pem'),
+  cert: fs.readFileSync('certificate.pem')
+};
+
+const server = https.createServer(options, (req, res) => {
+  res.writeHead(200);
+  res.end('Secure Hello');
+});
+
+server.listen(443);
+\`\`\`
+
+**FTP (Port 21)** - File Transfer Protocol
+**SSH (Port 22)** - Secure Shell
+**SMTP (Port 25)** - Email sending
+**DNS (Port 53)** - Domain name resolution
+**DHCP (Port 67/68)** - Dynamic IP assignment
+
+## Network Security
+
+### Common Attacks
+
+**1. DDoS (Distributed Denial of Service)**
+\`\`\`
+Mitigation:
+- Rate limiting
+- CDN (Cloudflare)
+- Load balancing
+- Traffic filtering
+\`\`\`
+
+**2. Man-in-the-Middle (MITM)**
+\`\`\`
+Prevention:
+- Use HTTPS (TLS/SSL)
+- Certificate pinning
+- VPN
+- Avoid public WiFi
+\`\`\`
+
+**3. DNS Spoofing**
+\`\`\`
+Prevention:
+- DNSSEC
+- Use trusted DNS servers
+- Monitor DNS changes
+\`\`\`
+
+**4. SQL Injection**
+\`\`\`javascript
+// ❌ Vulnerable
+const query = \`SELECT * FROM users WHERE username = '\${username}'\`;
+
+// ✅ Safe (parameterized query)
+const query = 'SELECT * FROM users WHERE username = ?';
+db.query(query, [username]);
+\`\`\`
+
+### Firewalls
+
+\`\`\`bash
+# iptables example (Linux firewall)
+# Allow HTTP
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+
+# Allow HTTPS
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# Block specific IP
+iptables -A INPUT -s 192.168.1.100 -j DROP
+
+# Allow SSH only from specific IP
+iptables -A INPUT -p tcp --dport 22 -s 10.0.0.5 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j DROP
+\`\`\`
+
+## Network Tools & Commands
+
+\`\`\`bash
+# Ping (test connectivity)
+ping google.com
+
+# Traceroute (show route to host)
+traceroute google.com
+
+# Netstat (network statistics)
+netstat -tuln  # Show listening ports
+
+# Nslookup (DNS query)
+nslookup example.com
+
+# Dig (DNS lookup)
+dig example.com
+
+# Curl (make HTTP request)
+curl -X GET https://api.example.com/users
+
+# Telnet (test TCP connection)
+telnet example.com 80
+
+# Nmap (network scanner)
+nmap -p 80,443 example.com
+
+# Tcpdump (packet analyzer)
+tcpdump -i eth0 port 80
+\`\`\`
+
+## NAT (Network Address Translation)
+
+\`\`\`
+Private Network (192.168.1.0/24)
+  │
+  ├─ Device 1: 192.168.1.10
+  ├─ Device 2: 192.168.1.11
+  └─ Device 3: 192.168.1.12
+  │
+NAT Router (Public IP: 203.0.113.5)
+  │
+Internet
+
+All devices share one public IP
+\`\`\`
+
+## Load Balancing
+
+\`\`\`javascript
+// Round Robin load balancing
+class LoadBalancer {
+  constructor(servers) {
+    this.servers = servers;
+    this.current = 0;
+  }
+
+  getNextServer() {
+    const server = this.servers[this.current];
+    this.current = (this.current + 1) % this.servers.length;
+    return server;
+  }
+}
+
+const lb = new LoadBalancer([
+  'http://server1.com',
+  'http://server2.com',
+  'http://server3.com'
+]);
+
+// Each request goes to next server
+const server = lb.getNextServer();
+\`\`\`
+
+### Load Balancing Algorithms
+
+1. **Round Robin** - Distribute evenly
+2. **Least Connections** - Send to server with fewest connections
+3. **IP Hash** - Use client IP to determine server
+4. **Weighted** - Servers get traffic based on capacity
+
+## Network Performance
+
+\`\`\`javascript
+// Measure network latency
+const start = Date.now();
+
+fetch('https://api.example.com/ping')
+  .then(() => {
+    const latency = Date.now() - start;
+    console.log(\`Latency: \${latency}ms\`);
+  });
+
+// Bandwidth test
+const testSize = 1024 * 1024; // 1MB
+const startTime = Date.now();
+
+fetch('https://example.com/testfile')
+  .then(response => response.blob())
+  .then(blob => {
+    const duration = (Date.now() - startTime) / 1000; // seconds
+    const bandwidth = (blob.size * 8) / duration / 1000000; // Mbps
+    console.log(\`Bandwidth: \${bandwidth.toFixed(2)} Mbps\`);
+  });
+\`\`\`
+
+## Best Practices
+
+✅ Use HTTPS for all communications
+✅ Implement rate limiting
+✅ Use VPN for remote access
+✅ Keep software/firmware updated
+✅ Monitor network traffic
+✅ Implement proper firewall rules
+✅ Use strong encryption (TLS 1.3)
+✅ Validate SSL certificates
+✅ Implement DDoS protection
+✅ Use secure DNS (DoH, DoT)
+✅ Regular security audits
+✅ Network segmentation
+✅ Principle of least privilege`,
+      topics: ['Computer Networks', 'TCP/IP', 'OSI Model', 'DNS', 'HTTP', 'Network Security'],
+      estimatedTime: 50,
       platformLinks: [],
       userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
     }

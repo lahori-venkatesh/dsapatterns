@@ -86,17 +86,6 @@ export const Header: React.FC = () => {
             <span className="text-sm font-medium">DSA Mastery</span>
           </button>
           <button
-            onClick={() => setCurrentView('revision')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
-              currentView === 'revision'
-                ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
-            }`}
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span className="text-sm font-medium">Revision</span>
-          </button>
-          <button
             onClick={() => setCurrentView('language-mastery')}
             className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
               currentView === 'language-mastery'
@@ -223,16 +212,6 @@ export const Header: React.FC = () => {
               }`}
             >
               <Layers className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setCurrentView('revision')}
-              className={`p-2 rounded-xl transition-all duration-200 ${
-                currentView === 'revision'
-                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                  : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
-              }`}
-            >
-              <RotateCcw className="w-4 h-4" />
             </button>
             <button
               onClick={() => setCurrentView('language-mastery')}

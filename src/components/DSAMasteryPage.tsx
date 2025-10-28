@@ -1,8 +1,9 @@
 import React, { Suspense, lazy, useState } from 'react';
-import { ArrowLeft, Coffee, Code2, BookOpen } from 'lucide-react';
+import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal } from 'lucide-react';
 import { Header } from './Header';
 import { useAppStore } from '../store';
 import { javaMastery, pythonMastery, cppMastery } from '../data/categories';
+import type { LanguageMastery } from '../types';
 
 const LevelSelector = lazy(() => import('./LevelSelector').then(m => ({ default: m.LevelSelector })));
 const StatsOverview = lazy(() => import('./StatsOverview').then(m => ({ default: m.StatsOverview })));
@@ -10,6 +11,7 @@ const CategoryCard = lazy(() => import('./CategoryCard').then(m => ({ default: m
 const AuthModals = lazy(() => import('./AuthModals').then(m => ({ default: m.AuthModals })));
 const PaymentModal = lazy(() => import('./PaymentModal').then(m => ({ default: m.PaymentModal })));
 const PremiumActivationModal = lazy(() => import('./PremiumActivationModal').then(m => ({ default: m.PremiumActivationModal })));
+const RevisionPage = lazy(() => import('./RevisionPage').then(m => ({ default: m.RevisionPage })));
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center py-12">
@@ -34,8 +36,12 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
     setShowPaymentModal,
     showPremiumActivationModal,
     setShowPremiumActivationModal,
-    categories
+    categories,
+    setCurrentView
   } = useAppStore();
+
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageMastery | null>(null);
+  const [showRevision, setShowRevision] = useState(false);
 
   const filteredCategories = categories.filter(cat => cat.level === selectedLevel);
 
@@ -73,6 +79,102 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
   const handleUpgrade = () => {
     setShowPaymentModal(true);
   };
+
+  // Show Revision Page
+  if (showRevision) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <Header />
+        <div className="container mx-auto px-4 pt-6">
+          <button
+            onClick={() => setShowRevision(false)}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to DSA Mastery
+          </button>
+        </div>
+        <Suspense fallback={<LoadingFallback />}>
+          <RevisionPage />
+        </Suspense>
+      </div>
+    );
+  }
+
+  // Show Language Problems
+  if (selectedLanguage) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <Header />
+        <div className="container mx-auto px-4 pt-6">
+          <button
+            onClick={() => setSelectedLanguage(null)}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to DSA Mastery
+          </button>
+
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-gradient-to-r from-gray-800/80 to-gray-700/80 backdrop-blur-sm border border-gray-600/50 rounded-2xl p-8 mb-8">
+              <div className="flex items-center space-x-4 mb-4">
+                {selectedLanguage.id === 'java-mastery' && <Coffee className="w-12 h-12 text-orange-400" />}
+                {selectedLanguage.id === 'python-mastery' && <Code2 className="w-12 h-12 text-blue-400" />}
+                {selectedLanguage.id === 'cpp-mastery' && <Terminal className="w-12 h-12 text-purple-400" />}
+                <div>
+                  <h2 className="text-3xl font-bold text-white">{selectedLanguage.name}</h2>
+                  <p className="text-gray-300">{selectedLanguage.description}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {selectedLanguage.problems.map((problem) => (
+                <div key={problem.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-xl font-semibold text-white">{problem.title}</h3>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          problem.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
+                          problem.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                          'bg-red-500/20 text-red-400'
+                        }`}>
+                          {problem.difficulty}
+                        </span>
+                      </div>
+                      <p className="text-gray-300 mb-3">{problem.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {problem.topics.map((topic) => (
+                          <span key={topic} className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 mt-4">
+                    {problem.platformLinks.map((link) => (
+                      <a
+                        key={link.platform}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors text-sm"
+                      >
+                        {link.platform} →
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
@@ -183,10 +285,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {/* Java Card */}
               <div
-                onClick={() => {
-                  useAppStore.getState().setSelectedLanguageId(javaMastery.id);
-                  useAppStore.getState().setCurrentView('language-mastery');
-                }}
+                onClick={() => setSelectedLanguage(javaMastery)}
                 className="bg-gradient-to-br from-orange-500/10 to-red-600/10 border border-orange-500/30 rounded-xl p-6 hover:border-orange-500/60 transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-center space-x-3 mb-4">
@@ -207,10 +306,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
 
               {/* Python Card */}
               <div
-                onClick={() => {
-                  useAppStore.getState().setSelectedLanguageId(pythonMastery.id);
-                  useAppStore.getState().setCurrentView('language-mastery');
-                }}
+                onClick={() => setSelectedLanguage(pythonMastery)}
                 className="bg-gradient-to-br from-blue-500/10 to-yellow-500/10 border border-blue-500/30 rounded-xl p-6 hover:border-blue-500/60 transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-center space-x-3 mb-4">
@@ -231,10 +327,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
 
               {/* C++ Card */}
               <div
-                onClick={() => {
-                  useAppStore.getState().setSelectedLanguageId(cppMastery.id);
-                  useAppStore.getState().setCurrentView('language-mastery');
-                }}
+                onClick={() => setSelectedLanguage(cppMastery)}
                 className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-6 hover:border-purple-500/60 transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-center space-x-3 mb-4">
@@ -258,10 +351,20 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
       </div>
 
       <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Level Selector */}
-        <Suspense fallback={<div className="h-20 bg-gray-800/50 rounded-xl animate-pulse" />}>
-          <LevelSelector />
-        </Suspense>
+        {/* Level Selector and Revision Button */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <Suspense fallback={<div className="h-20 bg-gray-800/50 rounded-xl animate-pulse flex-1" />}>
+            <LevelSelector />
+          </Suspense>
+
+          <button
+            onClick={() => setShowRevision(true)}
+            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <RotateCcw className="w-5 h-5" />
+            <span>Revision Center</span>
+          </button>
+        </div>
 
         {/* Hero Section */}
         <div className="text-center space-y-6 py-8 md:py-12">

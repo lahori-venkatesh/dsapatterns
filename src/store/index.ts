@@ -57,7 +57,7 @@ interface AppState {
   selectedCategory: string | null;
   selectedPattern: string | null;
   selectedProblem: string | null;
-  currentView: 'dashboard' | 'revision' | 'language-mastery';
+  currentView: 'dashboard' | 'dsa-mastery' | 'revision' | 'language-mastery';
   selectedLanguageId: string | null;
 
   // UI State
@@ -73,7 +73,7 @@ interface AppState {
   setSelectedCategory: (categoryId: string | null) => void;
   setSelectedPattern: (patternId: string | null) => void;
   setSelectedProblem: (problemId: string | null) => void;
-  setCurrentView: (view: 'dashboard' | 'revision' | 'language-mastery') => void;
+  setCurrentView: (view: 'dashboard' | 'dsa-mastery' | 'revision' | 'language-mastery') => void;
   setSelectedLanguageId: (languageId: string | null) => void;
   toggleCategory: (categoryId: string) => void;
   openNoteEditor: (note?: Note) => void;

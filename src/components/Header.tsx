@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, BookOpen, BarChart3, Zap, RotateCcw, Home, Crown, User, LogOut, Code2 } from 'lucide-react';
+import { Search, BookOpen, BarChart3, Zap, RotateCcw, Home, Crown, User, LogOut, Code2, Layers } from 'lucide-react';
 import { useAppStore } from '../store';
 
 export const Header: React.FC = () => {
@@ -72,7 +72,18 @@ export const Header: React.FC = () => {
             }`}
           >
             <Home className="w-4 h-4" />
-            <span className="text-sm font-medium">Dashboard</span>
+            <span className="text-sm font-medium">Home</span>
+          </button>
+          <button
+            onClick={() => setCurrentView('dsa-mastery')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
+              currentView === 'dsa-mastery'
+                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span className="text-sm font-medium">DSA Mastery</span>
           </button>
           <button
             onClick={() => setCurrentView('revision')}
@@ -202,6 +213,16 @@ export const Header: React.FC = () => {
               }`}
             >
               <Home className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setCurrentView('dsa-mastery')}
+              className={`p-2 rounded-xl transition-all duration-200 ${
+                currentView === 'dsa-mastery'
+                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                  : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
+              }`}
+            >
+              <Layers className="w-4 h-4" />
             </button>
             <button
               onClick={() => setCurrentView('revision')}

@@ -95,7 +95,6 @@ function App() {
   const [showPaymentModal, setShowPaymentModal] = React.useState(false);
   const [showPremiumActivationModal, setShowPremiumActivationModal] = React.useState(false);
   const [showBigOPage, setShowBigOPage] = React.useState(false);
-  const [showDSAMastery, setShowDSAMastery] = React.useState(false);
 
   // Check if this is the auth callback route
   const isAuthCallback = React.useMemo(() => {
@@ -291,11 +290,11 @@ function App() {
     );
   }
 
-  if (showDSAMastery) {
+  if (currentView === 'dsa-mastery') {
     return (
       <AppErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
-          <DSAMasteryPage onBack={() => setShowDSAMastery(false)} />
+          <DSAMasteryPage onBack={() => useAppStore.getState().setCurrentView('dashboard')} />
         </Suspense>
       </AppErrorBoundary>
     );
@@ -338,7 +337,7 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* DSA Mastery Card */}
             <button
-              onClick={() => setShowDSAMastery(true)}
+              onClick={() => useAppStore.getState().setCurrentView('dsa-mastery')}
               className="group relative overflow-hidden rounded-2xl border border-gray-700/50 bg-gray-800/50 backdrop-blur-sm p-8 text-left transition-all duration-300 hover:border-blue-500/50 hover:bg-gray-700/50 hover:scale-105"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />

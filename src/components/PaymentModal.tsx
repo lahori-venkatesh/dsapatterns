@@ -28,7 +28,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
     { id: 'project', name: 'Project Assistance', price: 199, description: 'One-on-one project guidance and code review' },
   ];
 
-  const basePrice = 499;
+  const basePrice = 599;
   const totalPrice = basePrice + selectedAddOns.reduce((sum, id) => {
     const addOn = addOns.find(a => a.id === id);
     return sum + (addOn?.price || 0);
@@ -153,8 +153,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
               <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl p-4 border border-amber-500/30 mb-6 text-center">
                 <p className="text-sm text-gray-300 mb-2">Base Premium Access</p>
                 <div className="flex items-center justify-center space-x-2 mb-2">
-                  <span className="text-3xl font-bold text-white">₹499</span>
-                  <span className="text-sm text-gray-400 line-through">₹999</span>
+                  <span className="text-3xl font-bold text-white">₹599</span>
+                  <span className="text-sm text-gray-400 line-through">₹2999</span>
                 </div>
                 <p className="text-amber-400 font-semibold">50% OFF - Limited Time</p>
                 <p className="text-gray-300 text-sm mt-1">One-time payment • Lifetime access</p>

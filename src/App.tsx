@@ -718,8 +718,8 @@ function App() {
                     Limited Time Offer
                   </div>
                   <div className="flex items-center justify-center gap-4 mb-2">
-                    <span className="text-2xl text-gray-400 line-through">₹999</span>
-                    <span className="text-5xl font-bold text-white">₹499</span>
+                    <span className="text-2xl text-gray-400 line-through">₹2999</span>
+                    <span className="text-5xl font-bold text-white">₹599</span>
                   </div>
                   <div className="text-amber-300 text-lg font-medium mb-1">One-time payment • Lifetime access</div>
                   <div className="text-gray-400 text-sm">No recurring charges • Cancel anytime</div>

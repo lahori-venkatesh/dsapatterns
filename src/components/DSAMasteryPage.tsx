@@ -180,7 +180,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <Header />
 
-      {/* Back Button and Action Buttons */}
+      {/* Back Button and DSA Revision */}
       <div className="container mx-auto px-4 pt-6">
         <div className="flex items-center justify-between">
           <button
@@ -191,23 +191,13 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
             Back to Home
           </button>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowBigO(true)}
-              className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-            >
-              <Zap className="w-4 h-4" />
-              <span>Master Big O</span>
-            </button>
-
-            <button
-              onClick={() => setShowRevision(true)}
-              className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>DSA Revision</span>
-            </button>
-          </div>
+          <button
+            onClick={() => setShowRevision(true)}
+            className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>DSA Revision</span>
+          </button>
         </div>
       </div>
 

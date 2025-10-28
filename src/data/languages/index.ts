@@ -5,6 +5,9 @@ import { machineCodingMastery } from './machineCoding';
 import { hrInterviewMastery } from './hrInterview';
 import { resumeLinkedInMastery } from './resumeLinkedIn';
 import { systemDesignTopics } from './systemDesign';
+import { javaMastery } from '../categories/java';
+import { pythonMastery } from '../categories/python';
+import { cppMastery } from '../categories/cpp';
 
 const systemDesignMastery = {
   id: 'system-design',
@@ -18,8 +21,10 @@ const systemDesignMastery = {
   problems: systemDesignTopics
 };
 
-// Note: Java, Python, and C++ are now in DSA Mastery section for better learning flow
 export const languageMasteryData = [
+  javaMastery,
+  pythonMastery,
+  cppMastery,
   sqlMastery,
   developmentMastery,
   systemDesignMastery,
@@ -29,4 +34,4 @@ export const languageMasteryData = [
   resumeLinkedInMastery
 ];
 
-export { sqlMastery, developmentMastery, systemDesignMastery, aptitudeMastery, machineCodingMastery, hrInterviewMastery, resumeLinkedInMastery };
+export { javaMastery, pythonMastery, cppMastery, sqlMastery, developmentMastery, systemDesignMastery, aptitudeMastery, machineCodingMastery, hrInterviewMastery, resumeLinkedInMastery };

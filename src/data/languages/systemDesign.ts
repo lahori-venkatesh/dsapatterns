@@ -2,1764 +2,808 @@ import { LanguageProblem } from '../../types';
 
 export const systemDesignTopics: LanguageProblem[] = [
   {
-    id: 'system-design-intro',
-    title: 'System Design Introduction',
-    description: 'Understanding the fundamentals of system design and why it matters in technical interviews',
-    answer: `# System Design: Complete Guide
+    id: 'client-server',
+    title: '1. Client-Server Architecture',
+    description: 'Understanding the foundation of web applications and distributed systems',
+    answer: `# Client-Server Architecture
 
-## What is System Design?
+## What is Client-Server?
 
-System Design is the process of defining the **architecture**, **components**, **modules**, **interfaces**, and **data** for a system to satisfy specified requirements. It's a crucial skill for senior engineers and a common topic in technical interviews at top tech companies.
+**Client-Server** is a computing model where tasks are divided between **service providers (servers)** and **service requesters (clients)**.
 
-### Why System Design Matters
+### 🏢 Real-World Analogy
 
-- **Scalability**: Design systems that can handle millions of users
-- **Reliability**: Build fault-tolerant systems that work 99.99% of the time
-- **Performance**: Optimize for speed and efficiency
-- **Maintainability**: Create systems that are easy to update and debug
-- **Cost-Effectiveness**: Balance features with infrastructure costs
+Think of a **restaurant**:
+- **Client** = Customer who orders food
+- **Server** = Waiter who takes orders and brings food
+- **Kitchen** = Backend server that prepares food
+- **Menu** = API documentation
 
-## Key Principles
+### How It Works
 
-### 1. **Start with Requirements**
-- Functional requirements (what the system should do)
-- Non-functional requirements (performance, scalability, availability)
-- Constraints (budget, timeline, technology)
+\`\`\`
+┌─────────┐                    ┌─────────┐
+│ Client  │ ----Request------> │ Server  │
+│(Browser)│                    │(Backend)│
+│         │ <---Response------ │         │
+└─────────┘                    └─────────┘
+\`\`\`
 
-### 2. **Think at Scale**
-- How many users? (DAU/MAU)
-- How much data? (Storage estimates)
-- How many requests per second? (QPS)
-- Expected growth rate?
+## Components
 
-### 3. **Trade-offs**
-Every design decision involves trade-offs:
-- **Consistency vs Availability** (CAP Theorem)
-- **Latency vs Throughput**
-- **Cost vs Performance**
-- **Simplicity vs Flexibility**
+### 1. **Client (Frontend)**
+- Web browser, mobile app, desktop app
+- Makes requests to server
+- Displays UI to users
+- Handles user interactions
 
-## System Design Interview Process
+**Examples:**
+- Chrome browser visiting amazon.com
+- Netflix app on your phone
+- Slack desktop application
 
-### Step 1: Requirements Gathering (5 min)
-- Ask clarifying questions
-- Define scope
-- List assumptions
+### 2. **Server (Backend)**
+- Receives requests from clients
+- Processes business logic
+- Accesses databases
+- Returns responses
 
-### Step 2: High-Level Design (10 min)
-- Draw major components
-- Show data flow
-- Identify bottlenecks
+**Examples:**
+- Node.js/Express server
+- Django/Flask Python server
+- Spring Boot Java server
 
-### Step 3: Deep Dive (20 min)
-- Design specific components
-- Database schema
-- API contracts
-- Scaling strategies
+## Request-Response Flow
 
-### Step 4: Wrap Up (5 min)
-- Discuss trade-offs
-- Address bottlenecks
-- Future improvements
+\`\`\`
+1. User clicks "Login" button (CLIENT)
+2. Browser sends POST request with credentials (CLIENT)
+3. Server receives request (SERVER)
+4. Server validates credentials against database (SERVER)
+5. Server generates JWT token (SERVER)
+6. Server sends response with token (SERVER)
+7. Browser stores token and redirects to dashboard (CLIENT)
+\`\`\`
 
-## Common System Design Questions
+## Example: Login Flow
 
-1. **Design URL Shortener** (bit.ly)
-2. **Design Twitter/Social Media Feed**
-3. **Design Netflix/YouTube**
-4. **Design Uber/Ride-Sharing**
-5. **Design WhatsApp/Messaging System**
-6. **Design E-commerce Platform**
-7. **Design Payment System**
-8. **Design Notification System**
-9. **Design Rate Limiter**
-10. **Design Search Engine**
+**Client Code (JavaScript):**
+\`\`\`javascript
+// Client makes request
+async function login(email, password) {
+  const response = await fetch('https://api.example.com/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
 
-## Key Skills Required
+  const data = await response.json();
 
-- Understanding of distributed systems
-- Database knowledge (SQL and NoSQL)
-- Caching strategies
-- Load balancing
-- Microservices architecture
-- API design
-- Message queues
-- Real-time communication
+  if (response.ok) {
+    localStorage.setItem('token', data.token);
+    window.location.href = '/dashboard';
+  } else {
+    alert('Login failed: ' + data.error);
+  }
+}
+\`\`\`
+
+**Server Code (Node.js):**
+\`\`\`javascript
+// Server handles request
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  // Validate credentials
+  const user = await db.users.findOne({ email });
+  const isValid = await bcrypt.compare(password, user.password);
+
+  if (!isValid) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  // Generate token
+  const token = jwt.sign({ userId: user.id }, SECRET_KEY);
+
+  res.json({ token, user: { id: user.id, email: user.email } });
+});
+\`\`\`
+
+## Architecture Patterns
+
+### 1. **Two-Tier Architecture**
+\`\`\`
+[Client] <----> [Server + Database]
+\`\`\`
+Simple but not scalable. Client directly connects to database server.
+
+### 2. **Three-Tier Architecture** ✅ (Most Common)
+\`\`\`
+[Presentation Layer] <----> [Business Logic Layer] <----> [Data Layer]
+     (Client)                    (Application Server)         (Database)
+\`\`\`
+
+### 3. **N-Tier Architecture**
+\`\`\`
+[Client] -> [Load Balancer] -> [Web Server] -> [App Server] -> [Cache] -> [Database]
+\`\`\`
+
+## Advantages
+
+✅ **Centralized Control**: Server manages all data and logic
+✅ **Security**: Sensitive logic on server, not exposed to client
+✅ **Scalability**: Can add more servers to handle load
+✅ **Maintenance**: Update server code without updating all clients
+✅ **Resource Sharing**: Multiple clients share same server resources
+
+## Disadvantages
+
+❌ **Single Point of Failure**: If server goes down, service stops
+❌ **Network Dependency**: Requires internet connection
+❌ **Server Overload**: Too many clients can overwhelm server
+❌ **Cost**: Maintaining servers is expensive
+
+## Real-World Examples
+
+### **Gmail**
+- **Client**: Browser displaying emails
+- **Server**: Google servers storing and processing emails
+
+### **Netflix**
+- **Client**: App streaming video
+- **Server**: Netflix servers delivering video content
+
+### **Banking App**
+- **Client**: Mobile app showing balance
+- **Server**: Bank servers managing accounts and transactions
 
 ---
 
-💡 **Pro Tip**: Always start simple, then gradually add complexity. Don't over-engineer from the start!
+💡 **Key Takeaway**: Client-Server separates concerns - clients focus on presentation, servers handle logic and data!
+`,
+    estimatedTime: 15,
+    difficulty: 'Easy',
+    topics: ['System Design', 'Architecture'],
+    platformLinks: [],
+    userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+  },
+  {
+    id: 'ip-address',
+    title: '2. IP Address',
+    description: 'Understanding how computers are identified and communicate on networks',
+    answer: `# IP Address (Internet Protocol Address)
+
+## What is an IP Address?
+
+An **IP Address** is a unique numerical label assigned to each device connected to a computer network. It's like a postal address for computers!
+
+### 🏠 Real-World Analogy
+
+Think of IP addresses like **home addresses**:
+- Your house address: **"123 Main Street, City, ZIP"**
+- Your computer's address: **"192.168.1.10"**
+
+Just as mail needs your address to reach you, data packets need IP addresses to reach the right device.
+
+## Types of IP Addresses
+
+### 1. **IPv4 (Internet Protocol version 4)**
+
+Most common format: **192.168.1.1**
+
+**Structure:**
+- 4 numbers separated by dots
+- Each number: 0-255 (8 bits each)
+- Total: 32 bits
+- **Range**: 0.0.0.0 to 255.255.255.255
+- **Total addresses**: ~4.3 billion
+
+**Example:**
+\`\`\`
+142.250.185.46  (google.com)
+172.217.14.206  (youtube.com)
+13.107.42.14    (microsoft.com)
+\`\`\`
+
+### 2. **IPv6 (Internet Protocol version 6)**
+
+Newer format: **2001:0db8:85a3:0000:0000:8a2e:0370:7334**
+
+**Structure:**
+- 8 groups separated by colons
+- Each group: hexadecimal (0-9, a-f)
+- Total: 128 bits
+- **Total addresses**: 340 undecillion (practically unlimited!)
+
+**Example:**
+\`\`\`
+2607:f8b0:4004:c07::66  (google.com IPv6)
+\`\`\`
+
+## IP Address Classes
+
+### IPv4 Classes
+
+\`\`\`
+Class A: 0.0.0.0 to 127.255.255.255
+  - Large networks (millions of hosts)
+  - Example: 10.0.0.0
+
+Class B: 128.0.0.0 to 191.255.255.255
+  - Medium networks (thousands of hosts)
+  - Example: 172.16.0.0
+
+Class C: 192.0.0.0 to 223.255.255.255
+  - Small networks (254 hosts)
+  - Example: 192.168.1.0
+
+Class D: 224.0.0.0 to 239.255.255.255
+  - Multicast groups
+
+Class E: 240.0.0.0 to 255.255.255.255
+  - Reserved for future use
+\`\`\`
+
+## Public vs Private IP Addresses
+
+### **Public IP Address** 🌍
+- Globally unique
+- Visible on the internet
+- Assigned by ISP
+- Required for internet communication
+
+**Example:** 203.0.113.45
+
+### **Private IP Address** 🏠
+- Used within local networks
+- NOT visible on internet
+- Reusable across different networks
+- Free to use
+
+**Private IP Ranges:**
+\`\`\`
+10.0.0.0 to 10.255.255.255      (Class A)
+172.16.0.0 to 172.31.255.255    (Class B)
+192.168.0.0 to 192.168.255.255  (Class C)
+\`\`\`
+
+### Network Example
+
+\`\`\`
+Home Network:
+┌─────────────────────────────────┐
+│ Router (Public IP: 203.0.113.5) │
+└─────────────┬───────────────────┘
+              │
+    ┌─────────┼──────────┐
+    │         │          │
+  Laptop    Phone     Smart TV
+192.168.1.10  .11       .12
+(Private IPs)
+\`\`\`
+
+## Static vs Dynamic IP
+
+### **Static IP Address** 📌
+- Permanent, doesn't change
+- Manually configured
+- More expensive
+- Use cases: Servers, websites, email servers
+
+### **Dynamic IP Address** 🔄
+- Changes periodically
+- Automatically assigned (DHCP)
+- Most home users have this
+- More secure (harder to track)
+
+## Special IP Addresses
+
+\`\`\`
+127.0.0.1 (localhost)
+  - Refers to your own computer
+  - Used for testing
+  - "Talk to yourself"
+
+0.0.0.0
+  - "Any IP address" or "all interfaces"
+  - Used in server configurations
+
+255.255.255.255
+  - Broadcast address
+  - Send to all devices on network
+
+192.168.1.1
+  - Common router/gateway address
+\`\`\`
+
+## How IP Addresses Work
+
+### Example: Visiting a Website
+
+\`\`\`
+1. You type: www.google.com in browser
+
+2. DNS lookup converts domain to IP
+   www.google.com → 142.250.185.46
+
+3. Your computer (192.168.1.10) sends request:
+   FROM: 192.168.1.10 (your private IP)
+   TO: 142.250.185.46 (Google's public IP)
+
+4. Router performs NAT:
+   FROM: 203.0.113.5 (your public IP)
+   TO: 142.250.185.46
+
+5. Google's server responds:
+   FROM: 142.250.185.46
+   TO: 203.0.113.5
+
+6. Router forwards to your device:
+   TO: 192.168.1.10
+
+7. Browser displays Google homepage
+\`\`\`
+
+## Subnet Mask
+
+Divides IP address into network and host portions.
+
+\`\`\`
+IP Address:    192.168.1.10
+Subnet Mask:   255.255.255.0
+
+Network Part:  192.168.1.    (identifies the network)
+Host Part:            .10    (identifies the device)
+\`\`\`
+
+## CIDR Notation
+
+Shorter way to write subnet masks:
+
+\`\`\`
+192.168.1.0/24
+
+/24 means first 24 bits are network portion
+Equivalent to: 255.255.255.0
+Usable hosts: 254 (2^8 - 2)
+\`\`\`
+
+## Finding Your IP Address
+
+### On Mac/Linux:
+\`\`\`bash
+# Public IP
+curl ifconfig.me
+
+# Private IP
+ifconfig | grep "inet "
+ip addr show
+\`\`\`
+
+### On Windows:
+\`\`\`bash
+# Public IP (browser)
+Visit: https://www.whatismyip.com
+
+# Private IP (command)
+ipconfig
+\`\`\`
+
+### In Code:
+\`\`\`javascript
+// Get client IP in Node.js
+app.get('/api/ip', (req, res) => {
+  const ip = req.headers['x-forwarded-for'] ||
+             req.connection.remoteAddress ||
+             req.socket.remoteAddress;
+
+  res.json({ ip });
+});
+\`\`\`
+
+## Real-World Examples
+
+### **Web Hosting**
+\`\`\`
+example.com → 192.0.2.1 (static public IP)
+Visitors always reach same server
+\`\`\`
+
+### **Home Network**
+\`\`\`
+ISP assigns: 203.0.113.45 (dynamic public IP)
+Your devices use: 192.168.1.x (private IPs)
+\`\`\`
+
+### **Cloud Servers**
+\`\`\`
+AWS EC2 instance: 54.23.45.67 (elastic/static IP)
+Multiple services can share same IP with different ports
+\`\`\`
+
+## Security Considerations
+
+⚠️ **Your IP Address Can Reveal:**
+- Approximate geographic location
+- Internet Service Provider
+- Device type (sometimes)
+
+🛡️ **Protection:**
+- Use VPN to hide real IP
+- Firewall to block unwanted connections
+- Don't expose private IPs publicly
+
+---
+
+💡 **Key Takeaway**: IP addresses are like phone numbers for computers - they enable devices to find and communicate with each other across networks!
+`,
+    estimatedTime: 15,
+    difficulty: 'Easy',
+    topics: ['System Design', 'Networking'],
+    platformLinks: [],
+    userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
+  },
+  {
+    id: 'dns',
+    title: '3. DNS (Domain Name System)',
+    description: 'The internet\'s phonebook - converting domain names to IP addresses',
+    answer: `# DNS (Domain Name System)
+
+## What is DNS?
+
+**DNS** is like the internet's phonebook. It translates human-readable domain names (like **google.com**) into IP addresses (like **142.250.185.46**) that computers use to communicate.
+
+### 📞 Real-World Analogy
+
+Think of DNS as a **phone book**:
+- You know: "Pizza Hut" (domain name)
+- Phone book tells you: "555-1234" (IP address)
+- You dial the number to call
+
+Without DNS, you'd have to remember: "142.250.185.46" instead of "google.com"!
+
+## Why DNS is Needed
+
+\`\`\`
+Human-Friendly:  www.netflix.com  ✅
+Computer-Friendly: 52.84.150.19    🤖
+
+DNS bridges the gap!
+\`\`\`
+
+## How DNS Works
+
+### Step-by-Step Flow
+
+\`\`\`
+1. You type: www.google.com in browser
+
+2. Browser checks its cache:
+   - Have I visited google.com recently?
+   - If YES → Use cached IP
+   - If NO → Continue to step 3
+
+3. Check OS cache:
+   - Operating system has DNS cache too
+   - If found → Return IP
+   - If NOT → Continue
+
+4. Query DNS Resolver (usually your ISP):
+   Your computer → "What's the IP for google.com?"
+
+5. DNS Resolver checks its cache:
+   - If found → Return IP
+   - If NOT → Start DNS hierarchy lookup
+
+6. Root DNS Server:
+   Resolver → "Where is .com?"
+   Root → "Ask TLD server at X.X.X.X"
+
+7. TLD (Top-Level Domain) Server:
+   Resolver → "Where is google.com?"
+   TLD → "Ask authoritative server at Y.Y.Y.Y"
+
+8. Authoritative DNS Server:
+   Resolver → "What's IP for google.com?"
+   Auth → "It's 142.250.185.46"
+
+9. Response flows back:
+   Auth → Resolver → Your Computer → Browser
+
+10. Browser connects to 142.250.185.46
+\`\`\`
+
+## DNS Hierarchy
+
+\`\`\`
+Root DNS
+    │
+    ├── .com TLD
+    │     ├── google.com (Authoritative)
+    │     ├── amazon.com (Authoritative)
+    │     └── facebook.com (Authoritative)
+    │
+    ├── .org TLD
+    │     ├── wikipedia.org
+    │     └── mozilla.org
+    │
+    └── .net TLD
+          ├── speedtest.net
+          └── sourceforge.net
+\`\`\`
+
+## DNS Record Types
+
+### 1. **A Record** (Address Record)
+Maps domain name to IPv4 address
+
+\`\`\`
+google.com.  A  142.250.185.46
+\`\`\`
+
+### 2. **AAAA Record**
+Maps domain name to IPv6 address
+
+\`\`\`
+google.com.  AAAA  2607:f8b0:4004:c07::66
+\`\`\`
+
+### 3. **CNAME Record** (Canonical Name)
+Alias pointing to another domain
+
+\`\`\`
+www.example.com.  CNAME  example.com.
+blog.example.com. CNAME  example.com.
+\`\`\`
+
+### 4. **MX Record** (Mail Exchange)
+Specifies mail servers for domain
+
+\`\`\`
+example.com.  MX  10 mail.example.com.
+\`\`\`
+
+### 5. **TXT Record**
+Stores text information (verification, SPF, DKIM)
+
+\`\`\`
+example.com.  TXT  "v=spf1 include:_spf.google.com ~all"
+\`\`\`
+
+### 6. **NS Record** (Name Server)
+Specifies authoritative DNS servers
+
+\`\`\`
+example.com.  NS  ns1.example.com.
+example.com.  NS  ns2.example.com.
+\`\`\`
+
+## DNS Query Types
+
+### 1. **Recursive Query** 🔄
+DNS resolver does all the work
+
+\`\`\`
+Client: "Give me IP for google.com"
+Resolver: "OK, let me find it for you"
+[Resolver queries Root, TLD, Authoritative]
+Resolver: "Here's the IP: 142.250.185.46"
+\`\`\`
+
+### 2. **Iterative Query** 🔀
+Client does the work
+
+\`\`\`
+Client → Root: "Where's google.com?"
+Root: "Ask TLD at X.X.X.X"
+
+Client → TLD: "Where's google.com?"
+TLD: "Ask Auth at Y.Y.Y.Y"
+
+Client → Auth: "Where's google.com?"
+Auth: "It's 142.250.185.46"
+\`\`\`
+
+## DNS Caching
+
+Caching speeds up DNS lookups!
+
+\`\`\`
+Browser Cache: 60 seconds - 10 minutes
+OS Cache: 1 minute - several hours
+DNS Resolver Cache: Hours to days
+\`\`\`
+
+**TTL (Time To Live)**: How long to cache DNS record
+
+\`\`\`
+google.com.  300  A  142.250.185.46
+             ↑
+             TTL (5 minutes)
+\`\`\`
+
+## DNS Configuration
+
+### Check DNS Records
+
+\`\`\`bash
+# Check A record
+dig google.com A
+
+# Check AAAA record (IPv6)
+dig google.com AAAA
+
+# Check MX records
+dig google.com MX
+
+# Detailed trace
+dig +trace google.com
+
+# Use specific DNS server
+dig @8.8.8.8 google.com
+\`\`\`
+
+### Common DNS Servers
+
+\`\`\`
+Google Public DNS:
+  8.8.8.8
+  8.8.4.4
+
+Cloudflare DNS:
+  1.1.1.1
+  1.0.0.1
+
+Quad9:
+  9.9.9.9
+
+OpenDNS:
+  208.67.222.222
+  208.67.220.220
+\`\`\`
+
+## DNS in Code
+
+### Node.js DNS Lookup
+
+\`\`\`javascript
+const dns = require('dns');
+
+// Basic lookup
+dns.lookup('google.com', (err, address, family) => {
+  console.log('IP address:', address);  // 142.250.185.46
+  console.log('IP version:', family);   // 4 (IPv4)
+});
+
+// Get all addresses
+dns.resolve4('google.com', (err, addresses) => {
+  console.log('All IPs:', addresses);
+  // ['142.250.185.46', '142.250.185.78', ...]
+});
+
+// Reverse DNS (IP to domain)
+dns.reverse('142.250.185.46', (err, hostnames) => {
+  console.log('Hostnames:', hostnames);
+  // ['lga25s64-in-f14.1e100.net']
+});
+\`\`\`
+
+### Set Custom DNS in Application
+
+\`\`\`javascript
+const dns = require('dns');
+
+// Use Cloudflare DNS
+dns.setServers(['1.1.1.1', '1.0.0.1']);
+
+// Then all DNS queries use Cloudflare
+\`\`\`
+
+## DNS Propagation
+
+When you change DNS records, it takes time to propagate globally.
+
+\`\`\`
+Change DNS record:
+  example.com → New IP: 203.0.113.5
+
+Propagation Time: 0 minutes to 48 hours
+  (typically 1-2 hours)
+
+Why the delay?
+  - Caching at multiple levels
+  - TTL values
+  - Different DNS servers update at different times
+\`\`\`
+
+## DNS Security
+
+### **DNS Spoofing / Cache Poisoning** ⚠️
+Attacker tricks DNS server to cache fake IP
+
+\`\`\`
+Attack:
+  Real: bank.com → 203.0.113.10
+  Fake: bank.com → 198.51.100.20 (attacker's server)
+
+User visits "bank.com" → Sent to fake site!
+\`\`\`
+
+**Protection:**
+- DNSSEC (DNS Security Extensions)
+- Use trusted DNS servers
+- HTTPS to verify server identity
+
+### **DNSSEC**
+Adds digital signatures to DNS records
+
+\`\`\`
+Client: "What's IP for secure.com?"
+DNS: "203.0.113.15" + Digital Signature
+Client: Verifies signature ✅
+\`\`\`
+
+### **DNS over HTTPS (DoH)**
+Encrypts DNS queries
+
+\`\`\`
+Normal DNS: Plain text (ISP can see)
+  You → ISP → "Looking up pornhub.com"
+
+DoH: Encrypted
+  You → ISP → [encrypted data]
+  ISP: 🤷 "Can't tell what they're looking up"
+\`\`\`
+
+## DNS Load Balancing
+
+Use DNS to distribute traffic!
+
+\`\`\`
+example.com:
+  - A 203.0.113.10  (Server 1)
+  - A 203.0.113.20  (Server 2)
+  - A 203.0.113.30  (Server 3)
+
+DNS returns IPs in rotation (Round Robin)
+Different users connect to different servers
+\`\`\`
+
+## Real-World Examples
+
+### **Content Delivery (CDN)**
+
+\`\`\`
+User in USA queries netflix.com:
+  → DNS returns IP of USA server
+
+User in Japan queries netflix.com:
+  → DNS returns IP of Japan server
+
+Same domain, different IPs based on location!
+\`\`\`
+
+### **Failover**
+
+\`\`\`
+example.com:
+  Primary: 203.0.113.10
+  Backup:  203.0.113.20
+
+If primary fails:
+  DNS health check detects failure
+  DNS starts returning backup IP
+  Traffic automatically routed to backup
+\`\`\`
+
+---
+
+💡 **Key Takeaway**: DNS is the internet's address book - it translates memorable domain names into IP addresses that computers use, making the web user-friendly!
 `,
     estimatedTime: 20,
-    difficulty: 'Medium',
-    topics: ['System Design'],
-    platformLinks: [],
-    userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
-  },
-  {
-    id: 'hld-vs-lld',
-    title: 'HLD vs LLD: High-Level Design & Low-Level Design',
-    description: 'Understanding the difference between architectural and detailed design',
-    answer: `# High-Level Design (HLD) vs Low-Level Design (LLD)
-
-## High-Level Design (HLD)
-
-### What is HLD?
-
-High-Level Design focuses on the **system architecture** and **component interactions**. It provides a bird's-eye view of the entire system.
-
-### HLD Components
-
-#### 1. **System Architecture Diagram**
-\`\`\`
-[Client] → [Load Balancer] → [App Servers] → [Cache] → [Database]
-                                    ↓
-                              [Message Queue]
-                                    ↓
-                              [Worker Servers]
-\`\`\`
-
-#### 2. **Major Components**
-- **Frontend**: Web/Mobile clients
-- **Backend**: Application servers
-- **Database**: Data storage layer
-- **Cache**: Redis/Memcached
-- **Message Queue**: Kafka/RabbitMQ
-- **CDN**: Content delivery
-- **Load Balancer**: Nginx/HAProxy
-
-#### 3. **Data Flow**
-- User request flow
-- Write operations
-- Read operations
-- Async processing
-
-### HLD Example: URL Shortener
-
-\`\`\`
-Components:
-1. Web Servers (Node.js/Python)
-2. Application Servers (API Gateway)
-3. Database (PostgreSQL + Redis)
-4. Load Balancer (Nginx)
-5. Analytics Service (separate microservice)
-
-Flow:
-POST /shorten → API → Generate short code → Save to DB → Return short URL
-GET /{code} → API → Check cache → If miss, DB lookup → Redirect → Update analytics
-\`\`\`
-
----
-
-## Low-Level Design (LLD)
-
-### What is LLD?
-
-Low-Level Design focuses on the **implementation details** of individual components. It includes class diagrams, database schemas, and API specifications.
-
-### LLD Components
-
-#### 1. **Class Diagrams**
-\`\`\`typescript
-class URLShortener {
-  - urlRepository: URLRepository
-  - cacheService: CacheService
-  - analyticsService: AnalyticsService
-
-  + shortenURL(originalURL: string): Promise<string>
-  + getOriginalURL(shortCode: string): Promise<string>
-  - generateShortCode(): string
-  - isValidURL(url: string): boolean
-}
-
-class URLRepository {
-  + save(url: URL): Promise<void>
-  + findByShortCode(code: string): Promise<URL>
-  + updateClickCount(code: string): Promise<void>
-}
-\`\`\`
-
-#### 2. **Database Schema**
-\`\`\`sql
-CREATE TABLE urls (
-  id BIGSERIAL PRIMARY KEY,
-  short_code VARCHAR(10) UNIQUE NOT NULL,
-  original_url TEXT NOT NULL,
-  user_id BIGINT,
-  created_at TIMESTAMP DEFAULT NOW(),
-  expires_at TIMESTAMP,
-  click_count BIGINT DEFAULT 0,
-  INDEX idx_short_code (short_code),
-  INDEX idx_user_id (user_id)
-);
-
-CREATE TABLE analytics (
-  id BIGSERIAL PRIMARY KEY,
-  short_code VARCHAR(10),
-  clicked_at TIMESTAMP DEFAULT NOW(),
-  ip_address VARCHAR(45),
-  user_agent TEXT,
-  referer TEXT,
-  country VARCHAR(2),
-  FOREIGN KEY (short_code) REFERENCES urls(short_code)
-);
-\`\`\`
-
-#### 3. **API Specifications**
-\`\`\`
-POST /api/v1/urls/shorten
-Request:
-{
-  "url": "https://example.com/very/long/url",
-  "customAlias": "optional",
-  "expiryDate": "2024-12-31"
-}
-
-Response:
-{
-  "shortUrl": "https://short.ly/abc123",
-  "shortCode": "abc123",
-  "originalUrl": "https://example.com/very/long/url",
-  "expiresAt": "2024-12-31T23:59:59Z"
-}
-
-GET /api/v1/urls/{shortCode}/stats
-Response:
-{
-  "shortCode": "abc123",
-  "originalUrl": "https://example.com/very/long/url",
-  "totalClicks": 1547,
-  "clicksByDate": [...],
-  "topCountries": [...]
-}
-\`\`\`
-
-#### 4. **Algorithms & Data Structures**
-
-**Short Code Generation Algorithm:**
-\`\`\`javascript
-function generateShortCode() {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const codeLength = 7; // 62^7 = 3.5 trillion combinations
-
-  let shortCode = '';
-  for (let i = 0; i < codeLength; i++) {
-    const randomIndex = Math.floor(Math.random() * chars.length);
-    shortCode += chars[randomIndex];
-  }
-
-  return shortCode;
-}
-
-// Alternative: Base62 encoding of auto-increment ID
-function base62Encode(num) {
-  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let encoded = '';
-
-  while (num > 0) {
-    encoded = chars[num % 62] + encoded;
-    num = Math.floor(num / 62);
-  }
-
-  return encoded || '0';
-}
-\`\`\`
-
-## HLD vs LLD Comparison
-
-| Aspect | High-Level Design (HLD) | Low-Level Design (LLD) |
-|--------|------------------------|------------------------|
-| **Focus** | System architecture | Implementation details |
-| **Scope** | Entire system | Individual components |
-| **Audience** | Architects, Stakeholders | Developers |
-| **Details** | Component interactions | Class methods, algorithms |
-| **Diagrams** | Architecture diagrams | Class/ER diagrams |
-| **Level** | Abstract | Concrete |
-| **Timeline** | Early design phase | Before coding |
-
-## When to Use Each
-
-### Use HLD When:
-- Planning a new system
-- Explaining system to stakeholders
-- Making technology choices
-- Capacity planning
-- Discussing with architects
-
-### Use LLD When:
-- Ready to start coding
-- Defining API contracts
-- Creating database schema
-- Implementing algorithms
-- Code review preparation
-
----
-
-💡 **Interview Tip**: Start with HLD to show big-picture thinking, then dive into LLD for specific components the interviewer is interested in.
-`,
-    estimatedTime: 25,
-    difficulty: 'Medium',
-    topics: ['System Design'],
-    platformLinks: [],
-    userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
-  },
-  {
-    id: 'distributed-systems',
-    title: 'Distributed Systems & CAP Theorem',
-    description: 'Understanding distributed computing, consistency models, and the CAP theorem',
-    answer: `# Distributed Systems
-
-## What are Distributed Systems?
-
-A distributed system is a collection of independent computers that appear to users as a **single coherent system**. Components communicate and coordinate through message passing.
-
-### Why Distributed Systems?
-
-✅ **Scalability**: Handle more load by adding machines
-✅ **Availability**: System stays up even if some nodes fail
-✅ **Performance**: Serve users from geographically closer servers
-✅ **Fault Tolerance**: No single point of failure
-✅ **Resource Sharing**: Efficient use of resources
-
-### Challenges
-
-❌ **Network Latency**: Communication takes time
-❌ **Partial Failures**: Some nodes may fail independently
-❌ **Concurrency**: Multiple operations happening simultaneously
-❌ **Consistency**: Keeping data synchronized across nodes
-❌ **Complexity**: Harder to reason about and debug
-
----
-
-## CAP Theorem
-
-**CAP Theorem** states that a distributed system can only guarantee **TWO** of the following three properties:
-
-### **C - Consistency**
-Every read receives the most recent write or an error. All nodes see the same data at the same time.
-
-**Example**: Banking systems - your account balance must be consistent across all ATMs.
-
-### **A - Availability**
-Every request receives a response (success or failure). The system is always operational.
-
-**Example**: Social media feed - it's okay to see slightly stale data, but the app should always work.
-
-### **P - Partition Tolerance**
-The system continues to operate despite network partitions (communication breakdowns between nodes).
-
-**Reality**: Network partitions WILL happen, so **P is mandatory**. You must choose between **C** and **A**.
-
-### CAP Trade-offs
-
-\`\`\`
-        Consistency (C)
-              △
-             / \\
-            /   \\
-           /  CA  \\
-          / (RDBMS)\\
-         /___________\\
-        /   /     \\   \\
-       /   /       \\   \\
-      /   /   CP    \\   \\
-     /   /(MongoDB)  \\   \\
-    /___/             \\___\\
-   /                       \\
-  / AP (Cassandra, DynamoDB)\\
- /___________________________\\
-Availability (A)      Partition Tolerance (P)
-\`\`\`
-
-#### **CP Systems** (Consistency + Partition Tolerance)
-- MongoDB, HBase, Redis (in cluster mode)
-- Bank transactions, inventory systems
-- **Trade-off**: May become unavailable during network partition
-
-#### **AP Systems** (Availability + Partition Tolerance)
-- Cassandra, DynamoDB, Couchbase
-- Social media, analytics, logging
-- **Trade-off**: May return stale data during partition
-
-#### **CA Systems** (Consistency + Availability)
-- Traditional RDBMS (single node)
-- **Reality**: Can't exist in distributed systems with network partitions
-
----
-
-## Consistency Models
-
-### 1. **Strong Consistency**
-- All nodes see the same data at the same time
-- Reads always return the latest write
-- **Use case**: Financial transactions
-- **Implementation**: Two-phase commit, Paxos, Raft
-
-### 2. **Eventual Consistency**
-- Nodes may temporarily have different data
-- Eventually, all nodes will converge to the same state
-- **Use case**: Social media feeds, DNS, caching
-- **Implementation**: Gossip protocol, CRDTs
-
-### 3. **Read-Your-Writes Consistency**
-- A user sees their own updates immediately
-- Other users may see updates later
-- **Use case**: User profile updates
-
-### 4. **Monotonic Read Consistency**
-- Once you read a value, you never read an older value
-- **Use case**: News feeds, timelines
-
----
-
-## Consensus Algorithms
-
-### **Paxos**
-- Complex but proven consensus algorithm
-- Ensures agreement among distributed nodes
-- Used in: Google Chubby, Apache ZooKeeper
-
-### **Raft**
-- Easier to understand than Paxos
-- Leader-based consensus
-- Used in: etcd, Consul, CockroachDB
-
-\`\`\`
-Raft States:
-1. Leader: Handles all client requests
-2. Follower: Passive, responds to leader
-3. Candidate: Tries to become leader
-
-Election Process:
-Follower → (timeout) → Candidate → (majority votes) → Leader
-\`\`\`
-
----
-
-## Distributed System Patterns
-
-### 1. **Replication**
-Copy data across multiple nodes for availability and fault tolerance.
-
-**Types:**
-- **Master-Slave**: One writer, multiple readers
-- **Multi-Master**: Multiple writers (conflict resolution needed)
-- **Peer-to-Peer**: All nodes are equal
-
-### 2. **Partitioning (Sharding)**
-Split data across multiple nodes to scale horizontally.
-
-### 3. **Leader Election**
-Select one node as coordinator to avoid conflicts.
-
-### 4. **Consensus**
-Nodes agree on a value despite failures.
-
-### 5. **Distributed Transactions**
-Coordinate updates across multiple nodes atomically.
-
----
-
-## Real-World Examples
-
-### **Netflix**
-- **AP System**: Availability over consistency
-- Users can watch videos even if recommendation data is stale
-- Uses Cassandra for high availability
-
-### **Amazon DynamoDB**
-- **AP System**: Always available
-- Shopping cart can be updated even during network issues
-- Eventual consistency for most operations
-
-### **Google Spanner**
-- **CP System**: Strong consistency with high availability
-- Uses atomic clocks and GPS for global consistency
-- Bank-level consistency guarantees
-
-### **Facebook**
-- **Eventual Consistency**: Posts may take seconds to propagate
-- Prioritizes availability - you can always post
-- Uses eventual consistency for feeds
-
----
-
-💡 **Interview Tip**: When designing a system, explicitly state your CAP choice and justify it based on business requirements!
-`,
-    estimatedTime: 30,
-    difficulty: 'Hard',
-    topics: ['System Design'],
-    platformLinks: [],
-    userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
-  },
-  {
-    id: 'spof-fault-tolerance',
-    title: 'SPOF & Fault Tolerance',
-    description: 'Eliminating single points of failure and building resilient systems',
-    answer: `# Single Point of Failure (SPOF) & Fault Tolerance
-
-## Single Point of Failure (SPOF)
-
-A **Single Point of Failure** is a component whose failure would cause the entire system to fail.
-
-### Common SPOFs
-
-❌ **Single Database Server**
-- If DB crashes, entire app is down
-- **Solution**: Database replication (Master-Slave, Master-Master)
-
-❌ **Single Application Server**
-- If server crashes, no one can access the app
-- **Solution**: Multiple app servers with load balancer
-
-❌ **Single Load Balancer**
-- If LB fails, traffic can't reach servers
-- **Solution**: Multiple load balancers with failover (Active-Passive or Active-Active)
-
-❌ **Single Data Center**
-- Natural disasters, power outages
-- **Solution**: Multi-region deployment
-
-❌ **Single Network Connection**
-- ISP issues, cable cuts
-- **Solution**: Multiple ISPs, redundant network paths
-
-### Identifying SPOFs
-
-Ask these questions:
-1. What happens if this component fails?
-2. Is there a backup/alternative?
-3. How long does recovery take?
-4. What data could be lost?
-
----
-
-## Fault Tolerance
-
-**Fault Tolerance** is the ability of a system to continue operating correctly even when some components fail.
-
-### Key Principles
-
-#### 1. **Redundancy**
-Have backup components ready to take over
-
-\`\`\`
-Active-Active:
-[LB] → [Server 1] ⚡ (handling traffic)
-    → [Server 2] ⚡ (handling traffic)
-    → [Server 3] ⚡ (handling traffic)
-
-Active-Passive:
-[LB] → [Primary DB] ⚡ (handling traffic)
-    → [Replica DB] 💤 (standby, syncing)
-\`\`\`
-
-#### 2. **Replication**
-Keep multiple copies of data
-
-\`\`\`
-Master-Slave Replication:
-Master (Write) → Replica 1 (Read)
-              → Replica 2 (Read)
-              → Replica 3 (Read)
-\`\`\`
-
-#### 3. **Health Checks**
-Continuously monitor component health
-
-\`\`\`javascript
-// Health check endpoint
-app.get('/health', (req, res) => {
-  const dbHealth = checkDatabaseConnection();
-  const cacheHealth = checkCacheConnection();
-  const diskSpace = checkDiskSpace();
-
-  if (dbHealth && cacheHealth && diskSpace > 0.1) {
-    res.status(200).json({ status: 'healthy' });
-  } else {
-    res.status(503).json({ status: 'unhealthy' });
-  }
-});
-\`\`\`
-
-#### 4. **Automatic Failover**
-Automatically switch to backup when primary fails
-
-\`\`\`
-Detection → Validation → Failover → Recovery → Restoration
-
-1. Health check fails 3 times in a row
-2. Confirm failure (not just network blip)
-3. Promote replica to master
-4. Route traffic to new master
-5. Fix old master, add back as replica
-\`\`\`
-
----
-
-## Fault Tolerance Strategies
-
-### 1. **Database Level**
-
-#### **Replication**
-\`\`\`
-Setup:
-- 1 Master (write operations)
-- 3 Replicas (read operations)
-- Automatic failover with Sentinel/Orchestrator
-
-Benefits:
-✅ Read scalability
-✅ High availability
-✅ Disaster recovery
-
-Challenges:
-❌ Replication lag
-❌ Complexity in failover
-❌ Storage cost
-\`\`\`
-
-#### **Database Clustering**
-\`\`\`
-Galera Cluster (MySQL):
-[Node 1] ←→ [Node 2] ←→ [Node 3]
-
-- Multi-master replication
-- Any node can handle writes
-- Synchronous replication
-\`\`\`
-
-### 2. **Application Level**
-
-#### **Stateless Design**
-\`\`\`javascript
-// Bad: Stateful (SPOF)
-const userSessions = {}; // Lost if server crashes
-
-// Good: Stateless
-// Store sessions in Redis/Database
-const session = await redis.get(sessionId);
-\`\`\`
-
-#### **Circuit Breaker Pattern**
-\`\`\`javascript
-class CircuitBreaker {
-  constructor(failureThreshold = 5, timeout = 60000) {
-    this.failureCount = 0;
-    this.failureThreshold = failureThreshold;
-    this.timeout = timeout;
-    this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
-  }
-
-  async execute(fn) {
-    if (this.state === 'OPEN') {
-      if (Date.now() > this.nextAttempt) {
-        this.state = 'HALF_OPEN';
-      } else {
-        throw new Error('Circuit breaker is OPEN');
-      }
-    }
-
-    try {
-      const result = await fn();
-      this.onSuccess();
-      return result;
-    } catch (error) {
-      this.onFailure();
-      throw error;
-    }
-  }
-
-  onSuccess() {
-    this.failureCount = 0;
-    this.state = 'CLOSED';
-  }
-
-  onFailure() {
-    this.failureCount++;
-    if (this.failureCount >= this.failureThreshold) {
-      this.state = 'OPEN';
-      this.nextAttempt = Date.now() + this.timeout;
-    }
-  }
-}
-
-// Usage
-const breaker = new CircuitBreaker();
-const data = await breaker.execute(() => externalAPI.getData());
-\`\`\`
-
-#### **Retry with Exponential Backoff**
-\`\`\`javascript
-async function retryWithBackoff(fn, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (i === maxRetries - 1) throw error;
-
-      const delay = Math.pow(2, i) * 1000; // 1s, 2s, 4s
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-  }
-}
-\`\`\`
-
-### 3. **Infrastructure Level**
-
-#### **Multi-AZ Deployment**
-\`\`\`
-Region: US-East
-
-Availability Zone A:
-- Load Balancer 1
-- App Server 1, 2
-- Database Primary
-
-Availability Zone B:
-- Load Balancer 2
-- App Server 3, 4
-- Database Replica
-
-Availability Zone C:
-- App Server 5, 6
-- Database Replica
-\`\`\`
-
-#### **Auto-Scaling**
-\`\`\`yaml
-Auto Scaling Policy:
-- Min Instances: 3
-- Max Instances: 20
-- Target CPU: 70%
-- Scale Out: +2 instances if CPU > 80% for 5 min
-- Scale In: -1 instance if CPU < 50% for 10 min
-\`\`\`
-
-### 4. **Data Backup & Recovery**
-
-\`\`\`
-Backup Strategy:
-1. Continuous WAL (Write-Ahead Log) backup
-2. Daily full backups
-3. Hourly incremental backups
-4. Cross-region replication
-5. Point-in-time recovery capability
-
-RPO (Recovery Point Objective): 5 minutes
-RTO (Recovery Time Objective): 30 minutes
-\`\`\`
-
----
-
-## Measuring Availability
-
-### **SLA (Service Level Agreement)**
-
-\`\`\`
-Availability = (Total Time - Downtime) / Total Time × 100%
-
-99.9% (3 nines)  = 8.77 hours downtime/year
-99.95%           = 4.38 hours downtime/year
-99.99% (4 nines) = 52.6 minutes downtime/year
-99.999% (5 nines)= 5.26 minutes downtime/year
-\`\`\`
-
-### **Achieving High Availability**
-
-\`\`\`
-Component Availability:
-- Load Balancer: 99.99%
-- App Servers (3): 99.9% each
-- Database (Primary + Replica): 99.99%
-- Cache: 99.9%
-
-System Availability:
-= Product of all components
-= 0.9999 × 0.999 × 0.9999 × 0.999
-= 99.78% ❌
-
-Better with Redundancy:
-- 3 app servers in parallel: 1 - (0.001)³ = 99.9999%
-- System: 99.98% ✅
-\`\`\`
-
----
-
-## Real-World Examples
-
-### **Netflix**
-- **Chaos Engineering**: Deliberately break things to test fault tolerance
-- **Chaos Monkey**: Randomly terminates instances
-- **Multi-region active-active**
-- Result: Can lose entire AWS region and still serve users
-
-### **Amazon**
-- **Everything fails, all the time**
-- Design for failure from day one
-- Multiple data centers, regions
-- Automatic failover at every level
-
-### **Google**
-- **Site Reliability Engineering (SRE)**
-- Error budgets: 99.9% = 0.1% allowed errors
-- Gradual rollouts with automatic rollback
-- Load shedding: Drop low-priority traffic during overload
-
----
-
-💡 **Design Principle**: "Hope for the best, plan for the worst. Everything will eventually fail!"
-`,
-    estimatedTime: 30,
-    difficulty: 'Hard',
-    topics: ['System Design'],
-    platformLinks: [],
-    userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
-  },
-  {
-    id: 'rate-limiting',
-    title: 'Rate Limiting & Throttling',
-    description: 'Protecting your system from abuse and overload',
-    answer: `# Rate Limiting & Throttling
-
-## What is Rate Limiting?
-
-**Rate Limiting** controls the number of requests a user/client can make in a given time period. It protects your system from:
-
-❌ DDoS attacks
-❌ Brute force attempts
-❌ API abuse
-❌ Resource exhaustion
-❌ Unfair usage
-❌ Accidental infinite loops
-
-### Rate Limiting vs Throttling
-
-| Rate Limiting | Throttling |
-|---------------|------------|
-| Hard limit (reject requests) | Slow down requests |
-| 429 Too Many Requests | Delay/queue requests |
-| All or nothing | Gradual degradation |
-
----
-
-## Rate Limiting Algorithms
-
-### 1. **Token Bucket**
-
-**Concept**: Tokens are added to a bucket at a fixed rate. Each request consumes one token. If no tokens available, request is rejected.
-
-\`\`\`
-Bucket Capacity: 10 tokens
-Refill Rate: 2 tokens/second
-
-Time  Tokens  Request  Result
-0s    10      1        ✅ (9 left)
-1s    10      5        ✅ (5 left)
-2s    7       10       ❌ (only 7 available)
-3s    9       5        ✅ (4 left)
-\`\`\`
-
-**Implementation:**
-\`\`\`javascript
-class TokenBucket {
-  constructor(capacity, refillRate) {
-    this.capacity = capacity;
-    this.tokens = capacity;
-    this.refillRate = refillRate; // tokens per second
-    this.lastRefill = Date.now();
-  }
-
-  refill() {
-    const now = Date.now();
-    const timePassed = (now - this.lastRefill) / 1000;
-    const tokensToAdd = timePassed * this.refillRate;
-
-    this.tokens = Math.min(this.capacity, this.tokens + tokensToAdd);
-    this.lastRefill = now;
-  }
-
-  consume(tokens = 1) {
-    this.refill();
-
-    if (this.tokens >= tokens) {
-      this.tokens -= tokens;
-      return true;
-    }
-    return false;
-  }
-}
-
-// Usage
-const bucket = new TokenBucket(10, 2); // 10 capacity, 2/sec refill
-
-if (bucket.consume()) {
-  // Process request
-} else {
-  // Return 429 Too Many Requests
-}
-\`\`\`
-
-**Pros:**
-✅ Handles burst traffic
-✅ Simple to implement
-✅ Memory efficient
-
-**Cons:**
-❌ Can allow burst of requests
-
----
-
-### 2. **Leaky Bucket**
-
-**Concept**: Requests are added to a queue. Requests are processed at a constant rate, "leaking" from the bucket.
-
-\`\`\`
-Queue Capacity: 10 requests
-Processing Rate: 2 requests/second
-
-Requests come in bursts, but processed at constant rate
-→ Smooths out traffic spikes
-\`\`\`
-
-**Implementation:**
-\`\`\`javascript
-class LeakyBucket {
-  constructor(capacity, leakRate) {
-    this.capacity = capacity;
-    this.queue = [];
-    this.leakRate = leakRate; // requests per second
-    this.lastLeak = Date.now();
-  }
-
-  leak() {
-    const now = Date.now();
-    const timePassed = (now - this.lastLeak) / 1000;
-    const requestsToProcess = Math.floor(timePassed * this.leakRate);
-
-    for (let i = 0; i < requestsToProcess && this.queue.length > 0; i++) {
-      this.queue.shift(); // Process request
-    }
-
-    this.lastLeak = now;
-  }
-
-  addRequest(request) {
-    this.leak();
-
-    if (this.queue.length < this.capacity) {
-      this.queue.push(request);
-      return true;
-    }
-    return false;
-  }
-}
-\`\`\`
-
-**Pros:**
-✅ Smooth, constant output rate
-✅ Prevents system overload
-
-**Cons:**
-❌ Old requests can block new ones
-❌ Doesn't handle bursts well
-
----
-
-### 3. **Fixed Window Counter**
-
-**Concept**: Count requests in fixed time windows (e.g., per minute). Reset counter at window boundary.
-
-\`\`\`
-Limit: 100 requests/minute
-
-Minute 1 (0:00-0:59): 100 requests ✅
-Minute 2 (1:00-1:59): Reset, 100 requests ✅
-
-Problem: 200 requests between 0:30-1:30 (100 in each window)
-\`\`\`
-
-**Implementation (Redis):**
-\`\`\`javascript
-async function fixedWindowRateLimit(userId, limit, windowSeconds) {
-  const now = Date.now();
-  const windowStart = Math.floor(now / 1000 / windowSeconds) * windowSeconds;
-  const key = \`rate_limit:\${userId}:\${windowStart}\`;
-
-  const count = await redis.incr(key);
-
-  if (count === 1) {
-    await redis.expire(key, windowSeconds);
-  }
-
-  return count <= limit;
-}
-
-// Usage
-const allowed = await fixedWindowRateLimit('user123', 100, 60);
-if (!allowed) {
-  return res.status(429).json({ error: 'Too many requests' });
-}
-\`\`\`
-
-**Pros:**
-✅ Simple to implement
-✅ Memory efficient
-
-**Cons:**
-❌ Boundary problem (burst at edges)
-❌ Not fair
-
----
-
-### 4. **Sliding Window Log**
-
-**Concept**: Keep timestamp of each request. Count requests in rolling time window.
-
-\`\`\`
-Limit: 5 requests/minute
-Window: Last 60 seconds
-
-Timestamps: [10s, 25s, 40s, 55s, 70s]
-At 80s: Check [20s to 80s] → 4 requests (40s, 55s, 70s) ✅
-\`\`\`
-
-**Implementation:**
-\`\`\`javascript
-class SlidingWindowLog {
-  constructor(limit, windowMs) {
-    this.limit = limit;
-    this.windowMs = windowMs;
-    this.requests = new Map(); // userId -> timestamps[]
-  }
-
-  isAllowed(userId) {
-    const now = Date.now();
-    const windowStart = now - this.windowMs;
-
-    if (!this.requests.has(userId)) {
-      this.requests.set(userId, []);
-    }
-
-    const userRequests = this.requests.get(userId);
-
-    // Remove old requests
-    const validRequests = userRequests.filter(ts => ts > windowStart);
-
-    if (validRequests.length < this.limit) {
-      validRequests.push(now);
-      this.requests.set(userId, validRequests);
-      return true;
-    }
-
-    return false;
-  }
-}
-\`\`\`
-
-**Pros:**
-✅ Accurate
-✅ No boundary problem
-
-**Cons:**
-❌ Memory intensive (store all timestamps)
-❌ Expensive for high traffic
-
----
-
-### 5. **Sliding Window Counter**
-
-**Concept**: Combination of fixed window and sliding window. More accurate than fixed window, more efficient than sliding log.
-
-\`\`\`
-Current window: 90 requests
-Previous window: 100 requests
-Current time: 30s into current window
-
-Estimated count = 90 + (100 × 30/60) = 90 + 50 = 140 requests
-\`\`\`
-
-**Implementation (Redis):**
-\`\`\`javascript
-async function slidingWindowRateLimit(userId, limit, windowSeconds) {
-  const now = Date.now();
-  const currentWindow = Math.floor(now / 1000 / windowSeconds);
-  const previousWindow = currentWindow - 1;
-
-  const currentKey = \`rate_limit:\${userId}:\${currentWindow}\`;
-  const previousKey = \`rate_limit:\${userId}:\${previousWindow}\`;
-
-  const currentCount = await redis.get(currentKey) || 0;
-  const previousCount = await redis.get(previousKey) || 0;
-
-  const percentageInCurrent = (now / 1000 % windowSeconds) / windowSeconds;
-  const estimatedCount =
-    parseInt(currentCount) +
-    parseInt(previousCount) * (1 - percentageInCurrent);
-
-  if (estimatedCount < limit) {
-    await redis.incr(currentKey);
-    await redis.expire(currentKey, windowSeconds * 2);
-    return true;
-  }
-
-  return false;
-}
-\`\`\`
-
-**Pros:**
-✅ Accurate
-✅ Memory efficient
-✅ No boundary problem
-
-**Cons:**
-❌ More complex
-❌ Approximate (not exact)
-
----
-
-## Distributed Rate Limiting
-
-When you have multiple servers, you need centralized rate limiting:
-
-### Using Redis
-
-\`\`\`javascript
-const Redis = require('ioredis');
-const redis = new Redis();
-
-async function distributedRateLimit(key, limit, windowSeconds) {
-  const multi = redis.multi();
-
-  multi.incr(key);
-  multi.expire(key, windowSeconds);
-
-  const results = await multi.exec();
-  const count = results[0][1];
-
-  return count <= limit;
-}
-
-// Usage with express
-app.use(async (req, res, next) => {
-  const key = \`rate_limit:\${req.ip}\`;
-  const allowed = await distributedRateLimit(key, 100, 60);
-
-  if (!allowed) {
-    return res.status(429).json({
-      error: 'Too many requests',
-      retryAfter: 60
-    });
-  }
-
-  next();
-});
-\`\`\`
-
----
-
-## Rate Limiting Strategies
-
-### 1. **Per User**
-\`\`\`
-Authenticated users: 1000 requests/hour
-Anonymous users: 100 requests/hour
-Premium users: 5000 requests/hour
-\`\`\`
-
-### 2. **Per API Endpoint**
-\`\`\`
-GET /users: 1000 requests/minute
-POST /users: 100 requests/minute
-DELETE /users: 10 requests/minute
-\`\`\`
-
-### 3. **Per Resource**
-\`\`\`
-Download API: 10 GB/day per user
-Upload API: 1 GB/day per user
-\`\`\`
-
-### 4. **Tiered Limits**
-\`\`\`
-Free tier: 100 requests/day
-Basic tier: 10,000 requests/day
-Pro tier: 1,000,000 requests/day
-\`\`\`
-
----
-
-## Response Headers
-
-Standard headers to include:
-
-\`\`\`
-HTTP/1.1 200 OK
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 47
-X-RateLimit-Reset: 1640995200
-Retry-After: 3600
-
-HTTP/1.1 429 Too Many Requests
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 0
-X-RateLimit-Reset: 1640995200
-Retry-After: 3600
-\`\`\`
-
----
-
-## Real-World Examples
-
-### **GitHub API**
-- 5,000 requests/hour for authenticated
-- 60 requests/hour for unauthenticated
-- Rate limit status in response headers
-
-### **Twitter API**
-- Different limits per endpoint
-- App-level and user-level limits
-- 15-minute windows
-
-### **Stripe API**
-- No hard limit, but throttles if too fast
-- Exponential backoff recommended
-- Webhooks have separate limits
-
----
-
-💡 **Best Practice**: Always communicate limits clearly to API users via documentation and response headers!
-`,
-    estimatedTime: 25,
-    difficulty: 'Medium',
-    topics: ['System Design'],
-    platformLinks: [],
-    userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
-  },
-  {
-    id: 'api-communication',
-    title: 'API Design: REST, RPC, GraphQL & WebSockets',
-    description: 'Understanding different API architectures and communication patterns',
-    answer: `# API Design & Communication Patterns
-
-## REST API (Representational State Transfer)
-
-### What is REST?
-
-REST is an architectural style for designing networked applications. It uses HTTP methods to perform CRUD operations.
-
-### REST Principles
-
-1. **Client-Server Architecture**: Separation of concerns
-2. **Stateless**: Each request contains all information needed
-3. **Cacheable**: Responses can be cached
-4. **Uniform Interface**: Consistent API design
-5. **Layered System**: Client doesn't know if connected to end server
-6. **Code on Demand** (optional): Server can send executable code
-
-### HTTP Methods
-
-\`\`\`
-GET    - Retrieve resource(s)       - Idempotent, Safe
-POST   - Create new resource        - Not idempotent
-PUT    - Update/Replace resource    - Idempotent
-PATCH  - Partial update             - Not idempotent
-DELETE - Remove resource            - Idempotent
-\`\`\`
-
-### REST API Design
-
-\`\`\`
-Resource-Based URLs:
-✅ GET    /api/v1/users           - List all users
-✅ GET    /api/v1/users/123       - Get user 123
-✅ POST   /api/v1/users           - Create user
-✅ PUT    /api/v1/users/123       - Update user 123
-✅ PATCH  /api/v1/users/123       - Partial update
-✅ DELETE /api/v1/users/123       - Delete user
-
-Nested Resources:
-✅ GET /api/v1/users/123/posts     - Get posts by user 123
-✅ POST /api/v1/users/123/posts    - Create post for user 123
-
-Filtering, Sorting, Pagination:
-GET /api/v1/users?role=admin&sort=created_at&page=2&limit=20
-\`\`\`
-
-### Status Codes
-
-\`\`\`
-2xx Success
-200 OK                 - Request succeeded
-201 Created           - Resource created
-202 Accepted          - Async processing started
-204 No Content        - Success, no response body
-
-3xx Redirection
-301 Moved Permanently - Resource moved
-304 Not Modified      - Use cached version
-
-4xx Client Errors
-400 Bad Request       - Invalid syntax
-401 Unauthorized      - Authentication required
-403 Forbidden         - No permission
-404 Not Found         - Resource doesn't exist
-409 Conflict          - Conflict with current state
-422 Unprocessable     - Validation error
-429 Too Many Requests - Rate limit exceeded
-
-5xx Server Errors
-500 Internal Error    - Server error
-502 Bad Gateway       - Invalid response from upstream
-503 Service Unavailable - Server overloaded
-504 Gateway Timeout   - Upstream timeout
-\`\`\`
-
-### REST Response Format
-
-\`\`\`json
-{
-  "data": {
-    "id": "123",
-    "type": "user",
-    "attributes": {
-      "name": "John Doe",
-      "email": "john@example.com"
-    }
-  },
-  "meta": {
-    "timestamp": "2024-01-01T00:00:00Z"
-  }
-}
-
-// List with pagination
-{
-  "data": [...],
-  "pagination": {
-    "page": 2,
-    "perPage": 20,
-    "total": 156,
-    "totalPages": 8
-  }
-}
-
-// Error response
-{
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Invalid email format",
-    "details": [
-      {
-        "field": "email",
-        "message": "Must be valid email"
-      }
-    ]
-  }
-}
-\`\`\`
-
----
-
-## RPC (Remote Procedure Call)
-
-### What is RPC?
-
-RPC allows executing a function on a remote server as if it's a local function call.
-
-### gRPC (Google RPC)
-
-Modern, high-performance RPC framework using Protocol Buffers.
-
-**Protocol Buffer Definition:**
-\`\`\`protobuf
-syntax = "proto3";
-
-service UserService {
-  rpc GetUser(GetUserRequest) returns (User);
-  rpc CreateUser(CreateUserRequest) returns (User);
-  rpc ListUsers(ListUsersRequest) returns (UserList);
-}
-
-message User {
-  int64 id = 1;
-  string name = 2;
-  string email = 3;
-}
-
-message GetUserRequest {
-  int64 id = 1;
-}
-\`\`\`
-
-**Client Code:**
-\`\`\`javascript
-const client = new UserServiceClient('localhost:50051');
-
-const user = await client.getUser({ id: 123 });
-console.log(user);
-\`\`\`
-
-### JSON-RPC
-
-Simple RPC protocol using JSON.
-
-\`\`\`json
-// Request
-{
-  "jsonrpc": "2.0",
-  "method": "getUser",
-  "params": { "id": 123 },
-  "id": 1
-}
-
-// Response
-{
-  "jsonrpc": "2.0",
-  "result": {
-    "id": 123,
-    "name": "John Doe"
-  },
-  "id": 1
-}
-\`\`\`
-
-### REST vs RPC
-
-| Feature | REST | RPC |
-|---------|------|-----|
-| **Paradigm** | Resource-oriented | Action-oriented |
-| **Methods** | HTTP verbs | Custom functions |
-| **URL** | /users/123 | /getUserById |
-| **Format** | JSON, XML | JSON, Protobuf |
-| **Performance** | Good | Excellent (gRPC) |
-| **Browser Support** | Native | Limited |
-| **Use Case** | Public APIs | Microservices |
-
----
-
-## GraphQL
-
-### What is GraphQL?
-
-Query language for APIs that allows clients to request exactly the data they need.
-
-### GraphQL Schema
-
-\`\`\`graphql
-type User {
-  id: ID!
-  name: String!
-  email: String!
-  posts: [Post!]!
-  followers: [User!]!
-}
-
-type Post {
-  id: ID!
-  title: String!
-  content: String!
-  author: User!
-  comments: [Comment!]!
-}
-
-type Query {
-  user(id: ID!): User
-  users(limit: Int, offset: Int): [User!]!
-  post(id: ID!): Post
-}
-
-type Mutation {
-  createUser(name: String!, email: String!): User!
-  updateUser(id: ID!, name: String): User!
-  deleteUser(id: ID!): Boolean!
-}
-\`\`\`
-
-### GraphQL Query
-
-\`\`\`graphql
-# Request exactly what you need
-query {
-  user(id: "123") {
-    name
-    email
-    posts {
-      title
-      comments {
-        text
-        author {
-          name
-        }
-      }
-    }
-  }
-}
-
-# Response
-{
-  "data": {
-    "user": {
-      "name": "John Doe",
-      "email": "john@example.com",
-      "posts": [
-        {
-          "title": "My Post",
-          "comments": [
-            {
-              "text": "Great!",
-              "author": { "name": "Jane" }
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-\`\`\`
-
-### GraphQL Mutations
-
-\`\`\`graphql
-mutation {
-  createUser(name: "John", email: "john@example.com") {
-    id
-    name
-    email
-  }
-}
-\`\`\`
-
-### REST vs GraphQL
-
-| Feature | REST | GraphQL |
-|---------|------|---------|
-| **Data Fetching** | Over-fetching | Exact data needed |
-| **Endpoints** | Multiple | Single endpoint |
-| **Versioning** | URL versioning | Schema evolution |
-| **Caching** | HTTP caching | Custom caching |
-| **Learning Curve** | Low | Medium |
-| **Use Case** | Simple CRUD | Complex data requirements |
-
----
-
-## WebSockets
-
-### What are WebSockets?
-
-Full-duplex communication channel over a single TCP connection. Real-time, bidirectional communication.
-
-### WebSocket Lifecycle
-
-\`\`\`
-Client                          Server
-  |                               |
-  |--- HTTP Upgrade Request ----->|
-  |<-- 101 Switching Protocols ---|
-  |                               |
-  |<====== WebSocket Connection ======>|
-  |                               |
-  |<------ Message 1 ------------>|
-  |<------ Message 2 ------------>|
-  |<------ Message 3 ------------>|
-  |                               |
-  |------- Close Connection ----->|
-\`\`\`
-
-### WebSocket Implementation
-
-**Server (Node.js):**
-\`\`\`javascript
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', (ws) => {
-  console.log('Client connected');
-
-  ws.on('message', (message) => {
-    console.log('Received:', message);
-
-    // Broadcast to all clients
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
-  });
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-  });
-
-  // Send initial message
-  ws.send('Welcome to the chat!');
-});
-\`\`\`
-
-**Client (Browser):**
-\`\`\`javascript
-const ws = new WebSocket('ws://localhost:8080');
-
-ws.onopen = () => {
-  console.log('Connected');
-  ws.send('Hello Server!');
-};
-
-ws.onmessage = (event) => {
-  console.log('Received:', event.data);
-};
-
-ws.onclose = () => {
-  console.log('Disconnected');
-};
-
-ws.onerror = (error) => {
-  console.error('Error:', error);
-};
-\`\`\`
-
-### Use Cases
-
-✅ **Chat Applications**: Real-time messaging
-✅ **Live Updates**: Stock prices, sports scores
-✅ **Collaborative Editing**: Google Docs
-✅ **Gaming**: Multiplayer games
-✅ **IoT**: Device communication
-✅ **Notifications**: Real-time alerts
-
----
-
-## Webhooks
-
-### What are Webhooks?
-
-Webhooks are user-defined HTTP callbacks triggered by specific events. Server sends data to client when event occurs.
-
-### Webhook Flow
-
-\`\`\`
-1. Client registers webhook URL with server
-2. Event happens on server
-3. Server sends POST request to webhook URL
-4. Client processes the data
-\`\`\`
-
-### Webhook Implementation
-
-**Server:**
-\`\`\`javascript
-// When order is created
-async function onOrderCreated(order) {
-  const webhooks = await db.webhooks.findByEvent('order.created');
-
-  for (const webhook of webhooks) {
-    try {
-      await axios.post(webhook.url, {
-        event: 'order.created',
-        data: order,
-        timestamp: new Date().toISOString()
-      }, {
-        headers: {
-          'X-Webhook-Signature': generateSignature(order, webhook.secret)
-        },
-        timeout: 5000
-      });
-    } catch (error) {
-      // Retry logic
-      await retryWebhook(webhook, order);
-    }
-  }
-}
-\`\`\`
-
-**Client:**
-\`\`\`javascript
-app.post('/webhooks/orders', (req, res) => {
-  const signature = req.headers['x-webhook-signature'];
-
-  // Verify signature
-  if (!verifySignature(req.body, signature)) {
-    return res.status(401).send('Invalid signature');
-  }
-
-  const { event, data } = req.body;
-
-  if (event === 'order.created') {
-    processNewOrder(data);
-  }
-
-  res.status(200).send('OK');
-});
-\`\`\`
-
-### Webhook Best Practices
-
-1. **Security**: Use signatures to verify authenticity
-2. **Idempotency**: Handle duplicate events
-3. **Retry Logic**: Exponential backoff for failures
-4. **Timeouts**: Don't wait forever for response
-5. **Async Processing**: Return 200 immediately, process later
-
----
-
-## Server-Sent Events (SSE)
-
-### What is SSE?
-
-One-way communication from server to client over HTTP. Simpler than WebSockets for server-to-client updates.
-
-\`\`\`javascript
-// Server (Express)
-app.get('/events', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-
-  // Send event every 5 seconds
-  const interval = setInterval(() => {
-    const data = { time: new Date().toISOString() };
-    res.write(\`data: \${JSON.stringify(data)}\\n\\n\`);
-  }, 5000);
-
-  req.on('close', () => {
-    clearInterval(interval);
-  });
-});
-
-// Client
-const eventSource = new EventSource('/events');
-
-eventSource.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  console.log('Received:', data);
-};
-\`\`\`
-
----
-
-## Communication Patterns Comparison
-
-| Pattern | Direction | Use Case | Complexity |
-|---------|-----------|----------|------------|
-| **REST API** | Request-Response | CRUD operations | Low |
-| **RPC** | Request-Response | Microservices | Medium |
-| **GraphQL** | Request-Response | Complex data needs | Medium |
-| **WebSockets** | Bidirectional | Real-time chat | High |
-| **Webhooks** | Event-driven | Notifications | Medium |
-| **SSE** | Server→Client | Live updates | Low |
-
----
-
-💡 **Choosing the Right Pattern**: Consider latency requirements, data complexity, client capabilities, and infrastructure!
-`,
-    estimatedTime: 30,
-    difficulty: 'Medium',
-    topics: ['System Design'],
+    difficulty: 'Easy',
+    topics: ['System Design', 'Networking'],
     platformLinks: [],
     userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
   }
 ];
-
-// Note: Due to file size, remaining topics (Databases, Message Queues, Caching, Load Balancing, 
-// API Gateway, Microservices, etc.) should be added as separate files or loaded dynamically.
-// This file focuses on core system design concepts for interview preparation.
-

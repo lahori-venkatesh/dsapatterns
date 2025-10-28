@@ -5,6 +5,7 @@ import { LanguageMastery as LanguageMasteryType, LanguageProblem, ProblemPlatfor
 import { useAppStore } from '../store';
 import { renderMarkdown } from '../utils/markdownRenderer';
 import { ResumeLinkedInPage } from './ResumeLinkedInPage';
+import { SystemDesignPage } from './SystemDesignPage';
 
 const iconMap = {
   Coffee: Coffee,
@@ -26,6 +27,7 @@ export const LanguageMastery: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<WebDevCategory>('HTML');
   const [expandedAnswers, setExpandedAnswers] = useState<Set<string>>(new Set());
   const [showResumeLinkedInPage, setShowResumeLinkedInPage] = useState(false);
+  const [showSystemDesignPage, setShowSystemDesignPage] = useState(false);
 
   React.useEffect(() => {
     if (selectedLanguageId) {
@@ -58,6 +60,10 @@ export const LanguageMastery: React.FC = () => {
     return <ResumeLinkedInPage onBack={() => setShowResumeLinkedInPage(false)} />;
   }
 
+  if (showSystemDesignPage) {
+    return <SystemDesignPage onBack={() => setShowSystemDesignPage(false)} />;
+  }
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
@@ -77,6 +83,8 @@ export const LanguageMastery: React.FC = () => {
                 onClick={() => {
                   if (lang.id === 'resume-linkedin-mastery') {
                     setShowResumeLinkedInPage(true);
+                  } else if (lang.id === 'system-design') {
+                    setShowSystemDesignPage(true);
                   } else {
                     setSelectedLanguage(lang.id);
                   }

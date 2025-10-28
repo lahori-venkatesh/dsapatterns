@@ -27,8 +27,7 @@ export const RevisionPage: React.FC<RevisionPageProps> = () => {
                 onClick={() => setCurrentView('dsa-mastery')}
                 className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-200 group"
               >
-                <ArrowLeft className="w-5 h-5 group-hover:transform group-hover:-translate-x-1 transition-transform duration-200" />
-                <span></span>
+                
               </button>
             </div>
 

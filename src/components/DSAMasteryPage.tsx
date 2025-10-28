@@ -173,10 +173,10 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
           <div className="space-y-6">
             <div className="text-center mb-6">
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center justify-center space-x-3">
-                <span>Learn Programming Languages</span>
+                <span>Choose Your Programming Language</span>
               </h3>
               <p className="text-gray-300 text-base md:text-lg max-w-2xl mx-auto">
-                Master the syntax and fundamentals before solving DSA problems
+                Learn language-specific syntax and problem-solving techniques
               </p>
             </div>
 

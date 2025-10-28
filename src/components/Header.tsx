@@ -94,7 +94,7 @@ export const Header: React.FC = () => {
             }`}
           >
             <Code2 className="w-4 h-4" />
-            <span className="text-sm font-medium">Languages</span>
+            <span className="text-sm font-medium">Interview Mastery</span>
           </button>
         </div>
 

@@ -61,8 +61,8 @@ export const LanguageMastery: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-white mb-2">Programming Language Mastery</h2>
-        <p className="text-gray-400">Master programming languages with curated problem sets from top platforms</p>
+        <h2 className="text-3xl font-bold text-white mb-2">Interview Mastery</h2>
+        <p className="text-gray-400">Complete interview preparation: SQL, Web Development, System Design, Aptitude & more</p>
       </div>
 
       {!selectedLanguage ? (
@@ -122,7 +122,7 @@ export const LanguageMastery: React.FC = () => {
             }}
             className="mb-6 px-4 py-2 bg-gray-700/50 hover:bg-gray-600/50 text-white rounded-lg transition-colors flex items-center gap-2"
           >
-            ← Back to Languages
+            ← Back to Interview Mastery
           </button>
 
           {selectedLang && (

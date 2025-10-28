@@ -379,7 +379,7 @@ function App() {
               </div>
             </button>
 
-            {/* Language Mastery Card */}
+            {/* Interview Mastery Card */}
             <button
               onClick={() => useAppStore.getState().setCurrentView('language-mastery')}
               className="group relative overflow-hidden rounded-2xl border border-gray-700/50 bg-gray-800/50 backdrop-blur-sm p-8 text-left transition-all duration-300 hover:border-emerald-500/50 hover:bg-gray-700/50 hover:scale-105"
@@ -393,9 +393,9 @@ function App() {
                   </svg>
                 </div>
 
-                <h3 className="text-3xl font-bold text-white mb-4">Language Mastery</h3>
+                <h3 className="text-3xl font-bold text-white mb-4">Interview Mastery</h3>
                 <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                  Master programming languages, web development, aptitude, HR interviews, and more. Complete preparation for tech interviews.
+                  Master SQL, web development, system design, aptitude, HR interviews, and more. Complete preparation for tech interviews.
                 </p>
 
                 <div className="grid grid-cols-3 gap-4 mb-6">

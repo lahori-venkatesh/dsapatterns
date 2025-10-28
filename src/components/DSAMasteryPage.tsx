@@ -12,6 +12,7 @@ const AuthModals = lazy(() => import('./AuthModals').then(m => ({ default: m.Aut
 const PaymentModal = lazy(() => import('./PaymentModal').then(m => ({ default: m.PaymentModal })));
 const PremiumActivationModal = lazy(() => import('./PremiumActivationModal').then(m => ({ default: m.PremiumActivationModal })));
 const RevisionPage = lazy(() => import('./RevisionPage').then(m => ({ default: m.RevisionPage })));
+const BigONotationPage = lazy(() => import('./BigONotationPage').then(m => ({ default: m.BigONotationPage })));
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center py-12">
@@ -42,6 +43,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
 
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageMastery | null>(null);
   const [showRevision, setShowRevision] = useState(false);
+  const [showBigOPage, setShowBigOPage] = useState(false);
 
   const filteredCategories = categories.filter(cat => cat.level === selectedLevel);
 
@@ -79,6 +81,15 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
   const handleUpgrade = () => {
     setShowPaymentModal(true);
   };
+
+  // Show Big O Notation Page
+  if (showBigOPage) {
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <BigONotationPage onBack={() => setShowBigOPage(false)} />
+      </Suspense>
+    );
+  }
 
   // Show Revision Page
   if (showRevision) {
@@ -430,6 +441,24 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
                 />
               ))}
             </Suspense>
+          </div>
+        </div>
+
+        {/* Big O Notation Section */}
+        <div className="mt-12 bg-gradient-to-r from-purple-900/30 to-blue-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-500/30">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold text-white mb-2">Master Big O Notation</h3>
+              <p className="text-gray-300">
+                Understand time and space complexity analysis essential for technical interviews
+              </p>
+            </div>
+            <button
+              onClick={() => setShowBigOPage(true)}
+              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white rounded-xl font-medium transition-all shadow-lg hover:shadow-xl"
+            >
+              Learn Big O
+            </button>
           </div>
         </div>
       </main>

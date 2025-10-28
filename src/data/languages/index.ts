@@ -5,6 +5,8 @@ import { machineCodingMastery } from './machineCoding';
 import { hrInterviewMastery } from './hrInterview';
 import { resumeLinkedInMastery } from './resumeLinkedIn';
 import { systemDesignTopics } from './systemDesign';
+import { databaseMastery } from './database';
+import { projectsMastery } from './projects';
 
 const systemDesignMastery = {
   id: 'system-design',
@@ -20,12 +22,14 @@ const systemDesignMastery = {
 
 export const languageMasteryData = [
   sqlMastery,
+  databaseMastery,
   developmentMastery,
   systemDesignMastery,
+  projectsMastery,
   aptitudeMastery,
   machineCodingMastery,
   hrInterviewMastery,
   resumeLinkedInMastery
 ];
 
-export { sqlMastery, developmentMastery, systemDesignMastery, aptitudeMastery, machineCodingMastery, hrInterviewMastery, resumeLinkedInMastery };
+export { sqlMastery, databaseMastery, developmentMastery, systemDesignMastery, projectsMastery, aptitudeMastery, machineCodingMastery, hrInterviewMastery, resumeLinkedInMastery };

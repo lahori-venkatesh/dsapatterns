@@ -1,27 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, BookOpen, BarChart3, Zap, RotateCcw, Home, Crown, User, LogOut, Code2, Layers } from 'lucide-react';
+import { Search, BookOpen, BarChart3, Zap, RotateCcw, Home, Crown, User, LogOut, Code2, Layers, Flame } from 'lucide-react';
 import { useAppStore } from '../store';
 
 export const Header: React.FC = () => {
-  const { 
-    toggleSearch, 
-    isSearchOpen, 
-    getUserProgress, 
-    currentView, 
-    setCurrentView, 
-    isPaid, 
-    currentUser, 
-    openLoginModal, 
-    logout 
+  const {
+    toggleSearch,
+    isSearchOpen,
+    getUserProgress,
+    currentView,
+    setCurrentView,
+    isPaid,
+    currentUser,
+    openLoginModal,
+    logout
   } = useAppStore();
-  
+
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   const progress = getUserProgress();
-  const completionPercentage = progress.totalProblems > 0 
+  const completionPercentage = progress.totalProblems > 0
     ? Math.round((progress.completedProblems / progress.totalProblems) * 100)
     : 0;
+
+  // Mock streak data - in real app this would come from store
+  const currentStreak = 7;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -43,86 +46,94 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-gray-900/80 backdrop-blur-xl border-b border-gray-700/50 px-4 md:px-6 py-4 sticky top-0 z-50">
-      <div className="flex items-center justify-between max-w-7xl mx-auto gap-4">
+    <header className="bg-gray-900/95 backdrop-blur-xl border-b border-gray-800/50 px-4 md:px-6 py-3 sticky top-0 z-50">
+      <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo and Title */}
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
-              <BookOpen className="w-6 h-6 text-white" />
+            <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+              <BookOpen className="w-5 h-5 text-white" />
             </div>
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
           </div>
           <div className="hidden sm:block">
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               DSA Patterns
             </h1>
-            <p className="text-sm text-gray-400">Master coding interviews</p>
           </div>
         </div>
 
-        {/* Navigation */}
-        <div className="hidden md:flex items-center space-x-2">
-          <button
-            onClick={() => setCurrentView('dashboard')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
-              currentView === 'dashboard'
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
-            }`}
-          >
-            <Home className="w-4 h-4" />
-            <span className="text-sm font-medium">Home</span>
-          </button>
-          <button
-            onClick={() => setCurrentView('dsa-mastery')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
-              currentView === 'dsa-mastery'
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span className="text-sm font-medium">DSA Mastery</span>
-          </button>
-          <button
-            onClick={() => setCurrentView('language-mastery')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
-              currentView === 'language-mastery'
-                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
-            }`}
-          >
-            <Code2 className="w-4 h-4" />
-            <span className="text-sm font-medium">Interview Mastery</span>
-          </button>
+        {/* Center Navigation */}
+        <div className="hidden md:flex items-center justify-center flex-1 max-w-2xl mx-auto">
+          <nav className="flex items-center space-x-8">
+            <button
+              onClick={() => setCurrentView('dashboard')}
+              className={`relative text-sm font-medium transition-colors ${
+                currentView === 'dashboard'
+                  ? 'text-blue-400'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              Home
+              {currentView === 'dashboard' && (
+                <div className="absolute -bottom-3 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+              )}
+            </button>
+
+            <button
+              onClick={() => setCurrentView('dsa-mastery')}
+              className={`relative text-sm font-medium transition-colors ${
+                currentView === 'dsa-mastery'
+                  ? 'text-blue-400'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              DSA Mastery
+              {currentView === 'dsa-mastery' && (
+                <div className="absolute -bottom-3 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+              )}
+            </button>
+
+            <button
+              onClick={() => setCurrentView('language-mastery')}
+              className={`relative text-sm font-medium transition-colors ${
+                currentView === 'language-mastery'
+                  ? 'text-emerald-400'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              Interview Mastery
+              {currentView === 'language-mastery' && (
+                <div className="absolute -bottom-3 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
+              )}
+            </button>
+          </nav>
         </div>
 
-        {/* Progress Stats */}
-        <div className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-          <div className="flex items-center space-x-3 bg-gray-800/50 backdrop-blur-sm border border-gray-700 px-4 py-2 rounded-xl">
-            <div className="flex items-center space-x-2">
-              <BarChart3 className="w-4 h-4 text-blue-400" />
-              <span className="text-sm font-medium text-gray-200">
-              {progress.completedProblems} / {progress.totalProblems}
-              </span>
+        {/* Right Side: Progress & Streak */}
+        <div className="flex items-center space-x-4">
+          {/* Progress Display - Clean text only */}
+          {currentView === 'dsa-mastery' && (
+            <div className="hidden lg:flex items-center space-x-6">
+              {/* Progress Count */}
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-gray-500 uppercase tracking-wider">Progress</span>
+                <span className="text-sm font-bold text-white">
+                  {progress.completedProblems}
+                  <span className="text-gray-500">/{progress.totalProblems}</span>
+                </span>
+              </div>
+
+              {/* Streak */}
+              <div className="flex items-center space-x-2">
+                <Flame className="w-4 h-4 text-orange-500" />
+                <span className="text-sm font-bold text-white">
+                  {currentStreak}
+                  <span className="text-xs text-gray-400 ml-1">day streak</span>
+                </span>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Zap className="w-3 h-3 text-emerald-400" />
-              <span className="text-xs text-emerald-400 font-semibold">{completionPercentage}%</span>
-            </div>
-          </div>
-          
-          <div className="w-24 xl:w-32 bg-gray-700 rounded-full h-2 overflow-hidden">
-            <div 
-              className="bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 h-2 rounded-full transition-all duration-500 shadow-lg"
-              style={{ width: `${completionPercentage}%` }}
-            />
-          </div>
-        </div>
+          )}
 
-        {/* User Authentication */}
-        <div className="flex items-center space-x-2">
           {/* User Authentication */}
           {currentUser ? (
             <div className="flex items-center space-x-2 relative" ref={dropdownRef}>
@@ -195,33 +206,33 @@ export const Header: React.FC = () => {
           <div className="flex md:hidden items-center space-x-1">
             <button
               onClick={() => setCurrentView('dashboard')}
-              className={`p-2 rounded-xl transition-all duration-200 ${
+              className={`p-2 transition-colors ${
                 currentView === 'dashboard'
-                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                  : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
+                  ? 'text-blue-400'
+                  : 'text-gray-400'
               }`}
             >
-              <Home className="w-4 h-4" />
+              <Home className="w-5 h-5" />
             </button>
             <button
               onClick={() => setCurrentView('dsa-mastery')}
-              className={`p-2 rounded-xl transition-all duration-200 ${
+              className={`p-2 transition-colors ${
                 currentView === 'dsa-mastery'
-                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                  : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
+                  ? 'text-blue-400'
+                  : 'text-gray-400'
               }`}
             >
-              <Layers className="w-4 h-4" />
+              <Layers className="w-5 h-5" />
             </button>
             <button
               onClick={() => setCurrentView('language-mastery')}
-              className={`p-2 rounded-xl transition-all duration-200 ${
+              className={`p-2 transition-colors ${
                 currentView === 'language-mastery'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'hover:bg-gray-800 text-gray-400 hover:text-white border border-transparent'
+                  ? 'text-emerald-400'
+                  : 'text-gray-400'
               }`}
             >
-              <Code2 className="w-4 h-4" />
+              <Code2 className="w-5 h-5" />
             </button>
           </div>
         </div>

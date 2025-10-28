@@ -1,4 +1,4 @@
-import { Problem } from '../../types';
+import { LanguageProblem } from '../../types';
 import { html5Problems } from './html5';
 import { css3Problems } from './css3';
 import { javascriptProblems } from './javascript';
@@ -26,7 +26,7 @@ import { dbmsProblems } from './dbms';
 import { osProblems } from './os';
 import { computerNetworksProblems } from './computerNetworks';
 
-export const allDevelopmentProblems: Problem[] = [
+export const allDevelopmentProblems: LanguageProblem[] = [
   ...html5Problems,
   ...css3Problems,
   ...javascriptProblems,

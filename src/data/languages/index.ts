@@ -5,9 +5,6 @@ import { machineCodingMastery } from './machineCoding';
 import { hrInterviewMastery } from './hrInterview';
 import { resumeLinkedInMastery } from './resumeLinkedIn';
 import { systemDesignTopics } from './systemDesign';
-import { javaMastery } from '../categories/java';
-import { pythonMastery } from '../categories/python';
-import { cppMastery } from '../categories/cpp';
 
 const systemDesignMastery = {
   id: 'system-design',
@@ -22,9 +19,6 @@ const systemDesignMastery = {
 };
 
 export const languageMasteryData = [
-  javaMastery,
-  pythonMastery,
-  cppMastery,
   sqlMastery,
   developmentMastery,
   systemDesignMastery,
@@ -34,4 +28,4 @@ export const languageMasteryData = [
   resumeLinkedInMastery
 ];
 
-export { javaMastery, pythonMastery, cppMastery, sqlMastery, developmentMastery, systemDesignMastery, aptitudeMastery, machineCodingMastery, hrInterviewMastery, resumeLinkedInMastery };
+export { sqlMastery, developmentMastery, systemDesignMastery, aptitudeMastery, machineCodingMastery, hrInterviewMastery, resumeLinkedInMastery };

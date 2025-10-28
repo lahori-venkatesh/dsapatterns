@@ -183,7 +183,10 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {/* Java Card */}
               <div
-                onClick={() => window.location.href = `#language-${javaMastery.id}`}
+                onClick={() => {
+                  useAppStore.getState().setSelectedLanguageId(javaMastery.id);
+                  useAppStore.getState().setCurrentView('language-mastery');
+                }}
                 className="bg-gradient-to-br from-orange-500/10 to-red-600/10 border border-orange-500/30 rounded-xl p-6 hover:border-orange-500/60 transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-center space-x-3 mb-4">
@@ -204,7 +207,10 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
 
               {/* Python Card */}
               <div
-                onClick={() => window.location.href = `#language-${pythonMastery.id}`}
+                onClick={() => {
+                  useAppStore.getState().setSelectedLanguageId(pythonMastery.id);
+                  useAppStore.getState().setCurrentView('language-mastery');
+                }}
                 className="bg-gradient-to-br from-blue-500/10 to-yellow-500/10 border border-blue-500/30 rounded-xl p-6 hover:border-blue-500/60 transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-center space-x-3 mb-4">
@@ -225,7 +231,10 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
 
               {/* C++ Card */}
               <div
-                onClick={() => window.location.href = `#language-${cppMastery.id}`}
+                onClick={() => {
+                  useAppStore.getState().setSelectedLanguageId(cppMastery.id);
+                  useAppStore.getState().setCurrentView('language-mastery');
+                }}
                 className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-6 hover:border-purple-500/60 transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-center space-x-3 mb-4">

@@ -20,12 +20,18 @@ const iconMap = {
 type WebDevCategory = 'HTML' | 'CSS' | 'JavaScript' | 'React.js' | 'Node.js' | 'MongoDB' | 'Express.js' | 'SQL' | 'System Design' | 'Computer Networks' | 'DBMS';
 
 export const LanguageMastery: React.FC = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
+  const { languageProblemStatus, toggleLanguageProblemComplete, selectedLanguageId, setSelectedLanguageId } = useAppStore();
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(selectedLanguageId);
   const [selectedPlatform, setSelectedPlatform] = useState<ProblemPlatform>('GeeksforGeeks');
   const [selectedCategory, setSelectedCategory] = useState<WebDevCategory>('HTML');
   const [expandedAnswers, setExpandedAnswers] = useState<Set<string>>(new Set());
   const [showResumeLinkedInPage, setShowResumeLinkedInPage] = useState(false);
-  const { languageProblemStatus, toggleLanguageProblemComplete } = useAppStore();
+
+  React.useEffect(() => {
+    if (selectedLanguageId) {
+      setSelectedLanguage(selectedLanguageId);
+    }
+  }, [selectedLanguageId]);
 
   const toggleAnswer = (problemId: string) => {
     setExpandedAnswers(prev => {
@@ -110,7 +116,10 @@ export const LanguageMastery: React.FC = () => {
       ) : (
         <div>
           <button
-            onClick={() => setSelectedLanguage(null)}
+            onClick={() => {
+              setSelectedLanguage(null);
+              setSelectedLanguageId(null);
+            }}
             className="mb-6 px-4 py-2 bg-gray-700/50 hover:bg-gray-600/50 text-white rounded-lg transition-colors flex items-center gap-2"
           >
             ← Back to Languages

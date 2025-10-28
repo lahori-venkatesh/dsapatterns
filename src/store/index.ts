@@ -58,6 +58,7 @@ interface AppState {
   selectedPattern: string | null;
   selectedProblem: string | null;
   currentView: 'dashboard' | 'revision' | 'language-mastery';
+  selectedLanguageId: string | null;
 
   // UI State
   isNoteEditorOpen: boolean;
@@ -73,6 +74,7 @@ interface AppState {
   setSelectedPattern: (patternId: string | null) => void;
   setSelectedProblem: (problemId: string | null) => void;
   setCurrentView: (view: 'dashboard' | 'revision' | 'language-mastery') => void;
+  setSelectedLanguageId: (languageId: string | null) => void;
   toggleCategory: (categoryId: string) => void;
   openNoteEditor: (note?: Note) => void;
   closeNoteEditor: () => void;
@@ -134,6 +136,7 @@ export const useAppStore = create<AppState>()(
       selectedPattern: null,
       selectedProblem: null,
       currentView: 'dashboard',
+      selectedLanguageId: null,
       isNoteEditorOpen: false,
       isSearchOpen: false,
       expandedCategories: new Set(),
@@ -546,6 +549,7 @@ export const useAppStore = create<AppState>()(
       setSelectedPattern: (patternId) => set({ selectedPattern: patternId }),
       setSelectedProblem: (problemId) => set({ selectedProblem: problemId }),
       setCurrentView: (view) => set({ currentView: view }),
+      setSelectedLanguageId: (languageId) => set({ selectedLanguageId: languageId }),
 
       // UI actions
       toggleCategory: (categoryId) =>

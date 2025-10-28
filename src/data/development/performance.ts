@@ -1,4 +1,10 @@
 import { Problem } from '../../types';
 
-export const performanceProblems: Problem[] = [];
-
+export const performanceProblems: Problem[] = [
+  { id: 'perf-code-splitting', title: 'Code Splitting and Lazy Loading', difficulty: 'Medium', pattern: 'Web Performance', category: 'Performance', leetcodeUrl: '', estimatedTime: 12, tags: ['Code Splitting', 'Lazy Loading', 'Performance'], companies: ['Google', 'Facebook', 'Netflix'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'perf-caching', title: 'Caching Strategies', difficulty: 'Medium', pattern: 'Optimization', category: 'Performance', leetcodeUrl: '', estimatedTime: 12, tags: ['Caching', 'CDN', 'Performance'], companies: ['Amazon', 'Netflix', 'Google'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'perf-web-vitals', title: 'Core Web Vitals (LCP, FID, CLS)', difficulty: 'Medium', pattern: 'Web Performance', category: 'Performance', leetcodeUrl: '', estimatedTime: 10, tags: ['Web Vitals', 'Performance', 'SEO'], companies: ['Google', 'Facebook', 'Airbnb'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'perf-image-optimization', title: 'Image Optimization', difficulty: 'Easy', pattern: 'Optimization', category: 'Performance', leetcodeUrl: '', estimatedTime: 8, tags: ['Images', 'Optimization', 'Performance'], companies: ['Netflix', 'Airbnb', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'perf-debounce-throttle', title: 'Debouncing and Throttling', difficulty: 'Easy', pattern: 'Optimization', category: 'Performance', leetcodeUrl: '', estimatedTime: 8, tags: ['Debounce', 'Throttle', 'Performance'], companies: ['Google', 'Facebook', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'perf-bundle-size', title: 'Bundle Size Optimization', difficulty: 'Medium', pattern: 'Build Optimization', category: 'Performance', leetcodeUrl: '', estimatedTime: 12, tags: ['Bundle', 'Webpack', 'Optimization'], companies: ['Google', 'Facebook', 'Netflix'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
+];

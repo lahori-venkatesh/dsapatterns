@@ -1,4 +1,11 @@
 import { Problem } from '../../types';
 
-export const computerNetworksProblems: Problem[] = [];
-
+export const computerNetworksProblems: Problem[] = [
+  { id: 'cn-osi-model', title: 'OSI Model 7 Layers', difficulty: 'Easy', pattern: 'Network Fundamentals', category: 'Computer Networks', leetcodeUrl: '', estimatedTime: 10, tags: ['OSI Model', 'Networking', 'Layers'], companies: ['Cisco', 'Amazon', 'Google'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'cn-tcp-udp', title: 'TCP vs UDP', difficulty: 'Easy', pattern: 'Protocols', category: 'Computer Networks', leetcodeUrl: '', estimatedTime: 8, tags: ['TCP', 'UDP', 'Protocols'], companies: ['Google', 'Amazon', 'Microsoft'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'cn-http-https', title: 'HTTP vs HTTPS', difficulty: 'Easy', pattern: 'Web Protocols', category: 'Computer Networks', leetcodeUrl: '', estimatedTime: 8, tags: ['HTTP', 'HTTPS', 'Security'], companies: ['Google', 'Amazon', 'Facebook'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'cn-dns', title: 'DNS and Domain Name Resolution', difficulty: 'Medium', pattern: 'Network Services', category: 'Computer Networks', leetcodeUrl: '', estimatedTime: 10, tags: ['DNS', 'Domain', 'Networking'], companies: ['Google', 'Amazon', 'Cloudflare'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'cn-load-balancing', title: 'Load Balancing', difficulty: 'Medium', pattern: 'Scalability', category: 'Computer Networks', leetcodeUrl: '', estimatedTime: 12, tags: ['Load Balancing', 'Scalability', 'Architecture'], companies: ['Amazon', 'Netflix', 'Google'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'cn-cdn', title: 'Content Delivery Network (CDN)', difficulty: 'Medium', pattern: 'Performance', category: 'Computer Networks', leetcodeUrl: '', estimatedTime: 10, tags: ['CDN', 'Performance', 'Caching'], companies: ['Cloudflare', 'Amazon', 'Netflix'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'cn-rest-api', title: 'RESTful API Principles', difficulty: 'Easy', pattern: 'Web Services', category: 'Computer Networks', leetcodeUrl: '', estimatedTime: 10, tags: ['REST', 'API', 'HTTP'], companies: ['Google', 'Amazon', 'Microsoft'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
+];

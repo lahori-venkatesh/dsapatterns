@@ -1,4 +1,13 @@
 import { Problem } from '../../types';
 
-export const databaseProblems: Problem[] = [];
+export const databaseProblems: Problem[] = [
+  { id: 'db-sql-vs-nosql', title: 'SQL vs NoSQL Databases', difficulty: 'Easy', pattern: 'Database Fundamentals', category: 'Database', leetcodeUrl: '', estimatedTime: 10, tags: ['SQL', 'NoSQL', 'Database'], companies: ['Amazon', 'Google', 'Netflix'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'db-indexing', title: 'Database Indexing', difficulty: 'Medium', pattern: 'Performance', category: 'Database', leetcodeUrl: '', estimatedTime: 12, tags: ['Indexing', 'Performance', 'SQL'], companies: ['Google', 'Facebook', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'db-normalization', title: 'Normalization (1NF, 2NF, 3NF)', difficulty: 'Medium', pattern: 'Database Design', category: 'Database', leetcodeUrl: '', estimatedTime: 15, tags: ['Normalization', 'Database Design', 'Schema'], companies: ['Microsoft', 'Oracle', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'db-joins', title: 'SQL Joins (Inner, Left, Right, Full)', difficulty: 'Easy', pattern: 'SQL', category: 'Database', leetcodeUrl: '', estimatedTime: 10, tags: ['SQL', 'Joins', 'Queries'], companies: ['Amazon', 'Microsoft', 'Google'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'db-transactions', title: 'Database Transactions', difficulty: 'Medium', pattern: 'Database Fundamentals', category: 'Database', leetcodeUrl: '', estimatedTime: 12, tags: ['Transactions', 'ACID', 'Database'], companies: ['Oracle', 'Goldman', 'JPMorgan'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'db-replication', title: 'Database Replication', difficulty: 'Hard', pattern: 'Scalability', category: 'Database', leetcodeUrl: '', estimatedTime: 15, tags: ['Replication', 'High Availability', 'Scalability'], companies: ['Google', 'Amazon', 'Facebook'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'db-sharding', title: 'Database Sharding', difficulty: 'Hard', pattern: 'Scalability', category: 'Database', leetcodeUrl: '', estimatedTime: 15, tags: ['Sharding', 'Partitioning', 'Scalability'], companies: ['Facebook', 'Twitter', 'Instagram'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'db-mongodb', title: 'MongoDB and Document Databases', difficulty: 'Medium', pattern: 'NoSQL', category: 'Database', leetcodeUrl: '', estimatedTime: 12, tags: ['MongoDB', 'NoSQL', 'Document DB'], companies: ['Netflix', 'Uber', 'Airbnb'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
+];
 

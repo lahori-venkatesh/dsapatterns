@@ -6,9 +6,9 @@ export const developmentMastery: LanguageMastery = {
   language: 'Full Stack' as any,
   name: 'Full Stack Web Development',
   icon: 'Code',
-  description: 'Complete Full Stack interview prep: JavaScript, TypeScript, React, Node.js, Express, Next.js, APIs, Security, Testing & DevOps',
+  description: 'Master Full Stack: JavaScript, TypeScript, React, Node.js, Next.js, Database, DBMS, Networks, OS, Security, Testing, DevOps & more',
   color: 'from-emerald-500 to-teal-600',
-  totalProblems: 125,
+  totalProblems: 186,
   completedProblems: 0,
   problems: allDevelopmentProblems
 };

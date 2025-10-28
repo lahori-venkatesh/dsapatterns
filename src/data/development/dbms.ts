@@ -1,4 +1,10 @@
 import { Problem } from '../../types';
 
-export const dbmsProblems: Problem[] = [];
-
+export const dbmsProblems: Problem[] = [
+  { id: 'dbms-acid', title: 'ACID Properties', difficulty: 'Easy', pattern: 'DBMS Fundamentals', category: 'DBMS', leetcodeUrl: '', estimatedTime: 8, tags: ['ACID', 'Transactions', 'DBMS'], companies: ['Oracle', 'Microsoft', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'dbms-keys', title: 'Primary Key, Foreign Key, Candidate Key', difficulty: 'Easy', pattern: 'DBMS Fundamentals', category: 'DBMS', leetcodeUrl: '', estimatedTime: 8, tags: ['Keys', 'Constraints', 'DBMS'], companies: ['Amazon', 'Microsoft', 'Google'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'dbms-concurrency', title: 'Concurrency Control', difficulty: 'Medium', pattern: 'Advanced DBMS', category: 'DBMS', leetcodeUrl: '', estimatedTime: 12, tags: ['Concurrency', 'Locking', 'Transactions'], companies: ['Oracle', 'Google', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'dbms-deadlock', title: 'Deadlock Prevention and Detection', difficulty: 'Medium', pattern: 'Advanced DBMS', category: 'DBMS', leetcodeUrl: '', estimatedTime: 12, tags: ['Deadlock', 'Concurrency', 'DBMS'], companies: ['Microsoft', 'Oracle', 'Goldman'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'dbms-isolation-levels', title: 'Transaction Isolation Levels', difficulty: 'Medium', pattern: 'Transactions', category: 'DBMS', leetcodeUrl: '', estimatedTime: 12, tags: ['Isolation', 'Transactions', 'DBMS'], companies: ['Oracle', 'Amazon', 'Google'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'dbms-cap-theorem', title: 'CAP Theorem', difficulty: 'Hard', pattern: 'Distributed Systems', category: 'DBMS', leetcodeUrl: '', estimatedTime: 15, tags: ['CAP', 'Distributed', 'NoSQL'], companies: ['Amazon', 'Netflix', 'Facebook'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
+];

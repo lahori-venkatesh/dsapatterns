@@ -1,4 +1,10 @@
 import { Problem } from '../../types';
 
-export const osProblems: Problem[] = [];
-
+export const osProblems: Problem[] = [
+  { id: 'os-process-thread', title: 'Process vs Thread', difficulty: 'Easy', pattern: 'OS Fundamentals', category: 'Operating Systems', leetcodeUrl: '', estimatedTime: 8, tags: ['Process', 'Thread', 'Concurrency'], companies: ['Google', 'Amazon', 'Microsoft'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'os-deadlock', title: 'Deadlock and Prevention', difficulty: 'Medium', pattern: 'Concurrency', category: 'Operating Systems', leetcodeUrl: '', estimatedTime: 12, tags: ['Deadlock', 'Concurrency', 'OS'], companies: ['Microsoft', 'Google', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'os-scheduling', title: 'CPU Scheduling Algorithms', difficulty: 'Medium', pattern: 'Scheduling', category: 'Operating Systems', leetcodeUrl: '', estimatedTime: 12, tags: ['Scheduling', 'CPU', 'Algorithms'], companies: ['Google', 'Amazon', 'Intel'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'os-memory', title: 'Memory Management', difficulty: 'Medium', pattern: 'Memory', category: 'Operating Systems', leetcodeUrl: '', estimatedTime: 12, tags: ['Memory', 'Virtual Memory', 'Paging'], companies: ['Microsoft', 'Intel', 'Google'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'os-virtual-memory', title: 'Virtual Memory and Paging', difficulty: 'Hard', pattern: 'Memory', category: 'Operating Systems', leetcodeUrl: '', estimatedTime: 15, tags: ['Virtual Memory', 'Paging', 'OS'], companies: ['Google', 'Microsoft', 'Intel'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'os-ipc', title: 'Inter-Process Communication', difficulty: 'Medium', pattern: 'Communication', category: 'Operating Systems', leetcodeUrl: '', estimatedTime: 10, tags: ['IPC', 'Processes', 'Communication'], companies: ['Amazon', 'Google', 'Microsoft'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
+];

@@ -1,4 +1,10 @@
 import { Problem } from '../../types';
 
-export const stateManagementProblems: Problem[] = [];
-
+export const stateManagementProblems: Problem[] = [
+  { id: 'state-redux', title: 'Redux: Store, Actions, Reducers', difficulty: 'Medium', pattern: 'State Management', category: 'State Management', leetcodeUrl: '', estimatedTime: 15, tags: ['Redux', 'State', 'React'], companies: ['Facebook', 'Airbnb', 'Uber'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'state-redux-toolkit', title: 'Redux Toolkit', difficulty: 'Medium', pattern: 'State Management', category: 'State Management', leetcodeUrl: '', estimatedTime: 12, tags: ['Redux Toolkit', 'State', 'React'], companies: ['Facebook', 'Netflix', 'Airbnb'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'state-zustand', title: 'Zustand State Management', difficulty: 'Easy', pattern: 'State Management', category: 'State Management', leetcodeUrl: '', estimatedTime: 10, tags: ['Zustand', 'State', 'React'], companies: ['Airbnb', 'Uber', 'Spotify'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'state-mobx', title: 'MobX: Observable State', difficulty: 'Medium', pattern: 'State Management', category: 'State Management', leetcodeUrl: '', estimatedTime: 12, tags: ['MobX', 'State', 'Reactive'], companies: ['Netflix', 'Uber', 'Spotify'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'state-context-api', title: 'React Context API', difficulty: 'Easy', pattern: 'State Management', category: 'State Management', leetcodeUrl: '', estimatedTime: 10, tags: ['Context API', 'React', 'State'], companies: ['Facebook', 'Google', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'state-recoil', title: 'Recoil State Management', difficulty: 'Medium', pattern: 'State Management', category: 'State Management', leetcodeUrl: '', estimatedTime: 12, tags: ['Recoil', 'State', 'React'], companies: ['Facebook', 'Netflix', 'Airbnb'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
+];

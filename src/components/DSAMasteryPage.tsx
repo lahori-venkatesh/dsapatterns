@@ -180,15 +180,25 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <Header />
 
-      {/* Back Button */}
+      {/* Back Button and DSA Revision */}
       <div className="container mx-auto px-4 pt-6">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Home
-        </button>
+        <div className="flex items-center justify-between">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to Home
+          </button>
+
+          <button
+            onClick={() => setShowRevision(true)}
+            className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>DSA Revision</span>
+          </button>
+        </div>
       </div>
 
       {/* Why This Approach Works Section */}
@@ -351,20 +361,10 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
       </div>
 
       <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Level Selector and Revision Button */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <Suspense fallback={<div className="h-20 bg-gray-800/50 rounded-xl animate-pulse flex-1" />}>
-            <LevelSelector />
-          </Suspense>
-
-          <button
-            onClick={() => setShowRevision(true)}
-            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-          >
-            <RotateCcw className="w-5 h-5" />
-            <span>Revision Center</span>
-          </button>
-        </div>
+        {/* Level Selector */}
+        <Suspense fallback={<div className="h-20 bg-gray-800/50 rounded-xl animate-pulse" />}>
+          <LevelSelector />
+        </Suspense>
 
         {/* Hero Section */}
         <div className="text-center space-y-6 py-8 md:py-12">

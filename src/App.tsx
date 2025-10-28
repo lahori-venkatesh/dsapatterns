@@ -310,18 +310,148 @@ function App() {
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-emerald-500/5"></div>
 
           <div className="relative z-10 container mx-auto px-4 py-12 md:py-20">
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent mb-6">
-                Master Your Tech Interview Journey
+            <div className="text-center max-w-5xl mx-auto">
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm border border-amber-500/20 rounded-full px-4 py-2 mb-6">
+                <Crown className="w-4 h-4 text-amber-400" />
+                <span className="text-sm text-amber-300 font-semibold">Complete Interview Prep Platform</span>
+              </div>
+
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent mb-6 leading-tight">
+                Land Your Dream Job at<br />Top Product & Service Companies
               </h1>
-              <p className="text-xl text-gray-300 leading-relaxed mb-8">
-                From DSA patterns to language mastery - everything you need to land your dream tech job at 10-25 LPA
+
+              <p className="text-xl md:text-2xl text-gray-300 leading-relaxed mb-8 max-w-3xl mx-auto">
+                Complete DSA + Interview Mastery Platform for <span className="text-emerald-400 font-bold">10-25 LPA</span> Jobs
               </p>
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm border border-blue-500/20 rounded-full px-6 py-3">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-300 font-medium">
-                  Join thousands preparing for top tech companies
-                </span>
+
+              <div className="flex flex-wrap justify-center gap-3 mb-8">
+                <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full px-4 py-2 text-sm text-gray-300">
+                  ✓ 100+ DSA Patterns
+                </div>
+                <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full px-4 py-2 text-sm text-gray-300">
+                  ✓ 500+ Interview Questions
+                </div>
+                <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full px-4 py-2 text-sm text-gray-300">
+                  ✓ Java, Python, C++
+                </div>
+                <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full px-4 py-2 text-sm text-gray-300">
+                  ✓ Full Stack Web Dev
+                </div>
+              </div>
+
+              {/* Top Companies Logos */}
+              <div className="mb-6">
+                <p className="text-gray-400 text-sm mb-4">Students placed at:</p>
+                <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+                  {['Google', 'Microsoft', 'Amazon', 'Flipkart', 'PhonePe', 'CRED', 'Zoho', 'Accenture', 'TCS', 'Wipro', 'Infosys'].map((company) => (
+                    <div key={company} className="px-4 py-2 bg-gray-800/30 rounded-lg border border-gray-700/30">
+                      <span className="text-gray-400 font-semibold text-sm">{company}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Learning Journey Section */}
+        <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border-b border-gray-700/30">
+          <div className="container mx-auto px-4 py-16">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Your Complete Learning Journey</h2>
+              <p className="text-gray-400 text-lg">Follow our proven 3-step process to crack any tech interview</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {/* Step 1 */}
+              <div className="relative">
+                <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/30 hover:border-blue-500/60 transition-all">
+                  <div className="absolute -top-4 left-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full w-12 h-12 flex items-center justify-center text-white font-bold text-xl">
+                    1
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-xl font-bold text-blue-300 mb-3">Learn Programming Language</h3>
+                    <p className="text-gray-300 text-sm mb-4">Choose your weapon: Java, C++, or Python. Master syntax, OOP, and core concepts.</p>
+                    <ul className="space-y-2 text-sm text-gray-400">
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                        <span>Complete language fundamentals</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                        <span>OOP concepts & design patterns</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                        <span>Practice 100+ problems</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-blue-400">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="relative">
+                <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30 hover:border-purple-500/60 transition-all">
+                  <div className="absolute -top-4 left-6 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full w-12 h-12 flex items-center justify-center text-white font-bold text-xl">
+                    2
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-xl font-bold text-purple-300 mb-3">Master DSA Patterns</h3>
+                    <p className="text-gray-300 text-sm mb-4">Crack coding rounds with 100+ curated DSA patterns from Easy to Pro level.</p>
+                    <ul className="space-y-2 text-sm text-gray-400">
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                        <span>15+ categories (Arrays, Trees, DP)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                        <span>Pattern-based learning approach</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                        <span>Beginner → Intermediate → Pro</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-purple-400">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="relative">
+                <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-emerald-500/30 hover:border-emerald-500/60 transition-all">
+                  <div className="absolute -top-4 left-6 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full w-12 h-12 flex items-center justify-center text-white font-bold text-xl">
+                    3
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-xl font-bold text-emerald-300 mb-3">Interview Preparation</h3>
+                    <p className="text-gray-300 text-sm mb-4">Complete interview kit: Technical + HR + Aptitude + System Design.</p>
+                    <ul className="space-y-2 text-sm text-gray-400">
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+                        <span>SQL, Web Dev, System Design</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+                        <span>Aptitude & Logical Reasoning</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+                        <span>HR prep + Resume building</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -433,13 +563,13 @@ function App() {
                   <Crown className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                  Unlock Complete Job-Ready Bundle
+                  Get Complete Job-Ready Bundle
                 </h3>
                 <p className="text-amber-200 text-lg mb-2">
-                  Everything You Need to Land 10-25 LPA Jobs
+                  Everything You Need to Crack Product & Service Based Companies
                 </p>
-                <p className="text-gray-300 text-sm">
-                  Perfect for CS & Non-CS Students • One-Time Investment, Lifetime Benefits
+                <p className="text-gray-300 text-base max-w-3xl mx-auto">
+                  Perfect for Students Targeting <span className="text-emerald-400 font-bold">Google, Microsoft, Amazon, Flipkart, PhonePe, CRED, Zoho, Accenture, TCS, Wipro, Infosys</span> and more
                 </p>
               </div>
 

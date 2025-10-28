@@ -167,6 +167,87 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
         </div>
       </div>
 
+      {/* Programming Languages Section */}
+      <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 backdrop-blur-sm border-y border-gray-600/30 py-8 md:py-12 mt-0">
+        <div className="container mx-auto px-4">
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center justify-center space-x-3">
+                <span>Learn Programming Languages</span>
+              </h3>
+              <p className="text-gray-300 text-base md:text-lg max-w-2xl mx-auto">
+                Master the syntax and fundamentals before solving DSA problems
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {/* Java Card */}
+              <div
+                onClick={() => window.location.href = `#language-${javaMastery.id}`}
+                className="bg-gradient-to-br from-orange-500/10 to-red-600/10 border border-orange-500/30 rounded-xl p-6 hover:border-orange-500/60 transition-all duration-300 cursor-pointer group"
+              >
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="p-3 bg-orange-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                    <Coffee className="w-6 h-6 text-orange-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white">{javaMastery.language}</h4>
+                    <p className="text-sm text-gray-400">{javaMastery.totalProblems} problems</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 mb-4">{javaMastery.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-orange-400 font-medium">Click to learn →</span>
+                  <div className="text-xs text-gray-500">{javaMastery.completedProblems}/{javaMastery.totalProblems} done</div>
+                </div>
+              </div>
+
+              {/* Python Card */}
+              <div
+                onClick={() => window.location.href = `#language-${pythonMastery.id}`}
+                className="bg-gradient-to-br from-blue-500/10 to-yellow-500/10 border border-blue-500/30 rounded-xl p-6 hover:border-blue-500/60 transition-all duration-300 cursor-pointer group"
+              >
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="p-3 bg-blue-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                    <Code2 className="w-6 h-6 text-blue-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white">{pythonMastery.language}</h4>
+                    <p className="text-sm text-gray-400">{pythonMastery.totalProblems} problems</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 mb-4">{pythonMastery.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-blue-400 font-medium">Click to learn →</span>
+                  <div className="text-xs text-gray-500">{pythonMastery.completedProblems}/{pythonMastery.totalProblems} done</div>
+                </div>
+              </div>
+
+              {/* C++ Card */}
+              <div
+                onClick={() => window.location.href = `#language-${cppMastery.id}`}
+                className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-6 hover:border-purple-500/60 transition-all duration-300 cursor-pointer group"
+              >
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="p-3 bg-purple-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                    <BookOpen className="w-6 h-6 text-purple-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white">{cppMastery.language}</h4>
+                    <p className="text-sm text-gray-400">{cppMastery.totalProblems} problems</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 mb-4">{cppMastery.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-purple-400 font-medium">Click to learn →</span>
+                  <div className="text-xs text-gray-500">{cppMastery.completedProblems}/{cppMastery.totalProblems} done</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <main className="container mx-auto px-4 py-8 space-y-8">
         {/* Level Selector */}
         <Suspense fallback={<div className="h-20 bg-gray-800/50 rounded-xl animate-pulse" />}>
@@ -187,82 +268,6 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
               {selectedLevel === 'pro' && 'Achieve mastery • Target: 20+ LPA FAANG interviews • Tackle the most challenging problems and advanced techniques'}
             </p>
           </>
-        </div>
-
-        {/* Programming Languages Section */}
-        <div className="space-y-6">
-          <h3 className="text-xl md:text-2xl font-bold text-white flex items-center space-x-3">
-            <div className="w-1 h-8 bg-gradient-to-b from-orange-400 to-red-400 rounded-full"></div>
-            <span>Learn Programming Languages</span>
-          </h3>
-          <p className="text-gray-400 text-sm md:text-base">
-            Master the syntax and fundamentals before solving DSA problems
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Java Card */}
-            <div
-              onClick={() => window.location.href = `#language-${javaMastery.id}`}
-              className="bg-gradient-to-br from-orange-500/10 to-red-600/10 border border-orange-500/30 rounded-xl p-6 hover:border-orange-500/60 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-3 bg-orange-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                  <Coffee className="w-6 h-6 text-orange-400" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-white">{javaMastery.language}</h4>
-                  <p className="text-sm text-gray-400">{javaMastery.totalProblems} problems</p>
-                </div>
-              </div>
-              <p className="text-sm text-gray-300 mb-4">{javaMastery.description}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-orange-400 font-medium">Click to learn →</span>
-                <div className="text-xs text-gray-500">{javaMastery.completedProblems}/{javaMastery.totalProblems} done</div>
-              </div>
-            </div>
-
-            {/* Python Card */}
-            <div
-              onClick={() => window.location.href = `#language-${pythonMastery.id}`}
-              className="bg-gradient-to-br from-blue-500/10 to-yellow-500/10 border border-blue-500/30 rounded-xl p-6 hover:border-blue-500/60 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-3 bg-blue-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                  <Code2 className="w-6 h-6 text-blue-400" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-white">{pythonMastery.language}</h4>
-                  <p className="text-sm text-gray-400">{pythonMastery.totalProblems} problems</p>
-                </div>
-              </div>
-              <p className="text-sm text-gray-300 mb-4">{pythonMastery.description}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-blue-400 font-medium">Click to learn →</span>
-                <div className="text-xs text-gray-500">{pythonMastery.completedProblems}/{pythonMastery.totalProblems} done</div>
-              </div>
-            </div>
-
-            {/* C++ Card */}
-            <div
-              onClick={() => window.location.href = `#language-${cppMastery.id}`}
-              className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-6 hover:border-purple-500/60 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-3 bg-purple-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                  <BookOpen className="w-6 h-6 text-purple-400" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-white">{cppMastery.language}</h4>
-                  <p className="text-sm text-gray-400">{cppMastery.totalProblems} problems</p>
-                </div>
-              </div>
-              <p className="text-sm text-gray-300 mb-4">{cppMastery.description}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-purple-400 font-medium">Click to learn →</span>
-                <div className="text-xs text-gray-500">{cppMastery.completedProblems}/{cppMastery.totalProblems} done</div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Stats Overview */}

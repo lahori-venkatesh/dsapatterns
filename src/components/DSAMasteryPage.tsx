@@ -199,62 +199,6 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
             Master the syntax and fundamentals before solving DSA problems
           </p>
 
-          {/* Choose Your Learning Path */}
-          <div className="bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm border border-gray-600/40 rounded-2xl p-6 md:p-8">
-            <div className="text-center mb-6">
-              <h4 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                Choose Your Learning Path
-              </h4>
-              <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto">
-                Select the programming language that aligns with your goals and start building a strong foundation for DSA mastery
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-gray-800/40 border border-orange-500/20 rounded-xl p-5 text-center">
-                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Coffee className="w-6 h-6 text-orange-400" />
-                </div>
-                <h5 className="text-lg font-bold text-white mb-2">Java</h5>
-                <p className="text-sm text-gray-400 mb-3">Industry standard for enterprise applications and Android development</p>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  <span className="px-2 py-1 bg-orange-500/10 border border-orange-500/30 rounded text-xs text-orange-300">Object-Oriented</span>
-                  <span className="px-2 py-1 bg-orange-500/10 border border-orange-500/30 rounded text-xs text-orange-300">Enterprise</span>
-                </div>
-              </div>
-
-              <div className="bg-gray-800/40 border border-blue-500/20 rounded-xl p-5 text-center">
-                <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Code2 className="w-6 h-6 text-blue-400" />
-                </div>
-                <h5 className="text-lg font-bold text-white mb-2">Python</h5>
-                <p className="text-sm text-gray-400 mb-3">Beginner-friendly with clean syntax, perfect for learning algorithms</p>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  <span className="px-2 py-1 bg-blue-500/10 border border-blue-500/30 rounded text-xs text-blue-300">Easy to Learn</span>
-                  <span className="px-2 py-1 bg-blue-500/10 border border-blue-500/30 rounded text-xs text-blue-300">Versatile</span>
-                </div>
-              </div>
-
-              <div className="bg-gray-800/40 border border-purple-500/20 rounded-xl p-5 text-center">
-                <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <BookOpen className="w-6 h-6 text-purple-400" />
-                </div>
-                <h5 className="text-lg font-bold text-white mb-2">C++</h5>
-                <p className="text-sm text-gray-400 mb-3">High-performance language ideal for competitive programming</p>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  <span className="px-2 py-1 bg-purple-500/10 border border-purple-500/30 rounded text-xs text-purple-300">Performance</span>
-                  <span className="px-2 py-1 bg-purple-500/10 border border-purple-500/30 rounded text-xs text-purple-300">Control</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-center">
-              <p className="text-sm text-blue-300">
-                <span className="font-semibold">Pro Tip:</span> You can learn multiple languages, but master one first before moving to others
-              </p>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Java Card */}
             <div

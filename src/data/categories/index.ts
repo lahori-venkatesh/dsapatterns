@@ -1,4 +1,4 @@
-// Export all categories
+// Export all DSA categories
 export {
   arraysStringsCategory,
   arraysStringsIntermediateCategory,
@@ -18,4 +18,7 @@ export { dynamicProgrammingCategory } from './dynamicProgramming';
 export { greedyAlgorithmsCategory } from './greedyAlgorithms';
 export { backtrackingCategory } from './backtracking';
 
-// All categories are now implemented and ready to use!
+// Export programming language masteries (for learning languages in DSA section)
+export { javaMastery } from './java';
+export { pythonMastery } from './python';
+export { cppMastery } from './cpp';

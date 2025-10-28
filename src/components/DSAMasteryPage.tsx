@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState } from 'react';
-import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal } from 'lucide-react';
+import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal, Flame, BarChart3 } from 'lucide-react';
 import { Header } from './Header';
 import { useAppStore } from '../store';
 import { javaMastery, pythonMastery, cppMastery } from '../data/categories';
@@ -38,7 +38,8 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
     showPremiumActivationModal,
     setShowPremiumActivationModal,
     categories,
-    setCurrentView
+    setCurrentView,
+    getUserProgress
   } = useAppStore();
 
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageMastery | null>(null);
@@ -48,6 +49,10 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
   const filteredCategories = categories.filter(cat => cat.level === selectedLevel);
 
   const hasCategories = filteredCategories.length > 0;
+
+  // Get progress data
+  const progress = getUserProgress();
+  const currentStreak = 7;
 
   const levelStats = React.useMemo(() => {
     const totalCategories = filteredCategories.length;
@@ -191,17 +196,40 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <Header />
 
-      {/* Back Button and DSA Revision */}
+      {/* Page Header with Back, Progress, Streak, and Revision */}
       <div className="container mx-auto px-4 pt-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          {/* Left: Back Button */}
           <button
             onClick={onBack}
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            Back to Home
+            <span className="hidden sm:inline">Back to Home</span>
           </button>
 
+          {/* Center: Progress & Streak */}
+          <div className="flex items-center gap-6">
+            {/* Progress Counter */}
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-blue-400" />
+              <span className="text-sm font-bold text-white">
+                {progress.completedProblems}
+                <span className="text-gray-500">/{progress.totalProblems}</span>
+              </span>
+            </div>
+
+            {/* Streak */}
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-orange-500" />
+              <span className="text-sm font-bold text-white">
+                {currentStreak}
+                <span className="text-xs text-gray-400 ml-1">day streak</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Right: Revision Button */}
           <button
             onClick={() => setShowRevision(true)}
             className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"

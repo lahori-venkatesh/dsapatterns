@@ -109,31 +109,8 @@ export const Header: React.FC = () => {
           </nav>
         </div>
 
-        {/* Right Side: Progress & Streak */}
+        {/* Right Side: User Authentication */}
         <div className="flex items-center space-x-4">
-          {/* Progress Display - Clean text only */}
-          {currentView === 'dsa-mastery' && (
-            <div className="hidden lg:flex items-center space-x-6">
-              {/* Progress Count */}
-              <div className="flex items-center space-x-2">
-                <span className="text-xs text-gray-500 uppercase tracking-wider">Progress</span>
-                <span className="text-sm font-bold text-white">
-                  {progress.completedProblems}
-                  <span className="text-gray-500">/{progress.totalProblems}</span>
-                </span>
-              </div>
-
-              {/* Streak */}
-              <div className="flex items-center space-x-2">
-                <Flame className="w-4 h-4 text-orange-500" />
-                <span className="text-sm font-bold text-white">
-                  {currentStreak}
-                  <span className="text-xs text-gray-400 ml-1">day streak</span>
-                </span>
-              </div>
-            </div>
-          )}
-
           {/* User Authentication */}
           {currentUser ? (
             <div className="flex items-center space-x-2 relative" ref={dropdownRef}>

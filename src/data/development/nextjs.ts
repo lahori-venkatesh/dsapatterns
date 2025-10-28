@@ -1,4 +1,12 @@
 import { Problem } from '../../types';
 
-export const nextjsProblems: Problem[] = [];
+export const nextjsProblems: Problem[] = [
+  { id: 'next-ssr-ssg', title: 'SSR vs SSG vs ISR', difficulty: 'Medium', pattern: 'Next.js Rendering', category: 'Next.js', leetcodeUrl: '', estimatedTime: 12, tags: ['SSR', 'SSG', 'ISR', 'Rendering'], companies: ['Vercel', 'Netflix', 'Airbnb'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'next-app-router', title: 'App Router vs Pages Router', difficulty: 'Medium', pattern: 'Next.js 13+', category: 'Next.js', leetcodeUrl: '', estimatedTime: 15, tags: ['App Router', 'Next.js 13', 'Routing'], companies: ['Vercel', 'Google', 'Facebook'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'next-api-routes', title: 'API Routes', difficulty: 'Easy', pattern: 'Backend Integration', category: 'Next.js', leetcodeUrl: '', estimatedTime: 8, tags: ['API Routes', 'Backend', 'Next.js'], companies: ['Amazon', 'Microsoft', 'Uber'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'next-data-fetching', title: 'Data Fetching Methods', difficulty: 'Medium', pattern: 'Data Fetching', category: 'Next.js', leetcodeUrl: '', estimatedTime: 12, tags: ['getServerSideProps', 'getStaticProps', 'Data Fetching'], companies: ['Vercel', 'Netflix', 'Spotify'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'next-server-components', title: 'Server Components', difficulty: 'Hard', pattern: 'Next.js 13+', category: 'Next.js', leetcodeUrl: '', estimatedTime: 15, tags: ['Server Components', 'RSC', 'Next.js 13'], companies: ['Vercel', 'Google', 'Facebook'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'next-image-optimization', title: 'Image Optimization', difficulty: 'Easy', pattern: 'Performance', category: 'Next.js', leetcodeUrl: '', estimatedTime: 8, tags: ['Image', 'Optimization', 'Performance'], companies: ['Netflix', 'Airbnb', 'Uber'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'next-middleware', title: 'Middleware', difficulty: 'Medium', pattern: 'Advanced Next.js', category: 'Next.js', leetcodeUrl: '', estimatedTime: 10, tags: ['Middleware', 'Edge Functions', 'Next.js'], companies: ['Vercel', 'Google', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
+];
 

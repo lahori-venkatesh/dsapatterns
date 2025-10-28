@@ -1,18 +1,10 @@
 import { Problem } from '../../types';
 
 export const expressjsProblems: Problem[] = [
-  {
-    id: 'expressjs-middleware',
-    title: 'Express.js Middleware Pattern',
-    difficulty: 'Medium' as any,
-    category: 'Express.js',
-    description: 'Understanding middleware, routing, and error handling in Express.js',
-    answer: `# Express.js Middleware Pattern
-
-[Content from development.ts Express.js section]`,
-    topics: ['Express.js', 'Middleware', 'REST API', 'Error Handling', 'Backend'],
-    estimatedTime: 35,
-    platformLinks: [],
-    userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
-  }
+  { id: 'express-middleware', title: 'Middleware in Express.js', difficulty: 'Medium', pattern: 'Express Core', category: 'Express.js', leetcodeUrl: '', estimatedTime: 10, tags: ['Middleware', 'Express', 'Backend'], companies: ['Amazon', 'Uber', 'Netflix'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'express-routing', title: 'Routing and Route Parameters', difficulty: 'Easy', pattern: 'Express Core', category: 'Express.js', leetcodeUrl: '', estimatedTime: 8, tags: ['Routing', 'REST API', 'Express'], companies: ['Google', 'Amazon', 'Microsoft'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'express-error-handling', title: 'Error Handling Middleware', difficulty: 'Medium', pattern: 'Error Handling', category: 'Express.js', leetcodeUrl: '', estimatedTime: 10, tags: ['Error Handling', 'Middleware', 'Express'], companies: ['Netflix', 'Uber', 'Airbnb'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'express-authentication', title: 'Authentication & Authorization', difficulty: 'Hard', pattern: 'Security', category: 'Express.js', leetcodeUrl: '', estimatedTime: 15, tags: ['Auth', 'JWT', 'Security'], companies: ['Google', 'Amazon', 'Facebook'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'express-validation', title: 'Request Validation', difficulty: 'Medium', pattern: 'Data Validation', category: 'Express.js', leetcodeUrl: '', estimatedTime: 10, tags: ['Validation', 'Middleware', 'Security'], companies: ['Amazon', 'Microsoft', 'Uber'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'express-cors', title: 'CORS Configuration', difficulty: 'Easy', pattern: 'Security', category: 'Express.js', leetcodeUrl: '', estimatedTime: 7, tags: ['CORS', 'Security', 'API'], companies: ['Google', 'Netflix', 'Airbnb'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
 ];

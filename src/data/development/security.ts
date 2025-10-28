@@ -1,4 +1,13 @@
 import { Problem } from '../../types';
 
-export const securityProblems: Problem[] = [];
+export const securityProblems: Problem[] = [
+  { id: 'sec-xss', title: 'Cross-Site Scripting (XSS)', difficulty: 'Medium', pattern: 'Web Security', category: 'Security', leetcodeUrl: '', estimatedTime: 12, tags: ['XSS', 'Security', 'Vulnerabilities'], companies: ['Google', 'Facebook', 'Amazon'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'sec-csrf', title: 'CSRF Protection', difficulty: 'Medium', pattern: 'Web Security', category: 'Security', leetcodeUrl: '', estimatedTime: 10, tags: ['CSRF', 'Tokens', 'Security'], companies: ['Amazon', 'Microsoft', 'Netflix'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'sec-sql-injection', title: 'SQL Injection Prevention', difficulty: 'Medium', pattern: 'Database Security', category: 'Security', leetcodeUrl: '', estimatedTime: 10, tags: ['SQL Injection', 'Security', 'Database'], companies: ['Google', 'Amazon', 'Oracle'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'sec-https-ssl', title: 'HTTPS and SSL/TLS', difficulty: 'Easy', pattern: 'Network Security', category: 'Security', leetcodeUrl: '', estimatedTime: 8, tags: ['HTTPS', 'SSL', 'TLS'], companies: ['Google', 'Amazon', 'Microsoft'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'sec-jwt', title: 'JWT Security Best Practices', difficulty: 'Medium', pattern: 'Authentication', category: 'Security', leetcodeUrl: '', estimatedTime: 12, tags: ['JWT', 'Authentication', 'Security'], companies: ['Google', 'Facebook', 'Uber'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'sec-password-hashing', title: 'Password Hashing (bcrypt, argon2)', difficulty: 'Medium', pattern: 'Authentication', category: 'Security', leetcodeUrl: '', estimatedTime: 10, tags: ['Password', 'Hashing', 'bcrypt'], companies: ['Amazon', 'Microsoft', 'Adobe'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'sec-cors', title: 'CORS Security', difficulty: 'Easy', pattern: 'Web Security', category: 'Security', leetcodeUrl: '', estimatedTime: 8, tags: ['CORS', 'Security', 'API'], companies: ['Google', 'Netflix', 'Airbnb'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } },
+  { id: 'sec-owasp-top10', title: 'OWASP Top 10', difficulty: 'Medium', pattern: 'Web Security', category: 'Security', leetcodeUrl: '', estimatedTime: 15, tags: ['OWASP', 'Security', 'Best Practices'], companies: ['Google', 'Amazon', 'Microsoft'], userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 } }
+];
 

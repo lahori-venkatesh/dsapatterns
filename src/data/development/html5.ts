@@ -1,6 +1,6 @@
 import { Problem } from '../../types';
 
-export const html5Problems: Problem[] = [
+export const html5Problems: Problem[] = 
   {
     id: 'html-basics-1',
     title: 'What is HTML?',
@@ -12,15 +12,7 @@ export const html5Problems: Problem[] = [
 Key Points:
 - Markup language (not programming) - defines structure, not logic
 - Uses tags like <div>, <p>, <h1> to define elements
-
-Web Development Trinity:
-+------------------+
-|      HTML        |  --> Structure (skeleton)
-+------------------+
-|      CSS         |  --> Styling (skin)
-+------------------+
-|   JavaScript     |  --> Behavior (muscles)
-+------------------+
+- HTML = skeleton, CSS = skin, JavaScript = muscles
 
 Example:
 
@@ -47,26 +39,16 @@ Example:
     answer: `Tag = The markup syntax: <p>, </p>
 Element = Complete structure: <p>Content</p>
 
-Visual Breakdown:
+Breaking it down:
 
-    <p>Hello World</p>
-    |__|         |___|
-     |     |       |
-     |     |       +-----> Closing Tag
-     |     +-------------> Content
-     +-------------------> Opening Tag
-    
-    |___________________|
-            |
-            +------------> Complete Element
+<p>Hello</p>
 
+<p>      = Opening tag
+Hello    = Content
+</p>     = Closing tag
+All together = Complete Element
 
-Self-closing Elements (no closing tag needed):
-
-    <img src="photo.jpg" />
-    <br />
-    <input type="text" />
-    <hr />`,
+Self-closing elements: <img />, <br />, <input />`,
     topics: ['HTML', 'Terminology'],
     estimatedTime: 2
   },
@@ -80,23 +62,14 @@ Self-closing Elements (no closing tag needed):
 
 <!DOCTYPE html>   (HTML5 - simple!)
 
-Browser Rendering Modes:
-
-+------------------+     +------------------+
-|   WITHOUT        |     |   WITH           |
-|   DOCTYPE        |     |   DOCTYPE        |
-+------------------+     +------------------+
-|                  |     |                  |
-|   Quirks Mode    |     |  Standards Mode  |
-|   (inconsistent) |     |  (proper)        |
-|                  |     |                  |
-+------------------+     +------------------+
-        X                       ✓
+Why it matters:
+- Without it: Quirks Mode (inconsistent rendering)
+- With it: Standards Mode (proper rendering)
 
 Rules:
-- Must be first line in document
+- Must be first line
 - Case-insensitive (uppercase convention)
-- Not an HTML tag - it's an instruction to browser`,
+- Not an HTML tag - it's an instruction`,
     topics: ['HTML', 'DOCTYPE'],
     estimatedTime: 2
   },
@@ -108,40 +81,15 @@ Rules:
     description: 'Semantic HTML',
     answer: `Semantic tags describe their content's meaning, not just appearance.
 
-Non-Semantic vs Semantic:
+Non-semantic (bad):
+<div id="header"><div class="nav">...</div></div>
 
-  NON-SEMANTIC (bad)          SEMANTIC (good)
-+------------------+      +------------------+
-| <div id="header">|      | <header>         |
-|   <div class=    |      |   <nav>          |
-|    "navigation"> |  VS  |   </nav>         |
-|   </div>         |      | </header>        |
-| </div>           |      |                  |
-+------------------+      +------------------+
-
-
-Page Structure with Semantic Tags:
-
-+--------------------------------+
-|           <header>             |
-|   +------------------------+   |
-|   |         <nav>          |   |
-|   +------------------------+   |
-+--------------------------------+
-|            <main>              |
-|   +----------+ +----------+    |
-|   | <article>| | <aside>  |    |
-|   |          | |          |    |
-|   | <section>| |          |    |
-|   |          | |          |    |
-|   +----------+ +----------+    |
-+--------------------------------+
-|           <footer>             |
-+--------------------------------+
+Semantic (good):
+<header><nav>...</nav></header>
 
 Common Semantic Tags:
 - <header>   Page/section header
-- <nav>      Navigation links
+- <nav>      Navigation
 - <main>     Main content (one per page)
 - <article>  Self-contained content
 - <section>  Thematic grouping
@@ -158,46 +106,29 @@ Benefits: Better SEO, Accessibility, Readability`,
     difficulty: 'Easy',
     category: 'HTML',
     description: 'Element display types',
-    answer: `Block vs Inline Comparison:
-
-BLOCK ELEMENTS:
-+------------------------------------------+
-| <div>Takes full width</div>              |
-+------------------------------------------+
-+------------------------------------------+
-| <p>Each block on new line</p>            |
-+------------------------------------------+
-
-- Full container width
-- Starts on new line
+    answer: `Block Elements:
+- Take full container width
+- Start on new line
 - Can set width/height
-- Examples: div, p, h1, section, header
+- Examples: div, p, h1, section
 
-
-INLINE ELEMENTS:
-
-+------------------------------------------+
-| Text with <span>inline</span> elements   |
-| <a>flow</a> <strong>together</strong>    |
-+------------------------------------------+
-
-- Only content width
-- Stays on same line
+Inline Elements:
+- Take only content width
+- Stay on same line
 - Cannot set width/height
-- Examples: span, a, strong, em, img
+- Examples: span, a, strong, img
 
+Example:
 
-INLINE-BLOCK (hybrid):
+Block (stacks vertically):
+<div>Block 1</div>
+<div>Block 2</div>
 
-+--------+ +--------+ +--------+
-| Box 1  | | Box 2  | | Box 3  |
-+--------+ +--------+ +--------+
+Inline (flows horizontally):
+<span>Inline 1</span><span>Inline 2</span>
 
-- Flows inline (horizontal)
-- BUT can set width/height
-- Best of both worlds
-
-CSS: span { display: inline-block; width: 100px; }`,
+inline-block: Best of both - flows inline but accepts width/height.
+span { display: inline-block; width: 100px; }`,
     topics: ['HTML', 'CSS', 'Layout'],
     estimatedTime: 4
   },
@@ -210,36 +141,19 @@ CSS: span { display: inline-block; width: 100px; }`,
     answer: `Attributes provide extra info about elements.
 Format: name="value"
 
-Anatomy of an Element with Attributes:
-
+Example:
 <a href="https://google.com" target="_blank" title="Google">Link</a>
- |  |___________________|  |____________|  |___________|  |__|
- |           |                   |              |          |
-Tag    Attribute 1          Attribute 2    Attribute 3  Content
+   (href, target, title are attributes)
 
+Global Attributes (work on any element):
+id, class, style, title, hidden, data-*, contenteditable
 
-Attribute Types:
-
-+------------------+----------------------------------+
-| Type             | Examples                         |
-+------------------+----------------------------------+
-| Global           | id, class, style, title, hidden  |
-| (any element)    | data-*, contenteditable          |
-+------------------+----------------------------------+
-| Boolean          | disabled, required, checked      |
-| (no value)       | readonly, autofocus              |
-+------------------+----------------------------------+
-| Custom Data      | data-user-id="123"               |
-|                  | data-role="admin"                |
-+------------------+----------------------------------+
-
-Boolean Attributes:
+Boolean Attributes (no value needed):
 <input disabled required checked readonly>
-       (just name, no ="value" needed)
 
-Custom Data Access in JS:
-<div data-user-id="123">
-element.dataset.userId  -->  "123"`,
+Custom Data Attributes:
+<div data-user-id="123" data-role="admin">
+Access in JS: element.dataset.userId returns "123"`,
     topics: ['HTML', 'Attributes'],
     estimatedTime: 4
   },
@@ -249,45 +163,28 @@ element.dataset.userId  -->  "123"`,
     difficulty: 'Easy',
     category: 'HTML',
     description: 'id vs class attributes',
-    answer: `ID vs Class Comparison:
+    answer: `ID:
+- Unique (one per page)
+- CSS selector: #id
+- Higher specificity (100)
+- One per element
 
-+------------------+------------------+
-|       ID         |      CLASS       |
-+------------------+------------------+
-| Unique           | Reusable         |
-| (one per page)   | (many elements)  |
-+------------------+------------------+
-| #id              | .class           |
-+------------------+------------------+
-| Specificity: 100 | Specificity: 10  |
-+------------------+------------------+
-| One per element  | Multiple allowed |
-+------------------+------------------+
+Class:
+- Reusable (multiple elements)
+- CSS selector: .class
+- Lower specificity (10)
+- Multiple classes per element allowed
 
-
-Visual Example:
-
-     ID (unique)              CLASS (shared)
-         |                         |
-+--------v--------+     +----------v----------+
-|  #main-header   |     | .card  .card  .card |
-|  (only ONE!)    |     | (many elements OK)  |
-+-----------------+     +---------------------+
-
-
-Usage:
+Example:
 <div id="header" class="container dark-theme large">
-         |              |_______|________|
-    one ID only         multiple classes OK
 
-
-CSS Selectors:
-#header { }      --> ID (higher priority)
-.container { }   --> Class (lower priority)
+CSS:
+#header { }      (ID - higher specificity)
+.container { }   (Class - lower specificity)
 
 Best Practice:
-- ID    --> JavaScript targeting, anchor links (#section)
-- Class --> Styling, reusable components`,
+- ID: JavaScript targeting, anchor links
+- Class: Styling, reusable components`,
     topics: ['HTML', 'CSS', 'Attributes'],
     estimatedTime: 4
   },
@@ -299,51 +196,29 @@ Best Practice:
     description: 'HTML forms',
     answer: `Forms collect user input and send to server.
 
-Form Flow:
-
-+-------------+      +-------------+      +-------------+
-|   User      | ---> |   Form      | ---> |   Server    |
-|   Input     |      |   Submit    |      |   Process   |
-+-------------+      +-------------+      +-------------+
-
-
-Form Structure:
-
-+------------------------------------------+
-| <form action="/submit" method="POST">    |
-|                                          |
-|   Label: [__text input__]                |
-|                                          |
-|   Dropdown: [Select v]                   |
-|             | Option 1 |                 |
-|             | Option 2 |                 |
-|                                          |
-|   Message:                               |
-|   +----------------------------------+   |
-|   |        <textarea>                |   |
-|   +----------------------------------+   |
-|                                          |
-|   [  Submit Button  ]                    |
-|                                          |
-+------------------------------------------+
-
+Example:
+<form action="/submit" method="POST">
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required>
+  
+  <select name="country">
+    <option value="us">USA</option>
+    <option value="uk">UK</option>
+  </select>
+  
+  <textarea name="message"></textarea>
+  <button type="submit">Send</button>
+</form>
 
 GET vs POST:
-
-GET:  /search?query=hello&page=1
-      (data visible in URL - for searches)
-
-POST: Data hidden in request body
-      (for passwords, sensitive data)
-
+- GET: Data in URL (searches, filters)
+- POST: Data in body (sensitive data, large payloads)
 
 Input Types:
-text, password, email, number, tel, date,
-checkbox, radio, file, range, color
+text, password, email, number, tel, date, checkbox, radio, file, range, color
 
 Validation Attributes:
-required, minlength, maxlength, min, max,
-pattern, disabled, readonly`,
+required, minlength, maxlength, min, max, pattern, disabled, readonly`,
     topics: ['HTML', 'Forms', 'Validation'],
     estimatedTime: 6
   },
@@ -353,49 +228,28 @@ pattern, disabled, readonly`,
     difficulty: 'Easy',
     category: 'HTML',
     description: 'HTML links',
-    answer: `Link Types Overview:
+    answer: `External Link:
+<a href="https://google.com" target="_blank" rel="noopener noreferrer">Google</a>
 
-+------------------+--------------------------------+
-|    Link Type     |           Example              |
-+------------------+--------------------------------+
-| External         | href="https://google.com"      |
-| Internal         | href="/about"                  |
-| Anchor           | href="#section"                |
-| Email            | href="mailto:hi@example.com"   |
-| Phone            | href="tel:+1234567890"         |
-| Download         | href="/file.pdf" download      |
-+------------------+--------------------------------+
+Internal Link:
+<a href="/about">About</a>
 
+Anchor Link (same page):
+<a href="#section">Jump</a>
+<div id="section">Target</div>
 
-Anchor Links (same page navigation):
+Email Link:
+<a href="mailto:hi@example.com?subject=Hello">Email</a>
 
-+------------------------------------------+
-|  <a href="#contact">Go to Contact</a>    |
-|                  |                       |
-|                  v                       |
-|  ... scrolls down to ...                 |
-|                  |                       |
-|                  v                       |
-|  <section id="contact">                  |
-|     Contact form here                    |
-|  </section>                              |
-+------------------------------------------+
+Phone Link:
+<a href="tel:+1234567890">Call</a>
 
+Download Link:
+<a href="/file.pdf" download>Download</a>
 
-External Link Security:
+Security: Always use rel="noopener noreferrer" with target="_blank"
 
-<a href="https://external.com" 
-   target="_blank" 
-   rel="noopener noreferrer">Link</a>
-        |              |
-        |              +---> Prevents security risks
-        +-------------------> Opens in new tab
-
-Always use rel="noopener noreferrer" with target="_blank"
-
-Accessibility Tip:
-X  <a href="/about">Click here</a>
-✓  <a href="/about">Learn about our company</a>`,
+Accessibility: Use descriptive text, not "click here"`,
     topics: ['HTML', 'Links', 'Navigation'],
     estimatedTime: 4
   },
@@ -405,62 +259,33 @@ X  <a href="/about">Click here</a>
     difficulty: 'Easy',
     category: 'HTML',
     description: 'HTML images',
-    answer: `Basic Image Syntax:
+    answer: `Basic Image:
+<img src="photo.jpg" alt="Beach sunset" width="500" height="300" loading="lazy">
 
-<img src="photo.jpg" alt="Description" width="500" height="300">
-      |              |                  |            |
-      |              |                  +------------+---> Dimensions
-      |              +---> Alt text (required for accessibility)
-      +---> Image source path
-
-
-Image Loading Strategy:
-
-+------------------+     +------------------+
-|  loading="eager" |     |  loading="lazy"  |
-+------------------+     +------------------+
-|  Loads           |     |  Loads only      |
-|  immediately     |     |  when visible    |
-|  (default)       |     |  (better perf)   |
-+------------------+     +------------------+
-
+Required attributes: src, alt (accessibility!)
 
 Responsive Images:
-
-Small Screen        Medium Screen       Large Screen
-+----------+        +-------------+     +----------------+
-|  300px   |        |    600px    |     |     1200px     |
-| small.jpg|        |  medium.jpg |     |   large.jpg    |
-+----------+        +-------------+     +----------------+
-
 <img srcset="small.jpg 300w, medium.jpg 600w, large.jpg 1200w"
      sizes="(max-width: 600px) 300px, 600px"
-     src="medium.jpg" 
-     alt="Responsive image">
+     src="medium.jpg" alt="Responsive">
 
+Multiple Formats (with fallback):
+<picture>
+  <source srcset="image.webp" type="image/webp">
+  <img src="image.jpg" alt="Fallback">
+</picture>
 
-Figure with Caption:
-
-+----------------------------------+
-|         +----------------+       |
-|         |                |       |
-|         |     IMAGE      |       |
-|         |                |       |
-|         +----------------+       |
-|         Caption text here        |
-+----------------------------------+
-
+Image With Caption:
 <figure>
   <img src="chart.jpg" alt="Sales chart">
   <figcaption>Q4 Sales Growth</figcaption>
 </figure>
 
-
 Image Formats:
-- JPEG  --> Photos, lossy compression
-- PNG   --> Transparency, lossless
-- WebP  --> Modern, smaller file size
-- SVG   --> Vectors, infinitely scalable`,
+- JPEG: photos
+- PNG: transparency
+- WebP: modern, smaller size
+- SVG: vectors, scalable`,
     topics: ['HTML', 'Images', 'Performance'],
     estimatedTime: 5
   },
@@ -472,76 +297,34 @@ Image Formats:
     description: 'HTML lists',
     answer: `3 Types of Lists:
 
-1. ORDERED LIST (numbered):
+1. Ordered List (numbered):
+<ol type="1" start="1">
+  <li>First</li>
+  <li>Second</li>
+</ol>
+Types: 1, A, a, I, i
 
-   +-------------------+
-   | 1. First item     |
-   | 2. Second item    |
-   | 3. Third item     |
-   +-------------------+
+2. Unordered List (bullets):
+<ul>
+  <li>Item</li>
+  <li>Item</li>
+</ul>
 
-   <ol>
-     <li>First item</li>
-     <li>Second item</li>
-   </ol>
+3. Description List (term + definition):
+<dl>
+  <dt>HTML</dt>
+  <dd>HyperText Markup Language</dd>
+</dl>
 
-   Type options: 1, A, a, I, i
-   <ol type="A"> --> A, B, C...
-
-
-2. UNORDERED LIST (bullets):
-
-   +-------------------+
-   | * Apple           |
-   | * Banana          |
-   | * Orange          |
-   +-------------------+
-
-   <ul>
-     <li>Apple</li>
-     <li>Banana</li>
-   </ul>
-
-
-3. DESCRIPTION LIST (term + definition):
-
-   +-------------------+
-   | HTML              |
-   |   HyperText       |
-   |   Markup Language |
-   |                   |
-   | CSS               |
-   |   Cascading       |
-   |   Style Sheets    |
-   +-------------------+
-
-   <dl>
-     <dt>HTML</dt>
-     <dd>HyperText Markup Language</dd>
-   </dl>
-
-
-NESTED LISTS:
-
-   +------------------------+
-   | * Frontend             |
-   |   +------------------+ |
-   |   | * HTML           | |
-   |   | * CSS            | |
-   |   | * JavaScript     | |
-   |   +------------------+ |
-   | * Backend             |
-   +------------------------+
-
-   <ul>
-     <li>Frontend
-       <ul>
-         <li>HTML</li>
-         <li>CSS</li>
-       </ul>
-     </li>
-   </ul>
-
+Nested Lists:
+<ul>
+  <li>Frontend
+    <ul>
+      <li>HTML</li>
+      <li>CSS</li>
+    </ul>
+  </li>
+</ul>
 
 CSS Styling:
 list-style-type: none | disc | circle | square`,

@@ -36,8 +36,8 @@ const resumeTemplates: ResumeTemplate[] = [
 ];
 
 export const ResumeLinkedInPage: React.FC<ResumeLinkedInPageProps> = ({ onBack }) => {
-  const [activeTab, setActiveTab] = useState<'guide' | 'templates'>('guide');
-  const [contentTab, setContentTab] = useState<'resume' | 'linkedin'>('resume');
+  const [mainTab, setMainTab] = useState<'resume' | 'linkedin'>('resume');
+  const [resumeSubTab, setResumeSubTab] = useState<'content' | 'templates'>('content');
   const [previewTemplate, setPreviewTemplate] = useState<string | null>(null);
 
   return (
@@ -63,191 +63,225 @@ export const ResumeLinkedInPage: React.FC<ResumeLinkedInPageProps> = ({ onBack }
             </p>
           </div>
 
-          {/* Main Tabs */}
+          {/* Main Tabs - Resume and LinkedIn */}
           <div className="flex gap-2 justify-center">
             <button
-              onClick={() => setActiveTab('guide')}
+              onClick={() => setMainTab('resume')}
               className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                activeTab === 'guide'
+                mainTab === 'resume'
                   ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
                   : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800'
               }`}
             >
               <FileText className="w-5 h-5 inline mr-2" />
-              Complete Guide
+              Resume Building
             </button>
             <button
-              onClick={() => setActiveTab('templates')}
+              onClick={() => setMainTab('linkedin')}
               className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                activeTab === 'templates'
+                mainTab === 'linkedin'
                   ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
                   : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800'
               }`}
             >
-              <Download className="w-5 h-5 inline mr-2" />
-              Resume Templates (2)
+              <Linkedin className="w-5 h-5 inline mr-2" />
+              LinkedIn Optimization
             </button>
           </div>
 
-          {/* Guide Tab */}
-          {activeTab === 'guide' && (
+          {/* Resume Tab */}
+          {mainTab === 'resume' && (
             <>
               {/* Introduction */}
               <div className="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-indigo-500/30">
                 <h3 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
                   <span className="text-3xl">🎯</span>
-                  <span>Why Resume & LinkedIn Matter</span>
+                  <span>Why Your Resume Matters</span>
                 </h3>
                 <div className="space-y-4 text-gray-300">
                   <p className="text-lg leading-relaxed">
-                    Your <strong className="text-white">resume</strong> is your first impression, and your <strong className="text-white">LinkedIn profile</strong> is your ongoing professional brand. Together, they open doors to opportunities.
+                    Your <strong className="text-white">resume</strong> is often the first impression you make on potential employers. An ATS-optimized resume increases your chances of getting interviews by 75%.
                   </p>
                   <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
                     <p className="text-indigo-200 font-medium">
                       <span className="text-xl mr-2">💡</span>
-                      <strong>Key Stats:</strong> 87% of recruiters use LinkedIn to find candidates. An ATS-optimized resume increases your chances by 75%.
+                      <strong>Pro Tip:</strong> Recruiters spend only 6-7 seconds scanning a resume. Make every word count!
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Content Sub-tabs */}
+              {/* Resume Sub-tabs - Content and Templates */}
               <div className="flex gap-2 justify-center">
                 <button
-                  onClick={() => setContentTab('resume')}
+                  onClick={() => setResumeSubTab('content')}
                   className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                    contentTab === 'resume'
+                    resumeSubTab === 'content'
                       ? 'bg-blue-500 text-white shadow-lg'
                       : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                 >
-                  Resume Building
+                  Resume Guide
                 </button>
                 <button
-                  onClick={() => setContentTab('linkedin')}
+                  onClick={() => setResumeSubTab('templates')}
                   className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                    contentTab === 'linkedin'
+                    resumeSubTab === 'templates'
                       ? 'bg-blue-500 text-white shadow-lg'
                       : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                 >
-                  LinkedIn Optimization
+                  <Download className="w-4 h-4 inline mr-2" />
+                  Templates (2)
                 </button>
               </div>
 
-              {/* Content */}
+              {/* Resume Content */}
+              {resumeSubTab === 'content' && (
+                <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50">
+                  <div className="prose prose-invert max-w-none">
+                    {renderMarkdown(resumeLinkedInContent.resume)}
+                  </div>
+                </div>
+              )}
+
+              {/* Resume Templates */}
+              {resumeSubTab === 'templates' && (
+                <>
+                  <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-blue-500/30">
+                    <h3 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
+                      <span className="text-3xl">📋</span>
+                      <span>Professional Resume Templates</span>
+                    </h3>
+                    <p className="text-gray-300 text-lg leading-relaxed">
+                      Download our ATS-friendly resume templates designed specifically for tech roles. Each template is professionally crafted and ready to use.
+                    </p>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {resumeTemplates.map((template) => (
+                      <div
+                        key={template.id}
+                        className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-sm rounded-2xl border border-gray-700/50 overflow-hidden hover:border-gray-600/50 transition-all duration-300"
+                      >
+                        {/* Preview Image */}
+                        <div className="relative h-64 bg-gray-700/50 overflow-hidden group">
+                          <img
+                            src={template.preview}
+                            alt={template.name}
+                            className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
+                          <div className="absolute top-4 right-4">
+                            <button
+                              onClick={() => setPreviewTemplate(template.id)}
+                              className="px-3 py-2 bg-blue-500/90 hover:bg-blue-600 text-white rounded-lg font-medium transition-all text-sm flex items-center gap-2"
+                            >
+                              <Eye className="w-4 h-4" />
+                              Preview
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6">
+                          <h3 className="text-2xl font-bold text-white mb-2">{template.name}</h3>
+                          <p className="text-gray-300 mb-4 leading-relaxed">{template.description}</p>
+
+                          {/* Best For Tags */}
+                          <div className="mb-4">
+                            <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Best For:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {template.bestFor.map((role) => (
+                                <span
+                                  key={role}
+                                  className="px-3 py-1 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-full text-sm"
+                                >
+                                  {role}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Download Button */}
+                          <a
+                            href={template.downloadUrl}
+                            download
+                            className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all shadow-lg hover:shadow-xl"
+                          >
+                            <Download className="w-5 h-5" />
+                            Download Template
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+
+          {/* LinkedIn Tab */}
+          {mainTab === 'linkedin' && (
+            <>
+              {/* Introduction */}
+              <div className="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-indigo-500/30">
+                <h3 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
+                  <span className="text-3xl">🎯</span>
+                  <span>Why LinkedIn Matters</span>
+                </h3>
+                <div className="space-y-4 text-gray-300">
+                  <p className="text-lg leading-relaxed">
+                    Your <strong className="text-white">LinkedIn profile</strong> is your ongoing professional brand. 87% of recruiters use LinkedIn to find candidates, and 6 people are hired every minute through the platform.
+                  </p>
+                  <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
+                    <p className="text-indigo-200 font-medium">
+                      <span className="text-xl mr-2">💡</span>
+                      <strong>Pro Tip:</strong> Profiles with photos receive 21x more profile views and 36x more messages from recruiters.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* LinkedIn Content */}
               <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50">
                 <div className="prose prose-invert max-w-none">
-                  {renderMarkdown(contentTab === 'resume' ? resumeLinkedInContent.resume : resumeLinkedInContent.linkedin)}
+                  {renderMarkdown(resumeLinkedInContent.linkedin)}
                 </div>
               </div>
             </>
           )}
 
-          {/* Templates Tab */}
-          {activeTab === 'templates' && (
-            <>
-              <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-blue-500/30">
-                <h3 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
-                  <span className="text-3xl">📋</span>
-                  <span>Professional Resume Templates</span>
-                </h3>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  Download our ATS-friendly resume templates designed specifically for tech roles. Each template is professionally crafted and ready to use.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8">
-                {resumeTemplates.map((template) => (
-                  <div
-                    key={template.id}
-                    className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-sm rounded-2xl border border-gray-700/50 overflow-hidden hover:border-gray-600/50 transition-all duration-300"
+          {/* Template Preview Modal */}
+          {previewTemplate && (
+            <div
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={() => setPreviewTemplate(null)}
+            >
+              <div
+                className="bg-gray-800 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-2xl font-bold text-white">
+                    {resumeTemplates.find(t => t.id === previewTemplate)?.name}
+                  </h3>
+                  <button
+                    onClick={() => setPreviewTemplate(null)}
+                    className="text-gray-400 hover:text-white text-2xl"
                   >
-                    {/* Preview Image */}
-                    <div className="relative h-64 bg-gray-700/50 overflow-hidden group">
-                      <img
-                        src={template.preview}
-                        alt={template.name}
-                        className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-                      <div className="absolute top-4 right-4">
-                        <button
-                          onClick={() => setPreviewTemplate(template.id)}
-                          className="px-3 py-2 bg-blue-500/90 hover:bg-blue-600 text-white rounded-lg font-medium transition-all text-sm flex items-center gap-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          Preview
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-2">{template.name}</h3>
-                      <p className="text-gray-300 mb-4 leading-relaxed">{template.description}</p>
-
-                      {/* Best For Tags */}
-                      <div className="mb-4">
-                        <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Best For:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {template.bestFor.map((role) => (
-                            <span
-                              key={role}
-                              className="px-3 py-1 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-full text-sm"
-                            >
-                              {role}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Download Button */}
-                      <a
-                        href={template.downloadUrl}
-                        download
-                        className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all shadow-lg hover:shadow-xl"
-                      >
-                        <Download className="w-5 h-5" />
-                        Download Template
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Template Preview Modal */}
-              {previewTemplate && (
-                <div
-                  className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-                  onClick={() => setPreviewTemplate(null)}
-                >
-                  <div
-                    className="bg-gray-800 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-auto"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-2xl font-bold text-white">
-                        {resumeTemplates.find(t => t.id === previewTemplate)?.name}
-                      </h3>
-                      <button
-                        onClick={() => setPreviewTemplate(null)}
-                        className="text-gray-400 hover:text-white text-2xl"
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <div className="bg-white rounded-lg overflow-hidden">
-                      <img
-                        src={resumeTemplates.find(t => t.id === previewTemplate)?.preview}
-                        alt="Template Preview"
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
+                    ×
+                  </button>
                 </div>
-              )}
-            </>
+                <div className="bg-white rounded-lg overflow-hidden">
+                  <img
+                    src={resumeTemplates.find(t => t.id === previewTemplate)?.preview}
+                    alt="Template Preview"
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

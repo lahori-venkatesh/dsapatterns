@@ -114,7 +114,12 @@ export const LanguageMastery: React.FC = () => {
                   </div>
 
                   <div className="text-gray-300 font-semibold text-lg">
-                    {lang.id === 'system-design' ? `${lang.totalProblems} Topics` : `${lang.totalProblems} ${lang.id === 'development-mastery' ? 'Questions' : 'Problems'}`}
+                    {lang.id === 'system-design'
+                      ? `${lang.totalProblems} Topics`
+                      : lang.id === 'resume-linkedin-mastery'
+                      ? 'Complete Guide + Templates'
+                      : `${lang.totalProblems} ${lang.id === 'development-mastery' ? 'Questions' : 'Problems'}`
+                    }
                   </div>
                 </div>
               </button>

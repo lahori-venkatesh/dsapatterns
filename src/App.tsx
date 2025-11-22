@@ -253,9 +253,14 @@ function App() {
 
   if (currentView === 'revision') {
     return (
-      <Suspense fallback={<LoadingFallback />}>
-        <RevisionPage />
-      </Suspense>
+      <>
+        <Suspense fallback={<LoadingFallback />}>
+          <RevisionPage />
+        </Suspense>
+        <Suspense fallback={null}>
+          <LiveEnrollments isPremium={isPaid} />
+        </Suspense>
+      </>
     );
   }
 
@@ -275,6 +280,7 @@ function App() {
             {showPremiumActivationModal && (
               <PremiumActivationModal onClose={() => setShowPremiumActivationModal(false)} />
             )}
+            <LiveEnrollments isPremium={isPaid} />
           </Suspense>
         </div>
       </AppErrorBoundary>
@@ -287,6 +293,9 @@ function App() {
         <Suspense fallback={<LoadingFallback />}>
           <BigONotationPage onBack={() => setShowBigOPage(false)} />
         </Suspense>
+        <Suspense fallback={null}>
+          <LiveEnrollments isPremium={isPaid} />
+        </Suspense>
       </AppErrorBoundary>
     );
   }
@@ -296,6 +305,9 @@ function App() {
       <AppErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <DSAMasteryPage onBack={() => useAppStore.getState().setCurrentView('dashboard')} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <LiveEnrollments isPremium={isPaid} />
         </Suspense>
       </AppErrorBoundary>
     );

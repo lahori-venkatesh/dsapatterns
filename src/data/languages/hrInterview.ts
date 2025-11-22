@@ -5,9 +5,9 @@ export const hrInterviewMastery: LanguageMastery = {
   language: 'HR Interview',
   name: 'HR Interview Questions',
   icon: 'Brain',
-  description: 'Master HR interviews with commonly asked questions and perfect answers for freshers',
+  description: 'Master the HR interview with detailed answers to commonly asked questions',
   color: 'from-pink-500 to-rose-600',
-  totalProblems: 1,
+  totalProblems: 10,
   completedProblems: 0,
   problems: [
     {

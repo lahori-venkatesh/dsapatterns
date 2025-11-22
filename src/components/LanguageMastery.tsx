@@ -6,6 +6,7 @@ import { useAppStore } from '../store';
 import { renderMarkdown } from '../utils/markdownRenderer';
 import { ResumeLinkedInPage } from './ResumeLinkedInPage';
 import { SystemDesignPage } from './SystemDesignPage';
+import { HRInterviewPage } from './HRInterviewPage';
 
 const iconMap = {
   Coffee: Coffee,
@@ -28,6 +29,7 @@ export const LanguageMastery: React.FC = () => {
   const [expandedAnswers, setExpandedAnswers] = useState<Set<string>>(new Set());
   const [showResumeLinkedInPage, setShowResumeLinkedInPage] = useState(false);
   const [showSystemDesignPage, setShowSystemDesignPage] = useState(false);
+  const [showHRInterviewPage, setShowHRInterviewPage] = useState(false);
 
   React.useEffect(() => {
     if (selectedLanguageId) {
@@ -64,6 +66,10 @@ export const LanguageMastery: React.FC = () => {
     return <SystemDesignPage onBack={() => setShowSystemDesignPage(false)} />;
   }
 
+  if (showHRInterviewPage) {
+    return <HRInterviewPage onBack={() => setShowHRInterviewPage(false)} />;
+  }
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
@@ -85,6 +91,8 @@ export const LanguageMastery: React.FC = () => {
                     setShowResumeLinkedInPage(true);
                   } else if (lang.id === 'system-design') {
                     setShowSystemDesignPage(true);
+                  } else if (lang.id === 'hr-interview-mastery') {
+                    setShowHRInterviewPage(true);
                   } else {
                     setSelectedLanguage(lang.id);
                   }
@@ -101,23 +109,27 @@ export const LanguageMastery: React.FC = () => {
                   <h3 className="text-2xl font-bold text-white mb-3">{lang.name}</h3>
                   <p className="text-gray-400 text-sm mb-6 leading-relaxed">{lang.description}</p>
 
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="px-3 py-1.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-sm font-medium">
-                      {easy.length} Easy
+                  {lang.id !== 'hr-interview-mastery' && lang.id !== 'resume-linkedin-mastery' && lang.id !== 'system-design' && (
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="px-3 py-1.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-sm font-medium">
+                        {easy.length} Easy
+                      </div>
+                      <div className="px-3 py-1.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-sm font-medium">
+                        {medium.length} Medium
+                      </div>
+                      <div className="px-3 py-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-full text-sm font-medium">
+                        {hard.length} Hard
+                      </div>
                     </div>
-                    <div className="px-3 py-1.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-sm font-medium">
-                      {medium.length} Medium
-                    </div>
-                    <div className="px-3 py-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-full text-sm font-medium">
-                      {hard.length} Hard
-                    </div>
-                  </div>
+                  )}
 
                   <div className="text-gray-300 font-semibold text-lg">
                     {lang.id === 'system-design'
                       ? `${lang.totalProblems} Topics`
                       : lang.id === 'resume-linkedin-mastery'
                       ? 'Complete Guide + Templates'
+                      : lang.id === 'hr-interview-mastery'
+                      ? 'Master HR Questions'
                       : `${lang.totalProblems} ${lang.id === 'development-mastery' ? 'Questions' : 'Problems'}`
                     }
                   </div>

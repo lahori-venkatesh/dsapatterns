@@ -114,7 +114,7 @@ export const LanguageMastery: React.FC = () => {
                   </div>
 
                   <div className="text-gray-300 font-semibold text-lg">
-                    {lang.totalProblems} Problems
+                    {lang.totalProblems} {lang.id === 'development-mastery' ? 'Questions' : 'Problems'}
                   </div>
                 </div>
               </button>
@@ -246,7 +246,7 @@ export const LanguageMastery: React.FC = () => {
                   <div key={difficulty} className="mb-8">
                     <div className="flex items-center gap-3 mb-4">
                       <h3 className={`text-2xl font-bold ${colors.text}`}>{difficulty}</h3>
-                      <span className="text-gray-400 text-lg">({problems.length} problems)</span>
+                      <span className="text-gray-400 text-lg">({problems.length} {selectedLang.id === 'development-mastery' ? 'questions' : 'problems'})</span>
                     </div>
 
                     <div className="space-y-3">

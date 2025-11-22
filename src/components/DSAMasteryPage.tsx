@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useState } from 'react';
 import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal, Flame, BarChart3 } from 'lucide-react';
 import { Header } from './Header';
 import { useAppStore } from '../store';
-import { javaMastery, pythonMastery, cppMastery } from '../data/categories';
+import { javaMastery, pythonMastery, cppMastery, javascriptMastery } from '../data/categories';
 import type { LanguageMastery } from '../types';
 
 const LevelSelector = lazy(() => import('./LevelSelector').then(m => ({ default: m.LevelSelector })));
@@ -137,6 +137,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
                 {selectedLanguage.id === 'java-mastery' && <Coffee className="w-12 h-12 text-orange-400" />}
                 {selectedLanguage.id === 'python-mastery' && <Code2 className="w-12 h-12 text-blue-400" />}
                 {selectedLanguage.id === 'cpp-mastery' && <Terminal className="w-12 h-12 text-purple-400" />}
+                {selectedLanguage.id === 'javascript-mastery' && <Code2 className="w-12 h-12 text-yellow-400" />}
                 <div>
                   <h2 className="text-3xl font-bold text-white">{selectedLanguage.name}</h2>
                   <p className="text-gray-300">{selectedLanguage.description}</p>
@@ -331,7 +332,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
               {/* Java Card */}
               <div
                 onClick={() => setSelectedLanguage(javaMastery)}
@@ -392,6 +393,27 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-purple-400 font-medium">Click to learn →</span>
                   <div className="text-xs text-gray-500">{cppMastery.completedProblems}/{cppMastery.totalProblems} done</div>
+                </div>
+              </div>
+
+              {/* JavaScript Card */}
+              <div
+                onClick={() => setSelectedLanguage(javascriptMastery)}
+                className="bg-gradient-to-br from-yellow-500/10 to-amber-500/10 border border-yellow-500/30 rounded-xl p-6 hover:border-yellow-500/60 transition-all duration-300 cursor-pointer group"
+              >
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="p-3 bg-yellow-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                    <Code2 className="w-6 h-6 text-yellow-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white">{javascriptMastery.language}</h4>
+                    <p className="text-sm text-gray-400">{javascriptMastery.totalProblems} problems</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 mb-4">{javascriptMastery.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-yellow-400 font-medium">Click to learn →</span>
+                  <div className="text-xs text-gray-500">{javascriptMastery.completedProblems}/{javascriptMastery.totalProblems} done</div>
                 </div>
               </div>
             </div>

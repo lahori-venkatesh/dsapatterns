@@ -22,3 +22,4 @@ export { backtrackingCategory } from './backtracking';
 export { javaMastery } from './java';
 export { pythonMastery } from './python';
 export { cppMastery } from './cpp';
+export { javascriptMastery } from './javascript';

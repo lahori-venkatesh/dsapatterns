@@ -1,6 +1,20 @@
 import React from 'react';
 
 export const renderMarkdown = (markdown: string): JSX.Element => {
+  // If content contains HTML tags, render as HTML
+  if (markdown.includes('<h1>') || markdown.includes('<h2>') || markdown.includes('<h3>') ||
+      markdown.includes('<div') || markdown.includes('<table') || markdown.includes('<pre')) {
+    return (
+      <div
+        className="html-content"
+        dangerouslySetInnerHTML={{ __html: markdown }}
+        style={{
+          color: '#e5e7eb',
+          lineHeight: '1.6'
+        }}
+      />
+    );
+  }
   const lines = markdown.split('\n');
   const elements: JSX.Element[] = [];
   let currentList: any[] = [];

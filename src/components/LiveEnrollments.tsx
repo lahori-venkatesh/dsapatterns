@@ -9,16 +9,16 @@ interface Enrollment {
 }
 
 const MOCK_ENROLLMENTS: Enrollment[] = [
-  { id: '1', name: 'Raj K.', country: 'India', timestamp: Date.now() - 120000 },
-  { id: '2', name: 'Sarah M.', country: 'USA', timestamp: Date.now() - 180000 },
-  { id: '3', name: 'Ahmed S.', country: 'UAE', timestamp: Date.now() - 240000 },
-  { id: '4', name: 'Priya R.', country: 'India', timestamp: Date.now() - 300000 },
-  { id: '5', name: 'David L.', country: 'UK', timestamp: Date.now() - 360000 },
-  { id: '6', name: 'Maria G.', country: 'Brazil', timestamp: Date.now() - 420000 },
-  { id: '7', name: 'Yuki T.', country: 'Japan', timestamp: Date.now() - 480000 },
-  { id: '8', name: 'Chen W.', country: 'China', timestamp: Date.now() - 540000 },
-  { id: '9', name: 'Emma B.', country: 'Canada', timestamp: Date.now() - 600000 },
-  { id: '10', name: 'Luis P.', country: 'Mexico', timestamp: Date.now() - 660000 },
+  { id: '1', name: 'Raj Kumar', country: 'India', timestamp: Date.now() - 120000 },
+  { id: '2', name: 'Priya Sharma', country: 'India', timestamp: Date.now() - 180000 },
+  { id: '3', name: 'Amit Patel', country: 'India', timestamp: Date.now() - 240000 },
+  { id: '4', name: 'Sneha Reddy', country: 'India', timestamp: Date.now() - 300000 },
+  { id: '5', name: 'Vikram Singh', country: 'India', timestamp: Date.now() - 360000 },
+  { id: '6', name: 'Anjali Gupta', country: 'India', timestamp: Date.now() - 420000 },
+  { id: '7', name: 'Rahul Verma', country: 'India', timestamp: Date.now() - 480000 },
+  { id: '8', name: 'Neha Kapoor', country: 'India', timestamp: Date.now() - 540000 },
+  { id: '9', name: 'Arjun Desai', country: 'India', timestamp: Date.now() - 600000 },
+  { id: '10', name: 'Pooja Iyer', country: 'India', timestamp: Date.now() - 660000 },
 ];
 
 export const LiveEnrollments: React.FC<{ isPremium: boolean }> = ({ isPremium }) => {
@@ -98,52 +98,46 @@ export const LiveEnrollments: React.FC<{ isPremium: boolean }> = ({ isPremium })
 
   return (
     <div
-      className={`fixed bottom-6 left-6 z-50 transition-all duration-500 transform ${
+      className={`fixed bottom-4 left-4 z-50 transition-all duration-500 transform ${
         isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
       }`}
-      style={{ maxWidth: '400px' }}
+      style={{ maxWidth: '320px' }}
     >
-      <div className="bg-gradient-to-r from-emerald-500/95 to-teal-600/95 backdrop-blur-md border border-emerald-400/30 rounded-2xl shadow-2xl">
-        <div className="relative p-4">
+      <div className="bg-gradient-to-r from-emerald-500/95 to-teal-600/95 backdrop-blur-md border border-emerald-400/30 rounded-xl shadow-2xl">
+        <div className="relative p-3">
           <button
             onClick={handleClose}
-            className="absolute top-2 right-2 p-1 hover:bg-white/20 rounded-full transition-colors"
+            className="absolute top-1.5 right-1.5 p-0.5 hover:bg-white/20 rounded-full transition-colors"
             aria-label="Close notification"
           >
-            <X className="w-4 h-4 text-white" />
+            <X className="w-3.5 h-3.5 text-white" />
           </button>
 
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
-              <Sparkles className="w-5 h-5 text-white" />
+          <div className="flex items-start gap-2.5">
+            <div className="flex-shrink-0 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
 
-            <div className="flex-1 pr-6">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-white font-bold text-base">
+            <div className="flex-1 pr-5">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-white font-bold text-sm">
                   {currentEnrollment.name}
                 </span>
-                <span className="text-emerald-100 text-sm">from {currentEnrollment.country}</span>
+                <span className="text-emerald-100 text-xs">from {currentEnrollment.country}</span>
               </div>
 
-              <p className="text-white text-sm font-medium mb-1">
-                just upgraded to <span className="font-bold">Lifetime Premium!</span>
+              <p className="text-white text-xs font-medium mb-0.5">
+                upgraded to <span className="font-bold">Premium!</span>
               </p>
 
-              <p className="text-emerald-100 text-xs">
+              <p className="text-emerald-100 text-[11px]">
                 {getTimeAgo(currentEnrollment.timestamp)}
               </p>
             </div>
           </div>
-
-          <div className="mt-3 pt-3 border-t border-white/20">
-            <p className="text-white/90 text-xs text-center font-medium">
-              Join {enrollments.length}+ users with lifetime access
-            </p>
-          </div>
         </div>
 
-        <div className="h-1 bg-white/20 rounded-b-2xl overflow-hidden">
+        <div className="h-0.5 bg-white/20 rounded-b-xl overflow-hidden">
           <div
             className="h-full bg-white"
             style={{

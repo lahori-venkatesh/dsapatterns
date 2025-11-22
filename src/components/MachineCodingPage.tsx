@@ -222,66 +222,77 @@ const machineCodingProblems: MachineCodingProblem[] = [
 ];
 
 const guideContent = `
-# 🚀 Complete Machine Coding Round Preparation Guide
+COMPLETE MACHINE CODING ROUND PREPARATION GUIDE
 
-## 🎯 What is Machine Coding Round?
+WHAT IS MACHINE CODING ROUND?
 
-Machine Coding is a **hands-on coding interview** where you build a **working application** from scratch in **90-120 minutes**. Unlike DSA rounds, here you demonstrate your **software engineering skills**.
+Machine Coding is a hands-on coding interview where you build a working application from scratch in 90-120 minutes. Unlike DSA rounds, here you demonstrate your software engineering skills.
 
-### Key Characteristics:
-- ⏱️ **Duration**: 90-120 minutes
-- 💻 **Format**: Live coding on your machine or shared screen
-- 🎯 **Goal**: Build a functional application with clean code
-- 📝 **Evaluation**: Code quality, design patterns, working demo
-- 🛠️ **Tools**: Any IDE, any programming language (usually Java/Python/JavaScript)
+KEY CHARACTERISTICS:
 
----
+Duration: 90-120 minutes
+Format: Live coding on your machine or shared screen
+Goal: Build a functional application with clean code
+Evaluation: Code quality, design patterns, working demo
+Tools: Any IDE, any programming language (usually Java/Python/JavaScript)
 
-## 🧭 How to Approach Machine Coding Problems
+Companies that conduct Machine Coding: Flipkart, Amazon, Uber, Swiggy, Walmart, Atlassian, PhonePe, Razorpay, Dream11, BookMyShow
 
-### **Phase 1: Understanding Requirements (5-10 minutes)**
 
-#### Ask Clarifying Questions
+HOW TO APPROACH MACHINE CODING PROBLEMS
 
-1. **"What are the core features I MUST implement?"**
-2. **"Should I handle authentication/authorization?"** (Usually NO)
-3. **"Do you need a database or in-memory storage is fine?"**
-4. **"Should I write test cases?"**
-5. **"Can I use any external libraries?"**
-6. **"Should I implement a UI or CLI is fine?"**
+PHASE 1: UNDERSTANDING REQUIREMENTS (5-10 minutes)
 
----
+Ask these clarifying questions to the interviewer:
 
-### **Phase 2: Design (10-15 minutes)**
+1. "What are the core features I MUST implement?"
+2. "Should I handle authentication/authorization?" (Usually NO)
+3. "Do you need a database or in-memory storage is fine?"
+4. "Should I write test cases?"
+5. "Can I use any external libraries?"
+6. "Should I implement a UI or CLI is fine?"
+7. "What's more important: working demo or perfect code?"
 
-#### Step 1: Identify Core Entities
-Example for **Parking Lot**:
+Confirm scope with the interviewer:
+- List features you will implement
+- List features you won't implement as they're nice-to-have
+
+
+PHASE 2: DESIGN (10-15 minutes)
+
+Step 1: Identify Core Entities
+
+Example for Parking Lot:
 - ParkingLot
 - Floor
 - ParkingSpot
 - Vehicle (Car, Bike, Truck)
 - Ticket
 
-#### Step 2: Define Relationships
+Step 2: Define Relationships
+
 - ParkingLot HAS multiple Floors
 - Floor HAS multiple ParkingSpots
 - ParkingSpot CAN have one Vehicle
 - Ticket is issued when Vehicle enters
 
-#### Step 3: Identify Key Operations
+Step 3: Identify Key Operations
+
 - parkVehicle()
 - unparkVehicle()
 - getAvailableSpots()
 - calculateFee()
 
----
 
-### **Phase 3: Implementation (50-70 minutes)**
+PHASE 3: IMPLEMENTATION (50-70 minutes)
 
-#### Best Practices:
+Best Practices:
 
-**1. Start with Models/Entities**
-\`\`\`java
+1. Start with Models/Entities
+
+Create simple classes for your core entities first.
+
+Example:
 class Vehicle {
     String vehicleNumber;
     VehicleType type;
@@ -292,29 +303,27 @@ class ParkingSpot {
     VehicleType type;
     boolean isAvailable;
 }
-\`\`\`
 
-**2. Implement Core Logic**
+2. Implement Core Logic
 - Focus on main functionality first
 - Use clean, readable code
 - Follow SOLID principles
 
-**3. Use Design Patterns**
-- **Singleton**: For ParkingLot (one instance)
-- **Factory**: For creating vehicles
-- **Strategy**: For different payment methods
+3. Use Design Patterns (if needed)
+- Singleton: For ParkingLot (one instance)
+- Factory: For creating vehicles
+- Strategy: For different payment methods
 
-**4. Handle Edge Cases**
+4. Handle Edge Cases
 - Null checks
 - Full parking lot
 - Invalid inputs
 
----
 
-### **Phase 4: Testing & Demo (15-20 minutes)**
+PHASE 4: TESTING AND DEMO (15-20 minutes)
 
-#### Create a Driver Class
-\`\`\`java
+Create a Driver Class to test your application:
+
 public class Main {
     public static void main(String[] args) {
         // Test Case 1: Park a car
@@ -322,160 +331,150 @@ public class Main {
         // Test Case 3: Unpark and calculate fee
     }
 }
-\`\`\`
 
-#### Demo Flow:
+Demo Flow:
 1. Show the working application
 2. Explain your design decisions
 3. Walk through the code structure
 4. Demonstrate edge case handling
 
----
 
-## 🎨 Code Quality Checklist
+CODE QUALITY CHECKLIST
 
-### ✅ Must-Have:
-- [ ] Working functionality (most important!)
-- [ ] Clean, readable code
-- [ ] Proper naming conventions
-- [ ] Separation of concerns (don't put everything in one class)
-- [ ] Basic error handling
+Must-Have:
+- Working functionality (most important!)
+- Clean, readable code
+- Proper naming conventions
+- Separation of concerns (don't put everything in one class)
+- Basic error handling
 
-### 🌟 Good-to-Have:
-- [ ] Design patterns used appropriately
-- [ ] SOLID principles followed
-- [ ] Comments for complex logic
-- [ ] Edge cases handled
-- [ ] Extensible design
+Good-to-Have:
+- Design patterns used appropriately
+- SOLID principles followed
+- Comments for complex logic
+- Edge cases handled
+- Extensible design
 
-### ⚠️ Avoid:
-- ❌ Hardcoded values (use constants)
-- ❌ God classes (classes doing too much)
-- ❌ Copy-paste code
-- ❌ Poor naming (x, temp, data)
-- ❌ No separation between logic and data
+Avoid:
+- Hardcoded values (use constants)
+- God classes (classes doing too much)
+- Copy-paste code
+- Poor naming (x, temp, data)
+- No separation between logic and data
 
----
 
-## 🚫 Common Mistakes to Avoid
+COMMON MISTAKES TO AVOID
 
-### 1. Overengineering
-❌ **Don't**: Try to implement every design pattern
-✅ **Do**: Keep it simple and functional
+1. Overengineering
+Don't: Try to implement every design pattern
+Do: Keep it simple and functional
 
-### 2. Spending Too Much Time on Design
-❌ **Don't**: Spend 45 minutes designing on paper
-✅ **Do**: Quick 10-15 min design, then start coding
+2. Spending Too Much Time on Design
+Don't: Spend 45 minutes designing on paper
+Do: Quick 10-15 min design, then start coding
 
-### 3. Not Testing During Implementation
-❌ **Don't**: Code for 90 minutes without testing
-✅ **Do**: Test core functionality as you build
+3. Not Testing During Implementation
+Don't: Code for 90 minutes without testing
+Do: Test core functionality as you build
 
-### 4. Ignoring Edge Cases
-❌ **Don't**: Assume happy path only
-✅ **Do**: Handle null, empty, invalid inputs
+4. Ignoring Edge Cases
+Don't: Assume happy path only
+Do: Handle null, empty, invalid inputs
 
-### 5. No Demo at the End
-❌ **Don't**: Just say "it should work"
-✅ **Do**: Actually run and demonstrate it working
+5. No Demo at the End
+Don't: Just say "it should work"
+Do: Actually run and demonstrate it working
 
----
 
-## ⏰ Time Management Strategy
+TIME MANAGEMENT STRATEGY
 
-**Total Time: 90-120 minutes**
+Total Time: 90-120 minutes
 
-| Phase | Time | Activities |
-|-------|------|-----------|
-| **Understanding** | 5-10 mins | Read problem, ask questions, clarify scope |
-| **Design** | 10-15 mins | Identify entities, relationships, operations |
-| **Implementation** | 50-70 mins | Code models, services, main logic |
-| **Testing & Demo** | 15-20 mins | Test, fix bugs, prepare demo |
-| **Buffer** | 10 mins | Handle unexpected issues |
+Understanding (5-10 mins): Read problem, ask questions, clarify scope
+Design (10-15 mins): Identify entities, relationships, operations
+Implementation (50-70 mins): Code models, services, main logic
+Testing and Demo (15-20 mins): Test, fix bugs, prepare demo
+Buffer (10 mins): Handle unexpected issues
 
----
 
-## 💡 Pro Tips
+PRO TIPS
 
-### Before the Interview:
-- ✅ Practice 5-10 problems end-to-end
-- ✅ Have a template project setup ready
-- ✅ Know your favorite language/framework well
-- ✅ Set up IDE shortcuts
+Before the Interview:
+- Practice 5-10 problems end-to-end
+- Have a template project setup ready
+- Know your favorite language/framework well
+- Set up IDE shortcuts
 
-### During the Interview:
-- ✅ Think aloud - communicate your approach
-- ✅ Prioritize working code over perfect code
-- ✅ Ask for hints if completely stuck
-- ✅ Stay calm if you make mistakes
+During the Interview:
+- Think aloud - communicate your approach
+- Prioritize working code over perfect code
+- Ask for hints if completely stuck
+- Stay calm if you make mistakes
 
-### What Interviewers Look For:
-1. **Problem-solving approach** - Do you break down problems well?
-2. **Code organization** - Is your code structured and maintainable?
-3. **Design thinking** - Do you consider extensibility?
-4. **Communication** - Can you explain your decisions?
-5. **Execution** - Can you deliver a working solution in time?
+What Interviewers Look For:
+1. Problem-solving approach - Do you break down problems well?
+2. Code organization - Is your code structured and maintainable?
+3. Design thinking - Do you consider extensibility?
+4. Communication - Can you explain your decisions?
+5. Execution - Can you deliver a working solution in time?
 
----
 
-## 🎓 How to Practice
+HOW TO PRACTICE
 
-### Week 1-2: Fundamentals
+Week 1-2: Fundamentals
 - Learn OOP concepts thoroughly
 - Understand basic design patterns (Singleton, Factory, Strategy)
 - Practice writing clean code
 
-### Week 3-4: Easy Problems
+Week 3-4: Easy Problems
 - Tic-Tac-Toe
 - Snake and Ladder
 - Vending Machine
 
-### Week 5-6: Medium Problems
+Week 5-6: Medium Problems
 - Parking Lot
 - Library Management
 - ATM System
 
-### Week 7-8: Hard Problems
+Week 7-8: Hard Problems
 - Splitwise
 - Movie Ticket Booking
 - Elevator System
 
-### Practice Approach:
-1. **Set a timer** (90 minutes)
-2. **No googling** during the timer
-3. **Build from scratch** - don't look at solutions
-4. **Review solutions** after attempting
-5. **Refactor** your code comparing with best practices
+Practice Approach:
+1. Set a timer (90 minutes)
+2. No googling during the timer
+3. Build from scratch - don't look at solutions
+4. Review solutions after attempting
+5. Refactor your code comparing with best practices
 
----
 
-## 📚 Recommended Resources
+RECOMMENDED RESOURCES
 
-### GitHub Repositories:
-- **Awesome Low-Level Design** - Complete solutions in Java/Python
+GitHub Repositories:
+- Awesome Low-Level Design - Complete solutions in Java/Python
 - Practice problems with detailed explanations
 - Real interview questions from top companies
 
-### Key Focus Areas:
+Key Focus Areas:
 - Object-Oriented Design
 - Design Patterns
 - SOLID Principles
 - Code Organization
 - Clean Code Practices
 
----
 
-## 🎯 Final Checklist Before Interview
+FINAL CHECKLIST BEFORE INTERVIEW
 
-- [ ] IDE setup with favorite shortcuts
-- [ ] Know your language/framework inside out
-- [ ] Practiced 5+ problems end-to-end
-- [ ] Can explain design patterns clearly
-- [ ] Confident with object modeling
-- [ ] Ready to think aloud during coding
-- [ ] Prepared questions to ask interviewer
+- IDE setup with favorite shortcuts
+- Know your language/framework inside out
+- Practiced 5+ problems end-to-end
+- Can explain design patterns clearly
+- Confident with object modeling
+- Ready to think aloud during coding
+- Prepared questions to ask interviewer
 
-**Remember**: Machine coding tests your ability to build real software. Focus on writing clean, working code that demonstrates good engineering practices. You've got this! 💪
+Remember: Machine coding tests your ability to build real software. Focus on writing clean, working code that demonstrates good engineering practices. Stay calm and confident!
 `;
 
 export const MachineCodingPage: React.FC<MachineCodingPageProps> = ({ onBack }) => {
@@ -537,77 +536,62 @@ export const MachineCodingPage: React.FC<MachineCodingPageProps> = ({ onBack }) 
           {/* Guide Tab */}
           {activeTab === 'guide' && (
             <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50">
-              <div className="prose prose-invert max-w-none">
+              <div className="max-w-none space-y-4">
                 {guideContent.split('\n\n').map((paragraph, idx) => {
-                  if (paragraph.startsWith('# ')) {
+                  const trimmed = paragraph.trim();
+
+                  // Skip empty paragraphs
+                  if (!trimmed) return null;
+
+                  // Main headings (all caps at start of sections)
+                  if (trimmed === trimmed.toUpperCase() && trimmed.length > 20 && !trimmed.includes(':')) {
                     return (
-                      <h1 key={idx} className="text-3xl font-bold text-white mb-6 mt-8">
-                        {paragraph.replace('# ', '')}
-                      </h1>
-                    );
-                  }
-                  if (paragraph.startsWith('## ')) {
-                    return (
-                      <h2 key={idx} className="text-2xl font-bold text-purple-400 mb-4 mt-6">
-                        {paragraph.replace('## ', '')}
+                      <h2 key={idx} className="text-2xl font-bold text-white mb-4 mt-8 border-b border-gray-700 pb-2">
+                        {trimmed}
                       </h2>
                     );
                   }
-                  if (paragraph.startsWith('### ')) {
+
+                  // Section headings (shorter all caps or ending with :)
+                  if ((trimmed === trimmed.toUpperCase() && trimmed.length <= 50) || trimmed.endsWith(':')) {
                     return (
-                      <h3 key={idx} className="text-xl font-bold text-pink-400 mb-3 mt-4">
-                        {paragraph.replace('### ', '')}
+                      <h3 key={idx} className="text-lg font-semibold text-gray-200 mb-3 mt-6">
+                        {trimmed}
                       </h3>
                     );
                   }
-                  if (paragraph.startsWith('#### ')) {
+
+                  // Numbered lists
+                  if (/^\d+\./.test(trimmed)) {
                     return (
-                      <h4 key={idx} className="text-lg font-semibold text-gray-200 mb-2 mt-3">
-                        {paragraph.replace('#### ', '')}
-                      </h4>
-                    );
-                  }
-                  if (paragraph.includes('```')) {
-                    const code = paragraph.replace(/```\w*\n?/g, '');
-                    return (
-                      <pre key={idx} className="bg-gray-900/80 border border-gray-700 rounded-lg p-4 overflow-x-auto mb-4">
-                        <code className="text-gray-300 text-sm">{code}</code>
-                      </pre>
-                    );
-                  }
-                  if (paragraph.startsWith('- ') || paragraph.startsWith('• ')) {
-                    return (
-                      <p key={idx} className="text-gray-300 ml-4 mb-2">
-                        {paragraph}
+                      <p key={idx} className="text-gray-300 ml-4 mb-2 leading-relaxed">
+                        {trimmed}
                       </p>
                     );
                   }
-                  if (paragraph.startsWith('| ')) {
+
+                  // Bullet points
+                  if (trimmed.startsWith('-')) {
                     return (
-                      <div key={idx} className="overflow-x-auto mb-4">
-                        <table className="min-w-full border border-gray-700">
-                          <tbody>
-                            {paragraph.split('\n').map((row, rowIdx) => {
-                              if (row.includes('---')) return null;
-                              const cells = row.split('|').filter(cell => cell.trim());
-                              return (
-                                <tr key={rowIdx} className={rowIdx === 0 ? 'bg-gray-800' : 'bg-gray-900/50'}>
-                                  {cells.map((cell, cellIdx) => (
-                                    <td key={cellIdx} className="border border-gray-700 px-4 py-2 text-gray-300">
-                                      {cell.trim()}
-                                    </td>
-                                  ))}
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
+                      <p key={idx} className="text-gray-300 ml-6 mb-2 leading-relaxed">
+                        {trimmed}
+                      </p>
                     );
                   }
+
+                  // Code blocks (simple detection)
+                  if (trimmed.includes('class ') || trimmed.includes('public ') || trimmed.includes('{') && trimmed.includes('}')) {
+                    return (
+                      <pre key={idx} className="bg-gray-900/80 border border-gray-700 rounded-lg p-4 overflow-x-auto mb-4">
+                        <code className="text-gray-300 text-sm font-mono">{trimmed}</code>
+                      </pre>
+                    );
+                  }
+
+                  // Regular paragraphs
                   return (
-                    <p key={idx} className="text-gray-300 leading-relaxed mb-4">
-                      {paragraph}
+                    <p key={idx} className="text-gray-300 leading-relaxed mb-3">
+                      {trimmed}
                     </p>
                   );
                 })}
@@ -618,7 +602,7 @@ export const MachineCodingPage: React.FC<MachineCodingPageProps> = ({ onBack }) 
           {/* Problems Tab */}
           {activeTab === 'problems' && (
             <>
-              <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-purple-500/30">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-gray-700/50">
                 <h3 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
                   <Github className="w-8 h-8" />
                   <span>Practice Problems with GitHub Solutions</span>
@@ -640,7 +624,7 @@ export const MachineCodingPage: React.FC<MachineCodingPageProps> = ({ onBack }) 
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-4 mb-2">
-                          <h3 className="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">
+                          <h3 className="text-xl font-semibold text-white">
                             {problem.title}
                           </h3>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -662,7 +646,7 @@ export const MachineCodingPage: React.FC<MachineCodingPageProps> = ({ onBack }) 
                           {problem.companies.map((company) => (
                             <span
                               key={company}
-                              className="text-xs px-2 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded border border-purple-500/30"
+                              className="text-xs px-2 py-1 bg-gray-700/50 text-gray-300 rounded border border-gray-600/30"
                             >
                               {company}
                             </span>
@@ -686,7 +670,7 @@ export const MachineCodingPage: React.FC<MachineCodingPageProps> = ({ onBack }) 
                             <ul className="space-y-2">
                               {problem.features.map((feature, idx) => (
                                 <li key={idx} className="flex items-start gap-2 text-gray-300">
-                                  <span className="text-purple-400 mt-1">✓</span>
+                                  <span className="text-blue-400 mt-1">✓</span>
                                   <span>{feature}</span>
                                 </li>
                               ))}
@@ -698,7 +682,7 @@ export const MachineCodingPage: React.FC<MachineCodingPageProps> = ({ onBack }) 
                               href={problem.githubUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-xl font-medium transition-all shadow-lg hover:shadow-xl"
+                              className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all"
                             >
                               <Github className="w-5 h-5" />
                               View Solution on GitHub
@@ -706,9 +690,9 @@ export const MachineCodingPage: React.FC<MachineCodingPageProps> = ({ onBack }) 
                             </a>
                           </div>
 
-                          <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
-                            <p className="text-purple-200 text-sm">
-                              <strong>💡 Pro Tip:</strong> Try implementing this yourself first! Set a timer for {problem.duration}, build your solution, then compare with the GitHub implementation to learn best practices.
+                          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                            <p className="text-gray-300 text-sm">
+                              <strong>Tip:</strong> Try implementing this yourself first! Set a timer for {problem.duration}, build your solution, then compare with the GitHub implementation to learn best practices.
                             </p>
                           </div>
                         </div>

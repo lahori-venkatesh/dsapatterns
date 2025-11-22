@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState } from 'react';
-import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal, Flame, BarChart3, CheckCircle2, Circle } from 'lucide-react';
+import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal, Flame, BarChart3, CheckCircle2, Circle, ChevronDown, ChevronUp } from 'lucide-react';
 import { Header } from './Header';
 import { useAppStore } from '../store';
 import { javaMastery, pythonMastery, cppMastery, javascriptMastery } from '../data/categories';
@@ -47,6 +47,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
   const [showBigOPage, setShowBigOPage] = useState(false);
   const [activeTab, setActiveTab] = useState<'problems' | 'interview'>('problems');
   const [completedProblems, setCompletedProblems] = useState<Set<string>>(new Set());
+  const [expandedAnswers, setExpandedAnswers] = useState<Set<string>>(new Set());
 
   const filteredCategories = categories.filter(cat => cat.level === selectedLevel);
 
@@ -126,6 +127,18 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
         newSet.delete(problemId);
       } else {
         newSet.add(problemId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleAnswer = (questionId: string) => {
+    setExpandedAnswers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
       }
       return newSet;
     });
@@ -244,33 +257,76 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
             {/* Interview Questions Tab */}
             {activeTab === 'interview' && (
               <div className="space-y-4">
-                {selectedLanguage.interviewQuestions?.map((question) => (
-                  <div key={question.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
-                    <div className="flex items-start gap-3 mb-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
-                        question.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
-                        question.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                        'bg-red-500/20 text-red-400'
-                      }`}>
-                        {question.difficulty}
-                      </span>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-white mb-2">{question.question}</h3>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          {question.topics.map((topic) => (
-                            <span key={topic} className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">
-                              {topic}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700/30">
-                      <h4 className="text-sm font-semibold text-emerald-400 mb-2">Answer:</h4>
-                      <p className="text-gray-300 leading-relaxed whitespace-pre-line">{question.answer}</p>
-                    </div>
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 flex-1">
+                    <p className="text-sm text-blue-300 text-center">
+                      💡 Click the chevron icon to expand/collapse answers
+                    </p>
                   </div>
-                ))}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const allIds = selectedLanguage.interviewQuestions?.map(q => q.id) || [];
+                        setExpandedAnswers(new Set(allIds));
+                      }}
+                      className="px-4 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg transition-colors text-sm font-medium whitespace-nowrap"
+                    >
+                      Expand All
+                    </button>
+                    <button
+                      onClick={() => setExpandedAnswers(new Set())}
+                      className="px-4 py-2 bg-gray-700/50 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors text-sm font-medium whitespace-nowrap"
+                    >
+                      Collapse All
+                    </button>
+                  </div>
+                </div>
+                {selectedLanguage.interviewQuestions?.map((question) => {
+                  const isExpanded = expandedAnswers.has(question.id);
+                  return (
+                    <div key={question.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <div className="flex items-start gap-3 flex-1">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                            question.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
+                            question.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                            'bg-red-500/20 text-red-400'
+                          }`}>
+                            {question.difficulty}
+                          </span>
+                          <div className="flex-1">
+                            <h3 className="text-xl font-semibold text-white mb-2">{question.question}</h3>
+                            <div className="flex flex-wrap gap-2">
+                              {question.topics.map((topic) => (
+                                <span key={topic} className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">
+                                  {topic}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => toggleAnswer(question.id)}
+                          className="flex-shrink-0 p-2 hover:bg-gray-700/50 rounded-lg transition-colors"
+                          aria-label={isExpanded ? 'Hide answer' : 'Show answer'}
+                        >
+                          {isExpanded ? (
+                            <ChevronUp className="w-5 h-5 text-gray-400" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                          )}
+                        </button>
+                      </div>
+
+                      {isExpanded && (
+                        <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700/30 mt-4 animate-fadeIn">
+                          <h4 className="text-sm font-semibold text-emerald-400 mb-2">Answer:</h4>
+                          <p className="text-gray-300 leading-relaxed whitespace-pre-line">{question.answer}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

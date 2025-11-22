@@ -15,6 +15,7 @@ export const sqlMastery: LanguageMastery = {
       title: 'Revising the Select Query I',
       difficulty: 'Easy',
       description: 'Basic SELECT query to retrieve all columns from a table with WHERE clause',
+      answer: 'SELECT * FROM CITY WHERE POPULATION > 100000 AND COUNTRYCODE = "USA";\n\nExplanation:\n- SELECT * retrieves all columns\n- FROM CITY specifies the table\n- WHERE clause filters rows based on conditions\n- Use AND to combine multiple conditions\n- String values are enclosed in quotes',
       topics: ['SELECT', 'WHERE'],
       estimatedTime: 10,
       platformLinks: [
@@ -87,6 +88,7 @@ export const sqlMastery: LanguageMastery = {
       title: 'Revising Aggregations - Count',
       difficulty: 'Easy',
       description: 'Use COUNT function to count records with conditions',
+      answer: 'SELECT COUNT(*) FROM CITY WHERE POPULATION > 100000;\n\nExplanation:\n- COUNT(*) counts all rows that match the condition\n- COUNT(column_name) counts non-NULL values in that column\n- Use with WHERE to count specific subsets\n- Returns a single number as result',
       topics: ['COUNT', 'WHERE'],
       estimatedTime: 15,
       platformLinks: [
@@ -207,6 +209,7 @@ export const sqlMastery: LanguageMastery = {
       title: 'Top Earners',
       difficulty: 'Medium',
       description: 'Find maximum total earnings and count of employees with that earning',
+      answer: 'SELECT (salary * months) AS earnings, COUNT(*)\nFROM Employee\nGROUP BY earnings\nORDER BY earnings DESC\nLIMIT 1;\n\nExplanation:\n- Calculate total earnings as salary * months\n- GROUP BY earnings to group same earning amounts\n- COUNT(*) counts employees in each group\n- ORDER BY DESC to get highest earnings first\n- LIMIT 1 to get only the top earner group',
       topics: ['MAX', 'COUNT', 'GROUP BY'],
       estimatedTime: 25,
       platformLinks: [

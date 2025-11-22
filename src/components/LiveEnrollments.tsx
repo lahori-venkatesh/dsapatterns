@@ -136,23 +136,7 @@ export const LiveEnrollments: React.FC<{ isPremium: boolean }> = ({ isPremium })
             </div>
           </div>
         </div>
-
-        <div className="h-0.5 bg-white/20 rounded-b-xl overflow-hidden">
-          <div
-            className="h-full bg-white"
-            style={{
-              animation: isVisible ? 'progress 6s linear forwards' : 'none'
-            }}
-          />
-        </div>
       </div>
-
-      <style>{`
-        @keyframes progress {
-          from { width: 0%; }
-          to { width: 100%; }
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, X } from 'lucide-react';
 
 interface Enrollment {
@@ -25,7 +25,7 @@ export const LiveEnrollments: React.FC<{ isPremium: boolean }> = ({ isPremium })
   const [currentEnrollment, setCurrentEnrollment] = useState<Enrollment | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentIndexRef = useRef(0);
 
   useEffect(() => {
     const stored = localStorage.getItem('premium_enrollments');
@@ -38,34 +38,37 @@ export const LiveEnrollments: React.FC<{ isPremium: boolean }> = ({ isPremium })
   }, []);
 
   useEffect(() => {
-    if (isPremium || enrollments.length === 0) return;
+    if (isPremium || enrollments.length === 0) {
+      console.log('LiveEnrollments: Not showing - isPremium:', isPremium, 'enrollments:', enrollments.length);
+      return;
+    }
+
+    console.log('LiveEnrollments: Starting animation cycle');
 
     const showNextEnrollment = () => {
       setIsVisible(false);
 
       setTimeout(() => {
-        const enrollment = enrollments[currentIndex];
+        const enrollment = enrollments[currentIndexRef.current];
+        console.log('Showing enrollment:', enrollment);
         setCurrentEnrollment(enrollment);
         setIsVisible(true);
 
-        setCurrentIndex((prev) => (prev + 1) % enrollments.length);
+        currentIndexRef.current = (currentIndexRef.current + 1) % enrollments.length;
       }, 500);
-    };
-
-    const hideNotification = () => {
-      setIsVisible(false);
     };
 
     showNextEnrollment();
 
-    const showInterval = setInterval(showNextEnrollment, 8000);
-    const hideTimeout = setTimeout(hideNotification, 6000);
+    const interval = setInterval(() => {
+      showNextEnrollment();
+    }, 8000);
 
     return () => {
-      clearInterval(showInterval);
-      clearTimeout(hideTimeout);
+      console.log('LiveEnrollments: Cleaning up');
+      clearInterval(interval);
     };
-  }, [isPremium, enrollments, currentIndex]);
+  }, [isPremium, enrollments]);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -81,19 +84,31 @@ export const LiveEnrollments: React.FC<{ isPremium: boolean }> = ({ isPremium })
     return `${hours} hours ago`;
   };
 
-  if (isPremium || !currentEnrollment) return null;
+  if (isPremium) {
+    console.log('LiveEnrollments: Hidden for premium users');
+    return null;
+  }
+
+  if (!currentEnrollment) {
+    console.log('LiveEnrollments: No current enrollment yet');
+    return null;
+  }
+
+  console.log('LiveEnrollments: Rendering with visibility:', isVisible);
 
   return (
     <div
       className={`fixed bottom-6 left-6 z-50 transition-all duration-500 transform ${
         isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
       }`}
+      style={{ maxWidth: '400px' }}
     >
-      <div className="bg-gradient-to-r from-emerald-500/95 to-teal-600/95 backdrop-blur-md border border-emerald-400/30 rounded-2xl shadow-2xl max-w-sm">
+      <div className="bg-gradient-to-r from-emerald-500/95 to-teal-600/95 backdrop-blur-md border border-emerald-400/30 rounded-2xl shadow-2xl">
         <div className="relative p-4">
           <button
             onClick={handleClose}
             className="absolute top-2 right-2 p-1 hover:bg-white/20 rounded-full transition-colors"
+            aria-label="Close notification"
           >
             <X className="w-4 h-4 text-white" />
           </button>
@@ -112,7 +127,7 @@ export const LiveEnrollments: React.FC<{ isPremium: boolean }> = ({ isPremium })
               </div>
 
               <p className="text-white text-sm font-medium mb-1">
-                just upgraded to <span className="font-bold">Lifetime Premium!</span> 🎉
+                just upgraded to <span className="font-bold">Lifetime Premium!</span>
               </p>
 
               <p className="text-emerald-100 text-xs">
@@ -130,9 +145,9 @@ export const LiveEnrollments: React.FC<{ isPremium: boolean }> = ({ isPremium })
 
         <div className="h-1 bg-white/20 rounded-b-2xl overflow-hidden">
           <div
-            className="h-full bg-white animate-progress"
+            className="h-full bg-white"
             style={{
-              animation: 'progress 6s linear forwards'
+              animation: isVisible ? 'progress 6s linear forwards' : 'none'
             }}
           />
         </div>

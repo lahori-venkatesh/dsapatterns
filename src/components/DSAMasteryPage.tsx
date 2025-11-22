@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState } from 'react';
-import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal, Flame, BarChart3, CheckCircle2, Circle } from 'lucide-react';
+import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal, Flame, BarChart3, CheckCircle2, Circle, ChevronDown, ChevronUp } from 'lucide-react';
 import { Header } from './Header';
 import { useAppStore } from '../store';
 import { javaMastery, pythonMastery, cppMastery, javascriptMastery } from '../data/categories';
@@ -47,6 +47,7 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
   const [showBigOPage, setShowBigOPage] = useState(false);
   const [activeTab, setActiveTab] = useState<'problems' | 'interview'>('problems');
   const [completedProblems, setCompletedProblems] = useState<Set<string>>(new Set());
+  const [expandedAnswers, setExpandedAnswers] = useState<Set<string>>(new Set());
 
   const filteredCategories = categories.filter(cat => cat.level === selectedLevel);
 
@@ -126,6 +127,18 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
         newSet.delete(problemId);
       } else {
         newSet.add(problemId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleAnswer = (questionId: string) => {
+    setExpandedAnswers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
       }
       return newSet;
     });
@@ -265,10 +278,32 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
                         </div>
                       </div>
                     </div>
-                    <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700/30">
-                      <h4 className="text-sm font-semibold text-emerald-400 mb-2">Answer:</h4>
-                      <p className="text-gray-300 leading-relaxed whitespace-pre-line">{question.answer}</p>
-                    </div>
+
+                    {/* Show/Hide Answer Button */}
+                    <button
+                      onClick={() => toggleAnswer(question.id)}
+                      className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors mb-3"
+                    >
+                      {expandedAnswers.has(question.id) ? (
+                        <>
+                          <ChevronUp className="w-4 h-4" />
+                          <span>Hide Answer</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4" />
+                          <span>Show Answer</span>
+                        </>
+                      )}
+                    </button>
+
+                    {/* Answer (only shown when expanded) */}
+                    {expandedAnswers.has(question.id) && (
+                      <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700/30">
+                        <h4 className="text-sm font-semibold text-emerald-400 mb-2">Answer:</h4>
+                        <p className="text-gray-300 leading-relaxed whitespace-pre-line">{question.answer}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

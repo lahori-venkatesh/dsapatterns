@@ -7,6 +7,7 @@ import { renderMarkdown } from '../utils/markdownRenderer';
 import { ResumeLinkedInPage } from './ResumeLinkedInPage';
 import { SystemDesignPage } from './SystemDesignPage';
 import { HRInterviewPage } from './HRInterviewPage';
+import { MachineCodingPage } from './MachineCodingPage';
 
 const iconMap = {
   Coffee: Coffee,
@@ -30,6 +31,7 @@ export const LanguageMastery: React.FC = () => {
   const [showResumeLinkedInPage, setShowResumeLinkedInPage] = useState(false);
   const [showSystemDesignPage, setShowSystemDesignPage] = useState(false);
   const [showHRInterviewPage, setShowHRInterviewPage] = useState(false);
+  const [showMachineCodingPage, setShowMachineCodingPage] = useState(false);
 
   React.useEffect(() => {
     if (selectedLanguageId) {
@@ -70,6 +72,10 @@ export const LanguageMastery: React.FC = () => {
     return <HRInterviewPage onBack={() => setShowHRInterviewPage(false)} />;
   }
 
+  if (showMachineCodingPage) {
+    return <MachineCodingPage onBack={() => setShowMachineCodingPage(false)} />;
+  }
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
@@ -93,6 +99,8 @@ export const LanguageMastery: React.FC = () => {
                     setShowSystemDesignPage(true);
                   } else if (lang.id === 'hr-interview-mastery') {
                     setShowHRInterviewPage(true);
+                  } else if (lang.id === 'machine-coding-mastery') {
+                    setShowMachineCodingPage(true);
                   } else {
                     setSelectedLanguage(lang.id);
                   }
@@ -109,7 +117,7 @@ export const LanguageMastery: React.FC = () => {
                   <h3 className="text-2xl font-bold text-white mb-3">{lang.name}</h3>
                   <p className="text-gray-400 text-sm mb-6 leading-relaxed">{lang.description}</p>
 
-                  {lang.id !== 'hr-interview-mastery' && lang.id !== 'resume-linkedin-mastery' && lang.id !== 'system-design' && (
+                  {lang.id !== 'hr-interview-mastery' && lang.id !== 'resume-linkedin-mastery' && lang.id !== 'system-design' && lang.id !== 'machine-coding-mastery' && (
                     <div className="flex items-center gap-3 mb-4">
                       <div className="px-3 py-1.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-sm font-medium">
                         {easy.length} Easy
@@ -130,6 +138,8 @@ export const LanguageMastery: React.FC = () => {
                       ? 'Complete Guide + Templates'
                       : lang.id === 'hr-interview-mastery'
                       ? 'Master HR Questions'
+                      : lang.id === 'machine-coding-mastery'
+                      ? 'Guide + Practice Problems'
                       : `${lang.totalProblems} ${lang.id === 'development-mastery' ? 'Questions' : 'Problems'}`
                     }
                   </div>

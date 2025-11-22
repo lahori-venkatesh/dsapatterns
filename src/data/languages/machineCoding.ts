@@ -5,9 +5,9 @@ export const machineCodingMastery: LanguageMastery = {
   language: 'Machine Coding',
   name: 'Machine Coding Round',
   icon: 'Code2',
-  description: 'Complete guide to ace machine coding rounds with preparation strategies and solved problems',
+  description: 'Master machine coding rounds with complete guide and 12 practice problems with GitHub solutions',
   color: 'from-purple-500 to-pink-600',
-  totalProblems: 1,
+  totalProblems: 12,
   completedProblems: 0,
   problems: [
     {

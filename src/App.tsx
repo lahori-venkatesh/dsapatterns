@@ -20,6 +20,7 @@ const AuthCallback = lazy(() => import('./components/AuthCallback').then(m => ({
 const LanguageMastery = lazy(() => import('./components/LanguageMastery').then(m => ({ default: m.LanguageMastery })));
 const BigONotationPage = lazy(() => import('./components/BigONotationPage').then(m => ({ default: m.BigONotationPage })));
 const DSAMasteryPage = lazy(() => import('./components/DSAMasteryPage').then(m => ({ default: m.DSAMasteryPage })));
+const LiveEnrollments = lazy(() => import('./components/LiveEnrollments').then(m => ({ default: m.LiveEnrollments })));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -878,6 +879,7 @@ function App() {
             onClose={() => setShowPremiumActivationModal(false)}
           />
           <PaymentModal isOpen={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
+          <LiveEnrollments isPremium={isPaid} />
         </Suspense>
       </div>
     </AppErrorBoundary>

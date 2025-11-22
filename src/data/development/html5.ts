@@ -1,6 +1,6 @@
 import { Problem } from '../../types';
 
-export const html5Problems: Problem[] = 
+export const html5Problems: Problem[] = [
   {
     id: 'html-basics-1',
     title: 'What is HTML?',

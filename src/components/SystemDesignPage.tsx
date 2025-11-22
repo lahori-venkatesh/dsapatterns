@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import { renderMarkdown } from '../utils/markdownRenderer';
 import { systemDesignConcepts, SystemConcept } from '../data/systemDesignConcepts';
+import { systemDesignMastery } from '../data/languages';
 
 interface SystemDesignPageProps {
   onBack: () => void;
@@ -9,8 +10,23 @@ interface SystemDesignPageProps {
 
 export const SystemDesignPage: React.FC<SystemDesignPageProps> = ({ onBack }) => {
   const [selectedConcept, setSelectedConcept] = useState<SystemConcept | null>(null);
+  const [activeTab, setActiveTab] = useState<'concepts' | 'interview'>('concepts');
+  const [expandedAnswers, setExpandedAnswers] = useState<Set<string>>(new Set());
 
   const concepts = systemDesignConcepts;
+  const interviewQuestions = systemDesignMastery.interviewQuestions || [];
+
+  const toggleAnswer = (questionId: string) => {
+    setExpandedAnswers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  };
 
   const ConceptCard: React.FC<{ concept: SystemConcept }> = ({ concept }) => {
     const Icon = concept.icon;
@@ -115,38 +131,123 @@ export const SystemDesignPage: React.FC<SystemDesignPageProps> = ({ onBack }) =>
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 flex items-center justify-center space-x-3">
               <span className="text-4xl">🏗️</span>
-              <span>System Design Concepts</span>
+              <span>System Design</span>
             </h2>
             <p className="text-gray-400 text-lg">
               Master the building blocks of scalable systems for technical interviews
             </p>
           </div>
 
-          {/* Introduction */}
-          <div className="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-indigo-500/30">
-            <h3 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
-              <span className="text-3xl">🎯</span>
-              <span>What is System Design?</span>
-            </h3>
-            <div className="space-y-4 text-gray-300">
-              <p className="text-lg leading-relaxed">
-                <strong className="text-white">System Design</strong> is the process of defining architecture, components, and data flow for large-scale applications. It's essential for building scalable, reliable, and efficient systems.
-              </p>
-              <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
-                <p className="text-indigo-200 font-medium">
-                  <span className="text-xl mr-2">💡</span>
-                  <strong>Why it matters:</strong> Top tech companies expect engineers to design systems that can handle millions of users, terabytes of data, and high availability requirements.
-                </p>
-              </div>
-            </div>
+          {/* Tabs */}
+          <div className="flex gap-2 justify-center">
+            <button
+              onClick={() => setActiveTab('concepts')}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                activeTab === 'concepts'
+                  ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg'
+                  : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800'
+              }`}
+            >
+              Concepts ({concepts.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('interview')}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                activeTab === 'interview'
+                  ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg'
+                  : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800'
+              }`}
+            >
+              Interview Questions ({interviewQuestions.length})
+            </button>
           </div>
 
-          {/* Concept Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {concepts.map((concept) => (
-              <ConceptCard key={concept.id} concept={concept} />
-            ))}
-          </div>
+          {/* Concepts Tab */}
+          {activeTab === 'concepts' && (
+            <>
+              {/* Introduction */}
+              <div className="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-indigo-500/30">
+                <h3 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
+                  <span className="text-3xl">🎯</span>
+                  <span>What is System Design?</span>
+                </h3>
+                <div className="space-y-4 text-gray-300">
+                  <p className="text-lg leading-relaxed">
+                    <strong className="text-white">System Design</strong> is the process of defining architecture, components, and data flow for large-scale applications. It's essential for building scalable, reliable, and efficient systems.
+                  </p>
+                  <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
+                    <p className="text-indigo-200 font-medium">
+                      <span className="text-xl mr-2">💡</span>
+                      <strong>Why it matters:</strong> Top tech companies expect engineers to design systems that can handle millions of users, terabytes of data, and high availability requirements.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Concept Cards */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {concepts.map((concept) => (
+                  <ConceptCard key={concept.id} concept={concept} />
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Interview Questions Tab */}
+          {activeTab === 'interview' && (
+            <div className="space-y-4">
+              {interviewQuestions.map((question) => (
+                <div key={question.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
+                  <div className="flex items-start gap-3 mb-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                      question.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
+                      question.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                      'bg-red-500/20 text-red-400'
+                    }`}>
+                      {question.difficulty}
+                    </span>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-white mb-2">{question.question}</h3>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {question.topics.map((topic) => (
+                          <span key={topic} className="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs">
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Show/Hide Answer Button */}
+                  <button
+                    onClick={() => toggleAnswer(question.id)}
+                    className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors mb-3"
+                  >
+                    {expandedAnswers.has(question.id) ? (
+                      <>
+                        <ChevronUp className="w-4 h-4" />
+                        <span>Hide Answer</span>
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4" />
+                        <span>Show Answer</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Answer (only shown when expanded) */}
+                  {expandedAnswers.has(question.id) && (
+                    <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700/30">
+                      <div className="prose prose-invert max-w-none">
+                        {renderMarkdown(question.answer)}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

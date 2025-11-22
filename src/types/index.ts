@@ -129,6 +129,15 @@ export interface LanguageProblem {
   };
 }
 
+export interface InterviewQuestion {
+  id: string;
+  question: string;
+  answer: string;
+  difficulty: Difficulty;
+  category: string;
+  topics: string[];
+}
+
 export interface LanguageMastery {
   id: string;
   language: ProgrammingLanguage;
@@ -139,4 +148,5 @@ export interface LanguageMastery {
   totalProblems: number;
   completedProblems: number;
   problems: LanguageProblem[];
+  interviewQuestions: InterviewQuestion[];
 }

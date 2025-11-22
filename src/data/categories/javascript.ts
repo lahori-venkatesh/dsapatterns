@@ -621,5 +621,333 @@ export const javascriptMastery: LanguageMastery = {
       ],
       userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
     },
+  ],
+  interviewQuestions: [
+    {
+      id: 'js-int-1',
+      question: 'What is the difference between var, let, and const?',
+      answer: `var: Function-scoped, can be redeclared and updated, hoisted with undefined value.
+let: Block-scoped, cannot be redeclared but can be updated, hoisted but not initialized.
+const: Block-scoped, cannot be redeclared or updated (but objects can be mutated), hoisted but not initialized.`,
+      difficulty: 'Easy',
+      category: 'Basics',
+      topics: ['Variables', 'Scope']
+    },
+    {
+      id: 'js-int-2',
+      question: 'Explain event delegation in JavaScript',
+      answer: `Event delegation is a pattern where you attach a single event listener to a parent element instead of multiple listeners to child elements. It leverages event bubbling to handle events on child elements through the parent.
+
+Benefits:
+- Better performance with many elements
+- Works for dynamically added elements
+- Less memory usage
+
+Example:
+document.getElementById('parent').addEventListener('click', function(e) {
+  if(e.target.matches('.child')) {
+    // Handle click
+  }
+});`,
+      difficulty: 'Medium',
+      category: 'DOM',
+      topics: ['Events', 'DOM']
+    },
+    {
+      id: 'js-int-3',
+      question: 'What is a closure and provide an example?',
+      answer: `A closure is a function that has access to variables from its outer (enclosing) function's scope, even after the outer function has returned.
+
+Example:
+function outer() {
+  let count = 0;
+  return function inner() {
+    count++;
+    return count;
+  }
+}
+
+const counter = outer();
+console.log(counter()); // 1
+console.log(counter()); // 2
+
+The inner function "closes over" the count variable.`,
+      difficulty: 'Medium',
+      category: 'Functions',
+      topics: ['Closures', 'Scope']
+    },
+    {
+      id: 'js-int-4',
+      question: 'Explain the event loop in JavaScript',
+      answer: `The event loop is JavaScript's concurrency model that handles asynchronous operations.
+
+Process:
+1. Call Stack: Executes synchronous code
+2. Web APIs: Handle async operations (setTimeout, fetch)
+3. Callback Queue: Stores completed async callbacks
+4. Microtask Queue: Stores promises (higher priority)
+5. Event Loop: Checks if call stack is empty, then moves tasks from queues
+
+Order: Call Stack → Microtasks → Macrotasks (callbacks)`,
+      difficulty: 'Hard',
+      category: 'Async',
+      topics: ['Event Loop', 'Async']
+    },
+    {
+      id: 'js-int-5',
+      question: 'What is the difference between == and ===?',
+      answer: `== (loose equality): Compares values after type coercion
+=== (strict equality): Compares both value and type without coercion
+
+Examples:
+5 == '5'   // true (coercion)
+5 === '5'  // false (different types)
+null == undefined  // true
+null === undefined // false
+
+Best practice: Always use === to avoid unexpected behavior.`,
+      difficulty: 'Easy',
+      category: 'Operators',
+      topics: ['Comparison', 'Type Coercion']
+    },
+    {
+      id: 'js-int-6',
+      question: 'Explain "this" keyword in JavaScript',
+      answer: `"this" refers to the object that is executing the current function.
+
+Context depends on how function is called:
+1. Method: this = object
+2. Function: this = global/window (strict: undefined)
+3. Arrow function: this = lexical (inherited)
+4. Event: this = element that triggered event
+5. call/apply/bind: this = explicitly set object
+
+Arrow functions don't have their own "this".`,
+      difficulty: 'Medium',
+      category: 'Functions',
+      topics: ['This', 'Context']
+    },
+    {
+      id: 'js-int-7',
+      question: 'What are Promises and how do they work?',
+      answer: `Promises represent the eventual completion or failure of an async operation.
+
+States:
+- Pending: Initial state
+- Fulfilled: Operation successful
+- Rejected: Operation failed
+
+Usage:
+fetch(url)
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error(error))
+  .finally(() => console.log('Done'));
+
+Benefits: Avoid callback hell, better error handling, chainable.`,
+      difficulty: 'Medium',
+      category: 'Async',
+      topics: ['Promises', 'Async']
+    },
+    {
+      id: 'js-int-8',
+      question: 'Explain hoisting in JavaScript',
+      answer: `Hoisting is JavaScript's default behavior of moving declarations to the top of their scope before code execution.
+
+Variables:
+- var: Hoisted with undefined
+- let/const: Hoisted but in "temporal dead zone" until declaration
+
+Functions:
+- Function declarations: Fully hoisted (can call before declaration)
+- Function expressions: Not hoisted
+
+Example:
+console.log(x); // undefined (not error)
+var x = 5;
+
+console.log(y); // ReferenceError
+let y = 10;`,
+      difficulty: 'Medium',
+      category: 'Basics',
+      topics: ['Hoisting', 'Scope']
+    },
+    {
+      id: 'js-int-9',
+      question: 'What is the prototype chain?',
+      answer: `The prototype chain is how JavaScript objects inherit features from one another.
+
+Every object has a [[Prototype]] (accessed via __proto__) that points to another object. When you access a property, JavaScript:
+1. Checks the object itself
+2. If not found, checks the prototype
+3. Continues up the chain until null
+
+Example:
+const arr = [1, 2, 3];
+arr.__proto__ === Array.prototype // true
+Array.prototype.__proto__ === Object.prototype // true
+Object.prototype.__proto__ === null // true`,
+      difficulty: 'Hard',
+      category: 'OOP',
+      topics: ['Prototype', 'Inheritance']
+    },
+    {
+      id: 'js-int-10',
+      question: 'Explain async/await and its advantages',
+      answer: `async/await is syntactic sugar over Promises for writing asynchronous code that looks synchronous.
+
+async: Declares an async function that returns a Promise
+await: Pauses execution until Promise resolves
+
+Example:
+async function fetchData() {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+Advantages:
+- More readable than .then() chains
+- Better error handling with try/catch
+- Easier debugging`,
+      difficulty: 'Medium',
+      category: 'Async',
+      topics: ['Async/Await', 'Promises']
+    },
+    {
+      id: 'js-int-11',
+      question: 'What is debouncing and throttling?',
+      answer: `Both are techniques to control function execution rate.
+
+Debouncing: Delays function execution until after a wait period since the last call.
+Use case: Search input (wait until user stops typing)
+
+function debounce(func, delay) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+}
+
+Throttling: Limits function execution to once per time period.
+Use case: Scroll events (execute max once per 100ms)
+
+function throttle(func, limit) {
+  let inThrottle;
+  return function(...args) {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}`,
+      difficulty: 'Hard',
+      category: 'Performance',
+      topics: ['Optimization', 'Functions']
+    },
+    {
+      id: 'js-int-12',
+      question: 'What is the difference between null and undefined?',
+      answer: `undefined: Variable declared but not assigned a value
+null: Intentional absence of value (must be assigned)
+
+typeof undefined // 'undefined'
+typeof null      // 'object' (historical bug)
+
+undefined == null  // true
+undefined === null // false
+
+Use cases:
+- undefined: Default for uninitialized variables
+- null: Explicitly indicate "no value"`,
+      difficulty: 'Easy',
+      category: 'Basics',
+      topics: ['Data Types', 'Comparison']
+    },
+    {
+      id: 'js-int-13',
+      question: 'Explain call, apply, and bind methods',
+      answer: `All three methods control the "this" context in functions.
+
+call: Invokes function immediately with specified this and arguments
+func.call(context, arg1, arg2)
+
+apply: Same as call but takes array of arguments
+func.apply(context, [arg1, arg2])
+
+bind: Returns new function with bound this (doesn't invoke)
+const boundFunc = func.bind(context, arg1, arg2)
+
+Example:
+const person = { name: 'John' };
+function greet(greeting) {
+  console.log(greeting + ', ' + this.name);
+}
+
+greet.call(person, 'Hello');    // Hello, John
+greet.apply(person, ['Hi']);     // Hi, John
+const boundGreet = greet.bind(person, 'Hey');
+boundGreet(); // Hey, John`,
+      difficulty: 'Medium',
+      category: 'Functions',
+      topics: ['This', 'Context']
+    },
+    {
+      id: 'js-int-14',
+      question: 'What are arrow functions and their differences from regular functions?',
+      answer: `Arrow functions are a concise syntax for writing functions.
+
+Differences:
+1. Syntax: const func = () => {}
+2. No "this" binding: Inherit from parent scope
+3. No "arguments" object
+4. Cannot be used as constructors
+5. No prototype property
+6. Cannot be used as generators
+
+When to use:
+- Callbacks and array methods
+- When you need lexical "this"
+
+When NOT to use:
+- Methods in objects (use regular functions)
+- When you need "arguments" object
+- Constructors`,
+      difficulty: 'Medium',
+      category: 'Functions',
+      topics: ['Arrow Functions', 'ES6']
+    },
+    {
+      id: 'js-int-15',
+      question: 'Explain Map and Set in JavaScript',
+      answer: `Map: Key-value pairs where keys can be any type
+const map = new Map();
+map.set('key', 'value');
+map.set(1, 'number key');
+map.get('key'); // 'value'
+map.has('key'); // true
+map.delete('key');
+map.size; // number of entries
+
+Set: Collection of unique values
+const set = new Set([1, 2, 3, 3]);
+set.add(4);
+set.has(1); // true
+set.delete(2);
+set.size; // 3
+
+Advantages over Object/Array:
+- Map: Any type as key, maintains insertion order
+- Set: Automatic uniqueness, faster for checks`,
+      difficulty: 'Medium',
+      category: 'Data Structures',
+      topics: ['Map', 'Set', 'ES6']
+    }
   ]
 };

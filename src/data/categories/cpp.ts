@@ -869,5 +869,287 @@ export const cppMastery: LanguageMastery = {
       companies: ['Google', 'Amazon', 'Microsoft'],
       userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
     }
+  ],
+  interviewQuestions: [
+    {
+      id: 'cpp-int-1',
+      question: 'What is the difference between pointers and references in C++?',
+      answer: `Pointers:
+- Can be null
+- Can be reassigned
+- Use * and -> operators
+- Syntax: int* ptr = &var;
+- Requires dereferencing
+
+References:
+- Cannot be null
+- Cannot be reassigned
+- Use . operator
+- Syntax: int& ref = var;
+- Automatic dereferencing
+
+References are safer and cleaner, pointers offer more flexibility.`,
+      difficulty: 'Medium',
+      category: 'Pointers',
+      topics: ['Pointers', 'References']
+    },
+    {
+      id: 'cpp-int-2',
+      question: 'Explain virtual functions and polymorphism',
+      answer: `Virtual functions enable runtime polymorphism through dynamic binding.
+
+Syntax:
+class Base {
+    virtual void func() { }
+};
+
+class Derived : public Base {
+    void func() override { }
+};
+
+Key points:
+- vtable (virtual table) stores function pointers
+- Virtual destructor needed for proper cleanup
+- Pure virtual (= 0) makes class abstract
+- override keyword ensures correct overriding
+
+Benefits: Flexible, extensible code through interfaces`,
+      difficulty: 'Hard',
+      category: 'OOP',
+      topics: ['Virtual Functions', 'Polymorphism']
+    },
+    {
+      id: 'cpp-int-3',
+      question: 'What are smart pointers and why use them?',
+      answer: `Smart pointers manage memory automatically, preventing leaks.
+
+Types:
+1. unique_ptr: Exclusive ownership, cannot be copied
+   std::unique_ptr<int> ptr = std::make_unique<int>(10);
+
+2. shared_ptr: Shared ownership, reference counting
+   std::shared_ptr<int> ptr = std::make_shared<int>(10);
+
+3. weak_ptr: Non-owning reference, breaks circular references
+
+Benefits:
+- Automatic cleanup (RAII)
+- No memory leaks
+- Exception safe
+
+Prefer unique_ptr unless sharing needed`,
+      difficulty: 'Hard',
+      category: 'Memory',
+      topics: ['Smart Pointers', 'Memory Management']
+    },
+    {
+      id: 'cpp-int-4',
+      question: 'Explain the Rule of Three/Five',
+      answer: `Rule of Three: If you define one, define all three:
+1. Destructor
+2. Copy constructor
+3. Copy assignment operator
+
+Rule of Five (C++11): Add move semantics:
+4. Move constructor
+5. Move assignment operator
+
+Example:
+class MyClass {
+    ~MyClass();                           // 1
+    MyClass(const MyClass&);              // 2
+    MyClass& operator=(const MyClass&);   // 3
+    MyClass(MyClass&&);                   // 4
+    MyClass& operator=(MyClass&&);        // 5
+};
+
+Or use = default / = delete`,
+      difficulty: 'Hard',
+      category: 'OOP',
+      topics: ['Rule of Three', 'Move Semantics']
+    },
+    {
+      id: 'cpp-int-5',
+      question: 'What is RAII (Resource Acquisition Is Initialization)?',
+      answer: `RAII ties resource lifetime to object lifetime.
+
+Principle:
+- Acquire resource in constructor
+- Release resource in destructor
+- Guaranteed cleanup via stack unwinding
+
+Example:
+class FileHandler {
+    FILE* file;
+public:
+    FileHandler(const char* name) {
+        file = fopen(name, "r");
+    }
+    ~FileHandler() {
+        if(file) fclose(file);
+    }
+};
+
+Benefits:
+- No manual cleanup
+- Exception safe
+- Prevents resource leaks
+
+Used in: smart pointers, locks, file handles`,
+      difficulty: 'Medium',
+      category: 'Memory',
+      topics: ['RAII', 'Memory Management']
+    },
+    {
+      id: 'cpp-int-6',
+      question: 'Explain const correctness in C++',
+      answer: `const correctness ensures objects aren't modified when they shouldn't be.
+
+Types:
+1. const variable: const int x = 10;
+2. const pointer: int* const ptr (pointer is const)
+3. Pointer to const: const int* ptr (value is const)
+4. const member function: void func() const;
+
+const member functions:
+- Cannot modify member variables
+- Can only call other const functions
+- Can be called on const objects
+
+Benefits:
+- Compiler checks
+- Self-documenting code
+- Enable optimizations`,
+      difficulty: 'Medium',
+      category: 'Const',
+      topics: ['Const', 'Best Practices']
+    },
+    {
+      id: 'cpp-int-7',
+      question: 'What are move semantics and rvalue references?',
+      answer: `Move semantics transfer ownership instead of copying.
+
+Rvalue reference: T&&
+- Binds to temporary objects
+- Enables move operations
+
+Example:
+class String {
+    char* data;
+public:
+    // Move constructor
+    String(String&& other) noexcept {
+        data = other.data;
+        other.data = nullptr;
+    }
+
+    // Move assignment
+    String& operator=(String&& other) noexcept {
+        if(this != &other) {
+            delete[] data;
+            data = other.data;
+            other.data = nullptr;
+        }
+        return *this;
+    }
+};
+
+Benefits:
+- Avoid unnecessary copies
+- Better performance
+- Enable perfect forwarding`,
+      difficulty: 'Hard',
+      category: 'Move Semantics',
+      topics: ['Move', 'Rvalue References']
+    },
+    {
+      id: 'cpp-int-8',
+      question: 'Explain the difference between struct and class',
+      answer: `Only difference: default access specifier
+
+struct:
+- Members public by default
+- Inheritance public by default
+
+class:
+- Members private by default
+- Inheritance private by default
+
+Example:
+struct S { int x; };  // x is public
+class C { int x; };   // x is private
+
+Convention:
+- Use struct for POD (Plain Old Data)
+- Use class for objects with behavior
+
+Functionally equivalent otherwise`,
+      difficulty: 'Easy',
+      category: 'OOP',
+      topics: ['Struct', 'Class']
+    },
+    {
+      id: 'cpp-int-9',
+      question: 'What is template metaprogramming?',
+      answer: `Templates execute code at compile-time instead of runtime.
+
+Examples:
+
+1. Function template:
+template<typename T>
+T max(T a, T b) { return a > b ? a : b; }
+
+2. Class template:
+template<typename T>
+class Vector { T* data; };
+
+3. Compile-time computation:
+template<int N>
+struct Factorial {
+    static const int value = N * Factorial<N-1>::value;
+};
+
+Benefits:
+- Type safety
+- Code reuse
+- Zero runtime cost
+- Generic programming
+
+Drawbacks: Complex error messages, longer compile time`,
+      difficulty: 'Hard',
+      category: 'Templates',
+      topics: ['Templates', 'Metaprogramming']
+    },
+    {
+      id: 'cpp-int-10',
+      question: 'Explain the difference between new/delete and malloc/free',
+      answer: `new/delete (C++):
+- Calls constructor/destructor
+- Type-safe
+- Can be overloaded
+- Throws exception on failure
+- Returns typed pointer
+
+malloc/free (C):
+- No constructor/destructor
+- Not type-safe
+- Requires casting
+- Returns NULL on failure
+- Returns void*
+
+Example:
+// C++
+MyClass* obj = new MyClass();  // Constructor called
+delete obj;                     // Destructor called
+
+// C
+MyClass* obj = (MyClass*)malloc(sizeof(MyClass));
+free(obj);  // No destructor
+
+Never mix: don't free() what you new, or delete what you malloc()`,
+      difficulty: 'Medium',
+      category: 'Memory',
+      topics: ['New', 'Delete', 'Memory']
+    }
   ]
 };

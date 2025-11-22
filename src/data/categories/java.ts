@@ -899,5 +899,339 @@ export const javaMastery: LanguageMastery = {
       companies: ['Amazon', 'Microsoft', 'Google'],
       userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
     }
+  ],
+  interviewQuestions: [
+    {
+      id: 'java-int-1',
+      question: 'What is the difference between JDK, JRE, and JVM?',
+      answer: `JVM (Java Virtual Machine): Runtime environment that executes Java bytecode
+JRE (Java Runtime Environment): JVM + libraries needed to run Java applications
+JDK (Java Development Kit): JRE + development tools (compiler, debugger)
+
+Relationship: JDK ⊃ JRE ⊃ JVM`,
+      difficulty: 'Easy',
+      category: 'Basics',
+      topics: ['JVM', 'JRE', 'JDK']
+    },
+    {
+      id: 'java-int-2',
+      question: 'Explain the difference between == and equals() in Java',
+      answer: `== operator: Compares references (memory addresses) for objects, values for primitives
+equals() method: Compares content/values of objects
+
+Example:
+String s1 = new String("hello");
+String s2 = new String("hello");
+s1 == s2        // false (different references)
+s1.equals(s2)   // true (same content)
+
+Override equals() in custom classes to define equality logic.`,
+      difficulty: 'Easy',
+      category: 'Basics',
+      topics: ['Comparison', 'Objects']
+    },
+    {
+      id: 'java-int-3',
+      question: 'What are the main principles of OOP in Java?',
+      answer: `1. Encapsulation: Bundling data and methods, hiding implementation details
+   - Use private fields with public getters/setters
+
+2. Inheritance: Child class inherits from parent class
+   - Use extends keyword, promotes code reuse
+
+3. Polymorphism: One interface, multiple implementations
+   - Method overloading (compile-time)
+   - Method overriding (runtime)
+
+4. Abstraction: Hide complex implementation, show essential features
+   - Abstract classes and interfaces`,
+      difficulty: 'Medium',
+      category: 'OOP',
+      topics: ['Encapsulation', 'Inheritance', 'Polymorphism', 'Abstraction']
+    },
+    {
+      id: 'java-int-4',
+      question: 'Explain the difference between abstract class and interface',
+      answer: `Abstract Class:
+- Can have abstract and concrete methods
+- Can have constructors
+- Single inheritance only
+- Can have instance variables
+- Use when classes share common code
+
+Interface:
+- All methods abstract by default (before Java 8)
+- No constructors
+- Multiple inheritance supported
+- Only constants (public static final)
+- Use for contracts/capabilities
+
+Java 8+: Interfaces can have default and static methods`,
+      difficulty: 'Medium',
+      category: 'OOP',
+      topics: ['Abstract Class', 'Interface']
+    },
+    {
+      id: 'java-int-5',
+      question: 'What is the difference between ArrayList and LinkedList?',
+      answer: `ArrayList:
+- Dynamic array implementation
+- Fast random access O(1)
+- Slow insertion/deletion O(n)
+- Better for frequent reads
+- Uses contiguous memory
+
+LinkedList:
+- Doubly-linked list implementation
+- Slow random access O(n)
+- Fast insertion/deletion O(1)
+- Better for frequent modifications
+- Uses scattered memory
+
+Choose based on use case: reads vs modifications`,
+      difficulty: 'Medium',
+      category: 'Collections',
+      topics: ['ArrayList', 'LinkedList', 'Data Structures']
+    },
+    {
+      id: 'java-int-6',
+      question: 'Explain Java memory management and garbage collection',
+      answer: `Memory Areas:
+1. Heap: Objects and instance variables
+2. Stack: Method calls and local variables
+3. Method Area: Class metadata, static variables
+
+Garbage Collection:
+- Automatic memory management
+- Removes unreferenced objects
+- Cannot be forced (System.gc() is suggestion)
+- Types: Minor GC (Young Gen), Major GC (Old Gen)
+
+GC Algorithms: Serial, Parallel, CMS, G1GC, ZGC`,
+      difficulty: 'Hard',
+      category: 'Memory',
+      topics: ['Memory Management', 'Garbage Collection']
+    },
+    {
+      id: 'java-int-7',
+      question: 'What are checked and unchecked exceptions?',
+      answer: `Checked Exceptions:
+- Must be caught or declared (throws)
+- Compile-time checking
+- Examples: IOException, SQLException
+- Extend Exception class
+
+Unchecked Exceptions:
+- No compile-time checking
+- Runtime errors
+- Examples: NullPointerException, ArrayIndexOutOfBoundsException
+- Extend RuntimeException class
+
+Best practice: Use checked for recoverable conditions, unchecked for programming errors`,
+      difficulty: 'Medium',
+      category: 'Exception Handling',
+      topics: ['Exceptions', 'Error Handling']
+    },
+    {
+      id: 'java-int-8',
+      question: 'Explain the synchronized keyword and thread safety',
+      answer: `synchronized keyword ensures thread safety by allowing only one thread to access a resource at a time.
+
+Method level:
+public synchronized void method() { }
+
+Block level:
+synchronized(object) {
+  // critical section
+}
+
+Benefits:
+- Prevents race conditions
+- Ensures memory visibility
+
+Drawbacks:
+- Performance overhead
+- Risk of deadlocks
+
+Alternatives: ReentrantLock, Atomic classes, volatile`,
+      difficulty: 'Hard',
+      category: 'Concurrency',
+      topics: ['Synchronization', 'Thread Safety']
+    },
+    {
+      id: 'java-int-9',
+      question: 'What is the difference between String, StringBuilder, and StringBuffer?',
+      answer: `String:
+- Immutable (cannot be changed)
+- Thread-safe (immutable)
+- Creates new object for each modification
+- Use for constant strings
+
+StringBuilder:
+- Mutable
+- Not thread-safe
+- Better performance (no synchronization)
+- Use in single-threaded environments
+
+StringBuffer:
+- Mutable
+- Thread-safe (synchronized methods)
+- Slower than StringBuilder
+- Use in multi-threaded environments`,
+      difficulty: 'Medium',
+      category: 'Strings',
+      topics: ['String', 'StringBuilder', 'StringBuffer']
+    },
+    {
+      id: 'java-int-10',
+      question: 'Explain Java 8 Stream API',
+      answer: `Stream API provides functional-style operations on collections.
+
+Features:
+- Declarative approach
+- Lazy evaluation
+- Parallel processing support
+
+Common operations:
+list.stream()
+    .filter(x -> x > 5)
+    .map(x -> x * 2)
+    .sorted()
+    .collect(Collectors.toList());
+
+Benefits:
+- More readable code
+- Less boilerplate
+- Better performance with parallel streams
+
+Not a data structure, doesn't modify source`,
+      difficulty: 'Medium',
+      category: 'Streams',
+      topics: ['Stream API', 'Functional Programming']
+    },
+    {
+      id: 'java-int-11',
+      question: 'What are lambda expressions in Java?',
+      answer: `Lambda expressions provide a concise way to represent anonymous functions.
+
+Syntax: (parameters) -> expression or { statements }
+
+Examples:
+// No parameters
+() -> System.out.println("Hello")
+
+// One parameter
+x -> x * x
+
+// Multiple parameters
+(a, b) -> a + b
+
+Requirements:
+- Functional interface (single abstract method)
+- Enables functional programming
+- Works with Stream API
+
+Benefits: Cleaner code, better performance than anonymous classes`,
+      difficulty: 'Medium',
+      category: 'Functional Programming',
+      topics: ['Lambda', 'Functional Interface']
+    },
+    {
+      id: 'java-int-12',
+      question: 'Explain the difference between HashMap and ConcurrentHashMap',
+      answer: `HashMap:
+- Not thread-safe
+- Allows one null key
+- Faster in single-threaded
+- Fail-fast iterator
+
+ConcurrentHashMap:
+- Thread-safe
+- No null keys/values
+- Lock striping (segment-based)
+- Fail-safe iterator
+- Better for concurrent access
+
+Hashtable (legacy):
+- Thread-safe but synchronized on entire map
+- Slower than ConcurrentHashMap
+
+Use ConcurrentHashMap for multi-threaded scenarios`,
+      difficulty: 'Hard',
+      category: 'Collections',
+      topics: ['HashMap', 'ConcurrentHashMap', 'Thread Safety']
+    },
+    {
+      id: 'java-int-13',
+      question: 'What is the purpose of the final keyword?',
+      answer: `final can be applied to:
+
+1. Variables: Cannot be reassigned
+   final int x = 10;
+
+2. Methods: Cannot be overridden
+   public final void method() { }
+
+3. Classes: Cannot be extended
+   public final class MyClass { }
+
+Benefits:
+- Immutability and safety
+- Performance optimization
+- Clear intent to compiler
+
+Note: final reference can modify object contents, just can't point to new object`,
+      difficulty: 'Easy',
+      category: 'Keywords',
+      topics: ['Final', 'Immutability']
+    },
+    {
+      id: 'java-int-14',
+      question: 'Explain method overloading vs method overriding',
+      answer: `Method Overloading (Compile-time Polymorphism):
+- Same method name, different parameters
+- In same class
+- Different signatures
+Example: add(int a, int b) and add(double a, double b)
+
+Method Overriding (Runtime Polymorphism):
+- Same method name and parameters
+- In parent and child class
+- @Override annotation
+- Must have same return type (or covariant)
+Example: Parent's method() overridden in Child
+
+Key difference: Overloading = same class, Overriding = inheritance`,
+      difficulty: 'Medium',
+      category: 'OOP',
+      topics: ['Overloading', 'Overriding', 'Polymorphism']
+    },
+    {
+      id: 'java-int-15',
+      question: 'What are Java generics and why use them?',
+      answer: `Generics enable type parameters for classes, interfaces, and methods.
+
+Syntax:
+class Box<T> {
+  private T value;
+  public void set(T value) { this.value = value; }
+}
+
+Benefits:
+1. Type Safety: Compile-time checking
+2. No casting needed
+3. Code reusability
+
+Common conventions:
+T - Type
+E - Element
+K - Key
+V - Value
+
+Type Erasure: Generic type information removed at runtime for backward compatibility`,
+      difficulty: 'Medium',
+      category: 'Generics',
+      topics: ['Generics', 'Type Safety']
+    }
   ]
 };

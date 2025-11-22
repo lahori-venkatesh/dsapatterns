@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState } from 'react';
-import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal, Flame, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Coffee, Code2, BookOpen, RotateCcw, Terminal, Flame, BarChart3, CheckCircle2, Circle } from 'lucide-react';
 import { Header } from './Header';
 import { useAppStore } from '../store';
 import { javaMastery, pythonMastery, cppMastery, javascriptMastery } from '../data/categories';
@@ -45,6 +45,8 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageMastery | null>(null);
   const [showRevision, setShowRevision] = useState(false);
   const [showBigOPage, setShowBigOPage] = useState(false);
+  const [activeTab, setActiveTab] = useState<'problems' | 'interview'>('problems');
+  const [completedProblems, setCompletedProblems] = useState<Set<string>>(new Set());
 
   const filteredCategories = categories.filter(cat => cat.level === selectedLevel);
 
@@ -117,6 +119,18 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
     );
   }
 
+  const toggleProblemComplete = (problemId: string) => {
+    setCompletedProblems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(problemId)) {
+        newSet.delete(problemId);
+      } else {
+        newSet.add(problemId);
+      }
+      return newSet;
+    });
+  };
+
   // Show Language Problems
   if (selectedLanguage) {
     return (
@@ -145,48 +159,120 @@ export const DSAMasteryPage: React.FC<DSAMasteryPageProps> = ({ onBack }) => {
               </div>
             </div>
 
-            <div className="space-y-4">
-              {selectedLanguage.problems.map((problem) => (
-                <div key={problem.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-semibold text-white">{problem.title}</h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          problem.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
-                          problem.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                          'bg-red-500/20 text-red-400'
-                        }`}>
-                          {problem.difficulty}
-                        </span>
-                      </div>
-                      <p className="text-gray-300 mb-3">{problem.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {problem.topics.map((topic) => (
-                          <span key={topic} className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">
-                            {topic}
-                          </span>
-                        ))}
+            {/* Tabs */}
+            <div className="flex gap-2 mb-6">
+              <button
+                onClick={() => setActiveTab('problems')}
+                className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                  activeTab === 'problems'
+                    ? 'bg-blue-500 text-white shadow-lg'
+                    : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800'
+                }`}
+              >
+                Problems ({selectedLanguage.problems.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('interview')}
+                className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                  activeTab === 'interview'
+                    ? 'bg-blue-500 text-white shadow-lg'
+                    : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-800'
+                }`}
+              >
+                Interview Questions ({selectedLanguage.interviewQuestions?.length || 0})
+              </button>
+            </div>
+
+            {/* Problems Tab */}
+            {activeTab === 'problems' && (
+              <div className="space-y-4">
+                {selectedLanguage.problems.map((problem) => (
+                  <div key={problem.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-start gap-3 flex-1">
+                        <button
+                          onClick={() => toggleProblemComplete(problem.id)}
+                          className="mt-1 flex-shrink-0"
+                        >
+                          {completedProblems.has(problem.id) ? (
+                            <CheckCircle2 className="w-6 h-6 text-green-500" />
+                          ) : (
+                            <Circle className="w-6 h-6 text-gray-500 hover:text-gray-400 transition-colors" />
+                          )}
+                        </button>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-semibold text-white">{problem.title}</h3>
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              problem.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
+                              problem.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                              'bg-red-500/20 text-red-400'
+                            }`}>
+                              {problem.difficulty}
+                            </span>
+                          </div>
+                          <p className="text-gray-300 mb-3">{problem.description}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {problem.topics.map((topic) => (
+                              <span key={topic} className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">
+                                {topic}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex gap-2 mt-4">
-                    {problem.platformLinks.map((link) => (
-                      <a
-                        key={link.platform}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors text-sm"
-                      >
-                        {link.platform} →
-                      </a>
-                    ))}
+                    <div className="flex gap-2 mt-4 ml-9">
+                      {problem.platformLinks.map((link) => (
+                        <a
+                          key={link.platform}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors text-sm"
+                        >
+                          {link.platform} →
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+
+            {/* Interview Questions Tab */}
+            {activeTab === 'interview' && (
+              <div className="space-y-4">
+                {selectedLanguage.interviewQuestions?.map((question) => (
+                  <div key={question.id} className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
+                    <div className="flex items-start gap-3 mb-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                        question.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
+                        question.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                        'bg-red-500/20 text-red-400'
+                      }`}>
+                        {question.difficulty}
+                      </span>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-semibold text-white mb-2">{question.question}</h3>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {question.topics.map((topic) => (
+                            <span key={topic} className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">
+                              {topic}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700/30">
+                      <h4 className="text-sm font-semibold text-emerald-400 mb-2">Answer:</h4>
+                      <p className="text-gray-300 leading-relaxed whitespace-pre-line">{question.answer}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

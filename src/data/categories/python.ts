@@ -877,5 +877,262 @@ export const pythonMastery: LanguageMastery = {
       companies: ['Microsoft', 'Amazon'],
       userStatus: { completed: false, attempted: false, lastAttempted: null, timeSpent: 0 }
     }
+  ],
+  interviewQuestions: [
+    {
+      id: 'py-int-1',
+      question: 'What is the difference between list and tuple in Python?',
+      answer: `List:
+- Mutable (can be modified)
+- Syntax: [1, 2, 3]
+- Slower than tuples
+- More memory
+- Methods: append(), remove(), etc.
+
+Tuple:
+- Immutable (cannot be modified)
+- Syntax: (1, 2, 3)
+- Faster than lists
+- Less memory
+- Limited methods
+
+Use lists for changeable data, tuples for fixed data.`,
+      difficulty: 'Easy',
+      category: 'Data Structures',
+      topics: ['List', 'Tuple']
+    },
+    {
+      id: 'py-int-2',
+      question: 'Explain Python decorators',
+      answer: `Decorators modify or enhance functions without changing their code.
+
+Syntax:
+@decorator
+def function():
+    pass
+
+Example:
+def logger(func):
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@logger
+def greet(name):
+    print(f"Hello {name}")
+
+Common uses: logging, timing, authentication, caching`,
+      difficulty: 'Medium',
+      category: 'Functions',
+      topics: ['Decorators', 'Functions']
+    },
+    {
+      id: 'py-int-3',
+      question: 'What is the Global Interpreter Lock (GIL)?',
+      answer: `GIL is a mutex that protects access to Python objects, preventing multiple threads from executing Python bytecode simultaneously.
+
+Impact:
+- Limits multi-threading for CPU-bound tasks
+- Single thread executes at a time
+- I/O-bound tasks still benefit from threading
+
+Workarounds:
+- multiprocessing module (separate processes)
+- asyncio for I/O operations
+- C extensions (release GIL)
+- Alternative implementations (Jython, IronPython)`,
+      difficulty: 'Hard',
+      category: 'Concurrency',
+      topics: ['GIL', 'Threading']
+    },
+    {
+      id: 'py-int-4',
+      question: 'Explain list comprehension vs generator expression',
+      answer: `List Comprehension:
+- Creates entire list in memory
+- Syntax: [x*2 for x in range(10)]
+- Faster for small data
+- Returns list
+
+Generator Expression:
+- Creates iterator, lazy evaluation
+- Syntax: (x*2 for x in range(10))
+- Memory efficient for large data
+- Returns generator object
+
+Use generators for large datasets to save memory.`,
+      difficulty: 'Medium',
+      category: 'Iterables',
+      topics: ['List Comprehension', 'Generators']
+    },
+    {
+      id: 'py-int-5',
+      question: 'What are *args and **kwargs?',
+      answer: `*args: Variable number of positional arguments
+**kwargs: Variable number of keyword arguments
+
+Example:
+def function(*args, **kwargs):
+    print(args)    # tuple
+    print(kwargs)  # dict
+
+function(1, 2, 3, name='John', age=30)
+# args: (1, 2, 3)
+# kwargs: {'name': 'John', 'age': 30}
+
+Order: regular args, *args, **kwargs`,
+      difficulty: 'Easy',
+      category: 'Functions',
+      topics: ['Args', 'Kwargs']
+    },
+    {
+      id: 'py-int-6',
+      question: 'Explain shallow copy vs deep copy',
+      answer: `Shallow Copy:
+- Copies object, but not nested objects
+- copy.copy() or list.copy()
+- Changes to nested objects affect original
+
+Deep Copy:
+- Copies object and all nested objects
+- copy.deepcopy()
+- Independent from original
+
+Example:
+import copy
+original = [[1, 2], [3, 4]]
+shallow = copy.copy(original)
+deep = copy.deepcopy(original)
+
+shallow[0][0] = 99  # affects original
+deep[0][0] = 99     # doesn't affect original`,
+      difficulty: 'Medium',
+      category: 'Memory',
+      topics: ['Copy', 'Memory']
+    },
+    {
+      id: 'py-int-7',
+      question: 'What is the difference between __str__ and __repr__?',
+      answer: `__str__:
+- Human-readable string representation
+- Called by str() and print()
+- For end users
+
+__repr__:
+- Unambiguous string representation
+- Called by repr()
+- For developers/debugging
+- Should ideally recreate object
+
+Example:
+class Point:
+    def __str__(self):
+        return f"Point at ({self.x}, {self.y})"
+
+    def __repr__(self):
+        return f"Point(x={self.x}, y={self.y})"
+
+If __str__ not defined, Python uses __repr__`,
+      difficulty: 'Medium',
+      category: 'OOP',
+      topics: ['Magic Methods', 'OOP']
+    },
+    {
+      id: 'py-int-8',
+      question: 'Explain Python memory management',
+      answer: `Python uses automatic memory management:
+
+1. Reference Counting:
+   - Tracks number of references to object
+   - Deallocates when count reaches zero
+
+2. Garbage Collection:
+   - Handles circular references
+   - Generational GC (0, 1, 2)
+   - Can be controlled with gc module
+
+3. Memory Pools:
+   - Small objects use pymalloc
+   - Reduces fragmentation
+
+Considerations:
+- del removes reference, not object
+- __del__ method for cleanup
+- gc.collect() forces collection`,
+      difficulty: 'Hard',
+      category: 'Memory',
+      topics: ['Memory Management', 'Garbage Collection']
+    },
+    {
+      id: 'py-int-9',
+      question: 'What are Python context managers?',
+      answer: `Context managers handle resource setup and cleanup automatically using 'with' statement.
+
+Usage:
+with open('file.txt') as f:
+    data = f.read()
+# File automatically closed
+
+Custom context manager:
+class Manager:
+    def __enter__(self):
+        # Setup code
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # Cleanup code
+        return False
+
+Or use @contextmanager decorator:
+from contextlib import contextmanager
+
+@contextmanager
+def manager():
+    # setup
+    yield value
+    # cleanup
+
+Benefits: Exception-safe resource management`,
+      difficulty: 'Medium',
+      category: 'Context Managers',
+      topics: ['Context Manager', 'With Statement']
+    },
+    {
+      id: 'py-int-10',
+      question: 'Explain the difference between staticmethod, classmethod, and instance method',
+      answer: `Instance Method:
+- Takes self as first parameter
+- Access instance and class attributes
+- Most common type
+
+Class Method:
+- @classmethod decorator
+- Takes cls as first parameter
+- Access only class attributes
+- Alternative constructors
+
+Static Method:
+- @staticmethod decorator
+- No self or cls parameter
+- Utility functions in class namespace
+- Cannot modify class or instance state
+
+Example:
+class MyClass:
+    def instance_method(self):
+        pass
+
+    @classmethod
+    def class_method(cls):
+        pass
+
+    @staticmethod
+    def static_method():
+        pass`,
+      difficulty: 'Medium',
+      category: 'OOP',
+      topics: ['Methods', 'Decorators']
+    }
   ]
 };
